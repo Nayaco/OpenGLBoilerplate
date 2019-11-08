@@ -1,0 +1,6 @@
+[submodule "Dependences/glfw3"]
+	path = Dependences/glfw3
+	url = git@github.com:glfw/glfw.git
+[submodule "Dependences/glm"]
+	path = Dependences/glm
+	url = git@github.com:g-truc/glm.git
