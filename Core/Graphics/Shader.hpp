@@ -9,8 +9,7 @@
 #include <sstream>
 #include <iostream>
 using std::string;
-class Shader
-{
+class Shader {
 public:
     unsigned int ID;
     
