@@ -5,16 +5,15 @@
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 
-#include "Core/Graphics/Shader.hpp"
+#include "Core/Graphics/Shader/Shader.hpp"
 
 #include <string>
 using std::string;
 class BaseModel {
 public:
-    string directory;
     Assimp::Importer import;
     BaseModel(): import(){ };
-    virtual void Draw(Shader &shader) = 0;
+    virtual void Draw(const Shader &shader) const = 0;
 };
 
 #endif

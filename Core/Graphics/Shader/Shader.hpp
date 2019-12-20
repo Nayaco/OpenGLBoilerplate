@@ -14,15 +14,18 @@ public:
     unsigned int ID;
     
     Shader(const char* vertexPath, const char* fragmentPath);
-   
+    Shader(const char* vertexPath, const char* tcsPath, const char* tesPath, const char* fragmentPath);
+    Shader(const char* vertexPath, const char* tcsPath, const char* tesPath, const char* geoPath, const char* fragmentPath);
+    
     void use() const { 
         glUseProgram(ID); 
     }
-    void setBool(const string &name, bool value) const {         
+
+    void setBool(const string &name, bool value) const {
         glUniform1i(glGetUniformLocation(ID, name.c_str()), (int)value); 
     }
     void setInt(const string &name, int value) const { 
-        glUniform1i(glGetUniformLocation(ID, name.c_str()), value); 
+        glUniform1i(glGetUniformLocation(ID, name.c_str()), value);
     }
     void setFloat(const string &name, float value) const { 
         glUniform1f(glGetUniformLocation(ID, name.c_str()), value); 

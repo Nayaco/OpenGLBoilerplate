@@ -1,37 +1,34 @@
 #include "Mesh.hpp"
 
-Mesh::Mesh(vector<Vertex> vertices, vector<unsigned int> indices, vector<Texture> textures) {
+Mesh::Mesh(vertex_vector  vertices, indice_vector indices, texture_vector textures) {
     this->vertices = vertices;
     this->indices = indices;
     this->textures = textures;
     setupMesh();
 }
-void Mesh::Draw(Shader &shader) {
-        unsigned int diffuseNr  = 1;
-        unsigned int specularNr = 1;
-        unsigned int normalNr   = 1;
-        unsigned int heightNr   = 1;
-        for(unsigned int i = 0; i < textures.size(); i++) {
-            glActiveTexture(GL_TEXTURE0 + i); 
-            string number;
-            string name = textures[i].type;
-            if(name == "texture_diffuse")
-				number = std::to_string(diffuseNr++);
-			else if(name == "texture_specular")
-				number = std::to_string(specularNr++); 
-            else if(name == "texture_normal")
-				number = std::to_string(normalNr++); 
-             else if(name == "texture_height")
-			    number = std::to_string(heightNr++); 
-
-            glUniform1i(glGetUniformLocation(shader.ID, (name + number).c_str()), i);
-            glBindTexture(GL_TEXTURE_2D, textures[i].id);
+void Mesh::Draw(Shader const &shader) const {
+    unsigned int diffuseNr  = 1;
+    unsigned int specularNr = 1;
+    unsigned int normalNr   = 1;
+    unsigned int heightNr   = 1;
+    for(auto i = 0; i < textures.size(); i++) {
+        string name;
+        unsigned int number;
+        glActiveTexture(GL_TEXTURE0 + i); 
+        switch (textures[i]._type) {
+            case TEX_TYPE::DIFFUSEMAP:  {name = "texture_diffuse"; number = diffuseNr; diffuseNr++; break;}
+            case TEX_TYPE::SPECULARMAP: {name = "texture_specular"; number = specularNr; specularNr++; break;}
+            case TEX_TYPE::NORMALMAP:   {name = "texture_normal"; number = normalNr; normalNr++; break;}
+            case TEX_TYPE::HEIGHTMAP:   {name = "texture_height"; number = heightNr; heightNr++; break;}
+            default: {throw "MESH: texture type unusable";}              
         }
-        glBindVertexArray(VAO);
-        glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
-        glBindVertexArray(0);
-
-        glActiveTexture(GL_TEXTURE0);
+        shader.setInt(name + "_" + to_string(number), i);
+        textures[i].bind();
+    }
+    glBindVertexArray(VAO);
+    glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
+    glBindVertexArray(0);
+    glActiveTexture(GL_TEXTURE0);
 }
 
 void Mesh::setupMesh() {
@@ -49,13 +46,13 @@ void Mesh::setupMesh() {
     glEnableVertexAttribArray(0); // Positions	
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)0);
     glEnableVertexAttribArray(1); // Normals	
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, Normal));
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, normal));
     glEnableVertexAttribArray(2); // Texture coords	
-    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, TexCoords));
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, texCoords));
     glEnableVertexAttribArray(3); // Tangent
-    glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, Tangent));
+    glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, tangent));
     glEnableVertexAttribArray(4); // Bitangent
-    glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, Bitangent));
-
+    glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, bitangent));
+    
     glBindVertexArray(0);
 }

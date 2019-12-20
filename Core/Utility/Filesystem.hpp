@@ -1,5 +1,5 @@
-#ifndef FILESYSTEM_H
-#define FILESYSTEM_H
+#ifndef FILESYSTEM_HPP
+#define FILESYSTEM_HPP
 #include <string>
 
 class FileSystem {
