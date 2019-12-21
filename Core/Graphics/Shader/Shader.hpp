@@ -12,8 +12,10 @@ using std::string;
 class Shader {
 public:
     unsigned int ID;
-    
+    bool hasTes;
+    bool hasGeo;
     Shader(const char* vertexPath, const char* fragmentPath);
+    Shader(const char* vertexPath, const char* geoPath, const char* fragmentPath);
     Shader(const char* vertexPath, const char* tcsPath, const char* tesPath, const char* fragmentPath);
     Shader(const char* vertexPath, const char* tcsPath, const char* tesPath, const char* geoPath, const char* fragmentPath);
     

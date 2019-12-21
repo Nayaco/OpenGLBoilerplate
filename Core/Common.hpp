@@ -19,6 +19,7 @@
 #include <iomanip>
 #include <ctime>
 #include <chrono>
+#include <random>
 #include <cassert>
 // Streams 
 #include <sstream>
@@ -50,5 +51,8 @@ using std::to_string;
 
 using indice_vector = vector<unsigned int>;
 
+using imap1d = vector<float>;
+using imap2d = vector<vector<float>>;
+using imap3d = vector<vector<vector<float>>>;
 
 #endif

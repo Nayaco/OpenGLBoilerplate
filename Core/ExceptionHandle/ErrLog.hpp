@@ -29,6 +29,7 @@ public:
         cerr<<"\e[0;31m[ERROR]"<<log<<"\e[0m\n";
         if(line > 0)
             cerr<<"\e[1;37m    Line "<<line<<" Tracing:"<<trace;
+        return *this;
     }
     const ErrLog& error(ostream &out, string log, int line = -1, string trace = "") const {
         out<<"[ERROR]"<<log<<"\n";

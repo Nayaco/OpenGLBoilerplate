@@ -2,7 +2,7 @@
 #define MODEL_HPP
 
 #include "Core/Common.hpp"
-#include "Core/Graphics/Mesh/Mesh.hpp"
+#include "Core/Graphics/Mesh/DefaultMesh/Mesh.hpp"
 #include "Core/Graphics/Shader/Shader.hpp"
 #include "Core/ExceptionHandle/ErrLog.hpp"
 

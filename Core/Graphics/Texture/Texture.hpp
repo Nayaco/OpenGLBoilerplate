@@ -19,7 +19,7 @@ struct Texture {
     string       _path;
     bool         _isGamma;
 public:
-    Texture& bind() const;
+    const Texture& bind() const;
     unsigned int LoadTexture(string const &path);
     unsigned int LoadCubemap(vector<string> const &faces);
     unsigned int LoadFromFile(string const &path, string const &directory, 

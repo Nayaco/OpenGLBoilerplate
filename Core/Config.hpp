@@ -1,0 +1,7 @@
+#ifndef CORE_CONFIG_HPP
+#define CORE_CONFIG_HPP
+
+#define DEFAULT_SCREEN_WIDTH 800
+#define DEFAULT_SCREEN_HEIGHT 600
+
+#endif

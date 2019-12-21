@@ -8,9 +8,10 @@ set(EXECUTABLE_OUTPUT_PATH "${CMAKE_CURRENT_SOURCE_DIR}/Release")
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG "${CMAKE_CURRENT_SOURCE_DIR}/Debug")
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE "${CMAKE_CURRENT_SOURCE_DIR}/Release")
 # Source files
-set(SRC_DIR "${CMAKE_CURRENT_SOURCE_DIR}/Core" "${CMAKE_CURRENT_SOURCE_DIR}/Components" "${CMAKE_CURRENT_SOURCE_DIR}/Assets")
-set(INC_DIR "${CMAKE_CURRENT_SOURCE_DIR}/Core" "${CMAKE_CURRENT_SOURCE_DIR}/Components" "${CMAKE_CURRENT_SOURCE_DIR}/Assets")
+set(SRC_DIR "${CMAKE_CURRENT_SOURCE_DIR}" "${CMAKE_CURRENT_SOURCE_DIR}/Core" "${CMAKE_CURRENT_SOURCE_DIR}/Components" "${CMAKE_CURRENT_SOURCE_DIR}/Assets")
+set(INC_DIR "${CMAKE_CURRENT_SOURCE_DIR}" "${CMAKE_CURRENT_SOURCE_DIR}/Core" "${CMAKE_CURRENT_SOURCE_DIR}/Components" "${CMAKE_CURRENT_SOURCE_DIR}/Assets")
 set(DEP_DIR "${CMAKE_CURRENT_SOURCE_DIR}/Dependences")
+set(TEST_DIR "${CMAKE_CURRENT_SOURCE_DIR}/Tests")
 # ---------------------------------------------------------------------------------------------------------------------------#
 # Dependences
 # glfw
@@ -25,7 +26,7 @@ set(GLAD_DIR "${DEP_DIR}/glad")
 add_library("glad" "${GLAD_DIR}/src/glad.c")
 target_include_directories("glad" PRIVATE "${GLAD_DIR}/include")
 # stb_image
-set(STB_DIR "${DEP_DIR}/stb")
+set(STB_DIR "${DEP_DIR}")
 # glm
 set(GLM_DIR "${DEP_DIR}/glm")
 # ---------------------------------------------------------------------------------------------------------------------------#
@@ -36,6 +37,8 @@ set(SOURCES
 set(EXE_NAME skyline)
 add_executable(${EXE_NAME} ${SOURCES})
 target_include_directories(${EXE_NAME} PRIVATE "${INC_DIR}")
+target_include_directories(${EXE_NAME} PRIVATE "${SRC_DIR}")
+target_include_directories(${EXE_NAME} PRIVATE "${TEST_DIR}")
 target_include_directories(${EXE_NAME} PRIVATE "${GLM_DIR}")
 target_include_directories(${EXE_NAME} PRIVATE "${STB_DIR}")
 target_include_directories(${EXE_NAME} PRIVATE "${GLAD_DIR}/include")

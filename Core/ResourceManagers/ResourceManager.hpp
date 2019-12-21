@@ -3,8 +3,6 @@
 #include "Core/Common.hpp"
 class ResourceManager {
 public:
-    ResourceManager() {}
-    ~ResourceManager() {}
-    virtual string name() const = 0;
+    static string name();
 };
 #endif

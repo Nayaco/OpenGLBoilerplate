@@ -5,7 +5,7 @@
 #include "Core/Common.hpp"
 #include "Core/Graphics/Texture/Texture.hpp"
 
-Texture& Texture::bind() const {
+const Texture& Texture::bind() const {
     if (_type == TEX_TYPE::CUBEMAP) glBindTexture(GL_TEXTURE_CUBE_MAP, _id);
     else glBindTexture(GL_TEXTURE_2D, _id);
     return *this;
