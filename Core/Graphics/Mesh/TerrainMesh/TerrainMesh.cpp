@@ -31,7 +31,7 @@ void TerrainMesh::Draw(Shader const &shader) const {
             case TEX_TYPE::HEIGHTMAP:   {name = "texture_height"; number = heightNr; heightNr++; break;}
             default: {throw "TERMESH: texture type unusable";}              
         }
-        shader.setInt(name + "_" + to_string(number), i);
+        shader.setInt(name + "_" + std::to_string(number), i);
         textures[i].bind();
     }
     glBindVertexArray(VAO);

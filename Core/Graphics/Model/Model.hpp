@@ -4,7 +4,6 @@
 #include "Core/Common.hpp"
 #include "Core/Graphics/Mesh/DefaultMesh/Mesh.hpp"
 #include "Core/Graphics/Shader/Shader.hpp"
-#include "Core/ExceptionHandle/ErrLog.hpp"
 
 #include "BaseModel.hpp"
 
@@ -25,5 +24,7 @@ private:
     Mesh processMesh(aiMesh *mesh, const aiScene *scene);
     texture_vector Model::loadMaterialTextures(aiMaterial *mat, aiTextureType ai_tex_type, TEX_TYPE tex_type);
 };
+
+using default_model_vector = vector<Model>;
 
 #endif

@@ -1,9 +1,4 @@
-#ifndef TEXTURE_H
-#define TEXTURE_H
-#define STB_IMAGE_IMPLEMENTATION
-
-#include "Core/Common.hpp"
-#include "Core/Graphics/Texture/Texture.hpp"
+#include "Texture.hpp"
 
 const Texture& Texture::bind() const {
     if (_type == TEX_TYPE::CUBEMAP) glBindTexture(GL_TEXTURE_CUBE_MAP, _id);
@@ -109,5 +104,3 @@ unsigned int Texture::LoadFromFile(string const &path, string const &directory,
     _isGamma = gamma;
     return _id;
 }
-
-#endif

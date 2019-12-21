@@ -5,10 +5,9 @@
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 
+#include "Core/Common.hpp"
 #include "Core/Graphics/Shader/Shader.hpp"
 
-#include <string>
-using std::string;
 class BaseModel {
 public:
     Assimp::Importer import;

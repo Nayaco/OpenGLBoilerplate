@@ -1,34 +1,27 @@
 #include "GameEngine.hpp"
 
-GameEngine::GameEngine(string w_name)
-    :window_width(DEFAULT_SCREEN_WIDTH), window_height(DEFAULT_SCREEN_HEIGHT), window_name(w_name) {    
-}
-
-GameEngine::GameEngine(unsigned int w_width, unsigned int w_height, string w_name)
-    :window_width(w_width), window_height(w_height), window_name(w_name) {
-}
-
-void GameEngine::init() {
+void GameEngine::initialize() {
 }
 
 void GameEngine::createWindow() {
     glfwInit();
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, GAME_GL_MAJOR_VERSION); // CONFIG_HPP DEFINES
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, GAME_GL_MINOR_VERSION); // CONFIG_HPP DEFINES
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-    glfwWindowHint(GLFW_SAMPLES, 16);
+    glfwWindowHint(GLFW_SAMPLES, GAME_GL_SAMPLE_RATE); // CONFIG_HPP DEFINES
     GLFWwindow *window = glfwCreateWindow(window_width, window_height, window_name.c_str(), NULL, NULL);
-    if (isNull((void*)window)) {
+    if (tool::isNull((void*)window)) {
         throw "GAMEENGINE: window " + window_name + " create failed";
         glfwTerminate();
     }
     glfwMakeContextCurrent(window);
-    glfwSetWindowSizeCallback(window ,resizeWindowCallback);
-    glfwSetCursorPosCallback(window, mouseMovecallback);
-    glfwSetScrollCallback(window, scrollcallback);
+    glfwSetWindowSizeCallback(window , resizeWindowCallback);
+    glfwSetCursorPosCallback(window, Input::mouseMovecallback);
+    glfwSetScrollCallback(window, Input::scrollcallback);
     glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
     if(!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {    
+        throw "GAMEENGINE: window " + window_name + " create failed when load glad";
         glfwTerminate(); 
     }
     glEnable(GL_MULTISAMPLE);
@@ -36,12 +29,6 @@ void GameEngine::createWindow() {
     glDepthFunc(GL_LEQUAL);
 }
 
-void mouseMovecallback(GLFWwindow* window, double xpos, double ypos) {
-}
-
-void resizeWindowCallback(GLFWwindow* window, int width, int height) {
+void GameEngine::resizeWindowCallback(GLFWwindow* window, int width, int height) {
     glViewport(0, 0, width, height);
-}
-
-void scrollcallback(GLFWwindow* window, double xoffset, double yoffset) {
 }

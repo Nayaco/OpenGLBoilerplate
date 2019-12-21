@@ -6,10 +6,7 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
-#include <stb_image.h>
-#include <assimp/Importer.hpp>
-#include <assimp/scene.h>
-#include <assimp/postprocess.h>
+
 // Standard libraries
 #include <cstdint>
 #include <cmath>
@@ -19,7 +16,6 @@
 #include <iomanip>
 #include <ctime>
 #include <chrono>
-#include <random>
 #include <cassert>
 // Streams 
 #include <sstream>
@@ -28,26 +24,25 @@
 // System 
 #include <sys/stat.h>
 // Standard containers
-#include <memory>
 #include <vector>
 #include <tuple>
 #include <map>
-#include <unordered_map>
 #include <list>
 #include <string>
+#include <functional>
 
 using std::string;
-using std::map;
-using std::unordered_map;
-using std::list;
+// using std::map;
+// using std::unordered_map;
+// using std::list;
 using std::vector;
-using std::shared_ptr;
-using std::tuple;
-using std::pair;
-using std::ifstream;
-using strstream = std::stringstream;
-using std::chrono::system_clock;
-using std::to_string;
+// using std::shared_ptr;
+// using std::tuple;
+// using std::pair;
+// using std::ifstream;
+// using strstream = std::stringstream;
+// using std::chrono::system_clock;
+// using std::to_string;
 
 using indice_vector = vector<unsigned int>;
 

@@ -18,5 +18,5 @@ private:
     unsigned int VBO, EBO;
     virtual void setupMesh() override;
 };
-using mesh_vector = vector<Mesh>;
+using mesh_vector = std::vector<Mesh>;
 #endif

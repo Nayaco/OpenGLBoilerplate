@@ -1,6 +1,7 @@
 #ifndef TEXTURE_HPP
 #define TEXTURE_HPP
 
+#include <stb_image.h>
 #include "Core/Common.hpp"
 
 enum class TEX_TYPE: int8_t {

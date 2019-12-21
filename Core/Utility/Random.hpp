@@ -1,6 +1,7 @@
 #ifndef RANDOM_HPP
 #define RANDOM_HPP
 #include "Core/Common.hpp"
+#include <random>
 
 namespace randomx {
 static std::random_device _rand_dev;
