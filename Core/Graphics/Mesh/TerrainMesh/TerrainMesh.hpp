@@ -4,7 +4,7 @@
 #include "Core/Common.hpp"
 #include "Core/Graphics/Shader/Shader.hpp"
 #include "Core/Graphics/Texture/Texture.hpp"
-#include "BaseMesh.hpp"
+#include "Core/Graphics/Mesh/BaseMesh.hpp"
 
 constexpr float half_patch_size = 25.0f;
 
@@ -19,9 +19,9 @@ public:
     unsigned int VAO;
 // Width and height is the mesh size default 25.f
 // At least one height map is required
-    explicit TerrainMesh(texture_vector textures, 
-                        unsigned int _width = half_patch_size * 2, 
-                        unsigned int _height = half_patch_size * 2);
+    explicit TerrainMesh(texture_vector textures,
+                        float _width = half_patch_size * 2, 
+                        float _height = half_patch_size * 2);
     virtual void Draw(Shader const &shader) const override;
 private:
     unsigned int VBO, EBO;

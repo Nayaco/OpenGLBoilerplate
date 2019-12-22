@@ -1,7 +1,7 @@
 #ifndef CAMERA_H
 #define CAMERA_H
 
-#include "Core/Common.hpp"
+#include "BaseCamera.hpp"
 
 enum class Camera_Movement {
     FORWARD,
@@ -10,14 +10,13 @@ enum class Camera_Movement {
     RIGHT
 };
 
-const float YAW         = -90.0f;
-const float PITCH       =  0.0f;
-const float SPEED       =  2.5f;
-const float SENSITIVITY =  0.1f;
-const float ZOOM        =  45.0f;
+const float DEFAULT_YAW         = -90.0f;
+const float DEFAULT_PITCH       =  0.0f;
+const float DEFAULT_SPEED       =  2.5f;
+const float DEFAULT_SENSITIVITY =  0.1f;
+const float DEFAULT_ZOOM        =  45.0f;
 
-class Camera
-{
+class Camera : public BaseCamera {
 public:
     glm::vec3 Position;
     glm::vec3 Front;
@@ -32,9 +31,9 @@ public:
 
     Camera(glm::vec3 position = glm::vec3(0.0f, 0.0f, 0.0f), 
             glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f), 
-            float yaw = YAW, float pitch = PITCH)
+            float yaw = DEFAULT_YAW, float pitch = DEFAULT_PITCH)
     :Front(glm::vec3(0.0f, 0.0f, -1.0f)), 
-    MovementSpeed(SPEED), MouseSensitivity(SENSITIVITY), Zoom(ZOOM) {
+    MovementSpeed(DEFAULT_SPEED), MouseSensitivity(DEFAULT_SENSITIVITY), Zoom(DEFAULT_ZOOM) {
         Position = position;
         WorldUp = up;
         Yaw = yaw;
@@ -45,7 +44,7 @@ public:
             float upX, float upY, float upZ, 
             float yaw, float pitch) 
     :Front(glm::vec3(0.0f, 0.0f, -1.0f)), 
-     MovementSpeed(SPEED), MouseSensitivity(SENSITIVITY), Zoom(ZOOM) {
+     MovementSpeed(DEFAULT_SPEED), MouseSensitivity(DEFAULT_SENSITIVITY), Zoom(DEFAULT_ZOOM) {
         Position = glm::vec3(posX, posY, posZ);
         WorldUp = glm::vec3(upX, upY, upZ);
         Yaw = yaw;
@@ -53,7 +52,7 @@ public:
         updateCameraVectors();
     }
 
-    glm::mat4 GetViewMatrix() {
+    virtual glm::mat4 GetViewMatrix() const override {
         return glm::lookAt(Position, Position + Front, Up);
     }
 

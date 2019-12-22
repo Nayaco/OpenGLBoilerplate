@@ -100,6 +100,7 @@ Shader::Shader(const char* vertexPath, const char* tcsPath, const char* tesPath,
         fShaderFile.exceptions (ifstream::failbit | ifstream::badbit);
         tcsFile.exceptions (ifstream::failbit | ifstream::badbit);
         tesFile.exceptions (ifstream::failbit | ifstream::badbit);
+        
         try {
             vShaderFile.open(vertexPath); fShaderFile.open(fragmentPath); tcsFile.open(tcsPath); tesFile.open(tesPath);
             stringstream vsshaderStream,  csshaderStream, esshaderStream, fsshaderStream;
@@ -116,6 +117,7 @@ Shader::Shader(const char* vertexPath, const char* tcsPath, const char* tesPath,
         catch (ifstream::failure e) {
             throw "ERROR::SHADER::FILE_NOT_SUCCESFULLY_READ";
         }
+
         const char* vShaderCode = vertexCode.c_str();
         const char* fShaderCode = fragmentCode.c_str();
         const char* tcShaderCode = tcsCode.c_str();
@@ -126,6 +128,7 @@ Shader::Shader(const char* vertexPath, const char* tcsPath, const char* tesPath,
         tcs = glCreateShader(GL_TESS_CONTROL_SHADER);
         tes = glCreateShader(GL_TESS_EVALUATION_SHADER);
 
+        
         glShaderSource(vertex, 1, &vShaderCode, NULL);
         glCompileShader(vertex);
         checkCompileErrors(vertex, "V");
@@ -150,6 +153,7 @@ Shader::Shader(const char* vertexPath, const char* tcsPath, const char* tesPath,
         glDeleteShader(fragment);
         glDeleteShader(tcs);
         glDeleteShader(tes);
+        
 }
 
 Shader::Shader(const char* vertexPath, const char* tcsPath, const char* tesPath, const char* geoPath, const char* fragmentPath) 

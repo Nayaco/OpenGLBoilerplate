@@ -33,6 +33,18 @@ set(GLM_DIR "${DEP_DIR}/glm")
 # Executable definition and properties
 set(SOURCES 
     "${CMAKE_CURRENT_SOURCE_DIR}/Main.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/Core/ExceptionHandle/ErrLog.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/Core/GameEngine.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/Core/Input/Input.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/Core/Utility/Random.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/Core/Utility/Noise/Noise.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/Core/Graphics/Mesh/TerrainMesh/TerrainMesh.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/Core/Graphics/Shader/Shader.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/Core/Graphics/Texture/Texture.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/Core/ResourceManagers/ShaderManager.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/Core/ResourceManagers/TextureManager.cpp"  
+    "${CMAKE_CURRENT_SOURCE_DIR}/Core/ResourceManagers/LightManager.cpp"  
+    "${CMAKE_CURRENT_SOURCE_DIR}/Core/ResourceManagers/ModelManager.cpp"
     )
 set(EXE_NAME skyline)
 add_executable(${EXE_NAME} ${SOURCES})

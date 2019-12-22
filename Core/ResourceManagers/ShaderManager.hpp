@@ -9,6 +9,12 @@ private:
     static map<string, Shader> shaders;
 public:
     static string name() {return "shader manager";}
+    
+    static void loadVF(string const& shader_name, string const& shader_path);
+    static void loadVTTF(string const& shader_name, string const& shader_path);
+    static void loadVGF(string const& shader_name, string const& shader_path);
+    static void loadVTTGF(string const& shader_name, string const& shader_path);
+
     static void set(string shader_name, Shader const& shader);
     static Shader get(string shader_name);
 };

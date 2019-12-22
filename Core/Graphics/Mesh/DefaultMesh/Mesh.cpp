@@ -16,6 +16,7 @@ void Mesh::Draw(Shader const &shader) const {
         unsigned int number;
         glActiveTexture(GL_TEXTURE0 + i); 
         switch (textures[i]._type) {
+            case TEX_TYPE::DEFAULT:     {name = "texture_color"; number = 0; break;}
             case TEX_TYPE::DIFFUSEMAP:  {name = "texture_diffuse"; number = diffuseNr; diffuseNr++; break;}
             case TEX_TYPE::SPECULARMAP: {name = "texture_specular"; number = specularNr; specularNr++; break;}
             case TEX_TYPE::NORMALMAP:   {name = "texture_normal"; number = normalNr; normalNr++; break;}

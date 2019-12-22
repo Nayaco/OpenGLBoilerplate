@@ -32,7 +32,7 @@
 #include <functional>
 
 using std::string;
-// using std::map;
+using std::map;
 // using std::unordered_map;
 // using std::list;
 using std::vector;

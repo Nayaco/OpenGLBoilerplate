@@ -1,11 +1,14 @@
 #include "TerrainMesh.hpp"
-
-TerrainMesh::TerrainMesh(texture_vector textures, unsigned int _width, unsigned int _height) 
+#include "Core/ExceptionHandle/ErrLog.hpp"
+TerrainMesh::TerrainMesh(texture_vector textures, float _width, float _height) 
     :vertices { 
-        Vertex{position: glm::vec3(-_width, _height, 0.0f),},
-        Vertex{position: glm::vec3(-_width,-_height, 0.0f),},
-        Vertex{position: glm::vec3( _width,-_height, 0.0f),},
-        Vertex{position: glm::vec3( _width, _height, 0.0f),},
+        Vertex{position: glm::vec3(-_width / 2, 0.0f, _height / 2),},
+        Vertex{position: glm::vec3(-_width / 2, 0.0f,-_height / 2),},
+        Vertex{position: glm::vec3( _width / 2, 0.0f,-_height / 2),},
+        Vertex{position: glm::vec3( _width / 2, 0.0f, _height / 2),},
+        // Vertex{position: glm::vec3( 0.5f, -0.5f, 0.0f),},
+        // Vertex{position: glm::vec3(-0.5f, -0.5f, 0.0f),},
+        // Vertex{position: glm::vec3( 0.0f,  0.5f, 0.0f),},
     },
     indices {
         0, 1, 2, 3,
@@ -17,9 +20,9 @@ TerrainMesh::TerrainMesh(texture_vector textures, unsigned int _width, unsigned 
     setupMesh(); 
 }
 void TerrainMesh::Draw(Shader const &shader) const {
-    if (shader.hasTes == false) {
-        throw "TERMESH: tess shaders required";
-    }
+    // if (shader.hasTes == false) {
+    //     throw "TERMESH: tess shaders required";
+    // }
     unsigned int normalNr   = 1;
     unsigned int heightNr   = 1;
     for(auto i = 0; i < textures.size(); i++) {
@@ -27,15 +30,21 @@ void TerrainMesh::Draw(Shader const &shader) const {
         unsigned int number;
         glActiveTexture(GL_TEXTURE0 + i);
         switch (textures[i]._type) {
+            case TEX_TYPE::DEFAULT:     {name = "texture_color"; number = 0; break;}
             case TEX_TYPE::NORMALMAP:   {name = "texture_normal"; number = normalNr; normalNr++; break;}
             case TEX_TYPE::HEIGHTMAP:   {name = "texture_height"; number = heightNr; heightNr++; break;}
             default: {throw "TERMESH: texture type unusable";}              
         }
+        // logger.error(name + "_" + std::to_string(number));
         shader.setInt(name + "_" + std::to_string(number), i);
+        // glBindTexture(GL_TEXTURE_2D, textures[i]._id);
         textures[i].bind();
     }
     glBindVertexArray(VAO);
-    glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
+    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    glPatchParameteri(GL_PATCH_VERTICES, indices.size());
+    glDrawElements(GL_PATCHES, indices.size(), GL_UNSIGNED_INT, 0);
+    // glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, 0);
     glBindVertexArray(0);
     glActiveTexture(GL_TEXTURE0);
 }
@@ -43,23 +52,22 @@ void TerrainMesh::setupMesh() {
     glGenVertexArrays(1, &VAO);
     glGenBuffers(1, &VBO);
     glGenBuffers(1, &EBO);
-
     glBindVertexArray(VAO);
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
     glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(Vertex), &vertices[0], GL_STATIC_DRAW);  
-
+    
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned int), &indices[0], GL_STATIC_DRAW);
 
-    glEnableVertexAttribArray(0); // Positions	
+    glEnableVertexAttribArray(0);	
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)0);
-    glEnableVertexAttribArray(1); // Normals	
+    glEnableVertexAttribArray(1);	
     glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, normal));
-    glEnableVertexAttribArray(2); // Texture coords	
+    glEnableVertexAttribArray(2);
     glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, texCoords));
-    glEnableVertexAttribArray(3); // Tangent
+    glEnableVertexAttribArray(3);
     glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, tangent));
-    glEnableVertexAttribArray(4); // Bitangent
+    glEnableVertexAttribArray(4);
     glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, bitangent));
     
     glBindVertexArray(0);
