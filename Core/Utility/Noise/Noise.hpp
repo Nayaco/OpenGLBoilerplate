@@ -5,6 +5,8 @@
 namespace noise {
 
 float lerp(float x0, float x1, float alpha);
+// float blur(imap2d const& white_noise, imap2d const& white_noise);
+
 
 imap2d whiteNoise(int width, int height);
 imap2d smoothNoise(imap2d const& white_noise, int octave, int width, int height);

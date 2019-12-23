@@ -6,7 +6,7 @@ Mesh::Mesh(vertex_vector  vertices, indice_vector indices, texture_vector textur
     this->textures = textures;
     setupMesh();
 }
-void Mesh::Draw(Shader const &shader) const {
+void Mesh::draw(Shader const &shader) const {
     unsigned int diffuseNr  = 1;
     unsigned int specularNr = 1;
     unsigned int normalNr   = 1;

@@ -1,22 +1,26 @@
-#ifndef MESH_HPP
-#define MESH_HPP
+#ifndef SKYBOX_HPP
+#define SKYBOX_HPP
 
-#include "Core/Common.hpp"
+#include "Common.hpp"
 #include "Core/Graphics/Shader/Shader.hpp"
 #include "Core/Graphics/Texture/Texture.hpp"
-#include "BaseMesh.hpp"
+#include "Core/Graphics/Mesh/BaseMesh.hpp"
 
-class Mesh : public BaseMesh {
+class Skybox : public BaseMesh {
 public:
     vertex_vector vertices;
     indice_vector indices;
     texture_vector textures;
     unsigned int VAO;
-    explicit Mesh(vertex_vector vertices, indice_vector indices, texture_vector textures);
+    glm::vec3 sky_color;
+    
+    Skybox(texture_vector textures);
+    virtual ~Skybox();
+    virtual void setColor(glm::vec3 color);
     virtual void draw(Shader const &shader) const override;
 private:
     unsigned int VBO, EBO;
     virtual void setupMesh() override;
 };
-using mesh_vector = std::vector<Mesh>;
+
 #endif

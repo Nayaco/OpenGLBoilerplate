@@ -1,31 +1,45 @@
 #include "TerrainMesh.hpp"
-#include "Core/ExceptionHandle/ErrLog.hpp"
 TerrainMesh::TerrainMesh(texture_vector textures, float _width, float _height) 
     :vertices { 
         Vertex{position: glm::vec3(-_width / 2, 0.0f, _height / 2),},
         Vertex{position: glm::vec3(-_width / 2, 0.0f,-_height / 2),},
         Vertex{position: glm::vec3( _width / 2, 0.0f,-_height / 2),},
         Vertex{position: glm::vec3( _width / 2, 0.0f, _height / 2),},
-        // Vertex{position: glm::vec3( 0.5f, -0.5f, 0.0f),},
-        // Vertex{position: glm::vec3(-0.5f, -0.5f, 0.0f),},
-        // Vertex{position: glm::vec3( 0.0f,  0.5f, 0.0f),},
     },
     indices {
         0, 1, 2, 3,
     } {
     mesh_width = _width;
     mesh_height = _height;
-
+    
+    tess_level = default_tess_level;
+    heightfix_level = default_height_fix_level;
+    scale_level = default_scale_level;
     this->textures = textures;
     setupMesh(); 
 }
-void TerrainMesh::Draw(Shader const &shader) const {
-    // if (shader.hasTes == false) {
-    //     throw "TERMESH: tess shaders required";
-    // }
+
+TerrainMesh::~TerrainMesh() {}
+
+void TerrainMesh::setHeightFixLevel(float fixlevel) {
+    heightfix_level = fixlevel;
+}
+
+void TerrainMesh::setTessLevel(float tesslevel) {
+    tess_level = tesslevel;
+}
+
+void TerrainMesh::setScaleLevel(float scalelevel) {
+    scale_level = scalelevel;
+}
+
+void TerrainMesh::draw(Shader const &shader) const {
+    if (shader.hasTes == false) {
+        throw "TERMESH: tess shaders required";
+    }
     unsigned int normalNr   = 1;
     unsigned int heightNr   = 1;
-    for(auto i = 0; i < textures.size(); i++) {
+    for(size_t i = 0; i < textures.size(); i++) {
         string name;
         unsigned int number;
         glActiveTexture(GL_TEXTURE0 + i);
@@ -35,16 +49,16 @@ void TerrainMesh::Draw(Shader const &shader) const {
             case TEX_TYPE::HEIGHTMAP:   {name = "texture_height"; number = heightNr; heightNr++; break;}
             default: {throw "TERMESH: texture type unusable";}              
         }
-        // logger.error(name + "_" + std::to_string(number));
         shader.setInt(name + "_" + std::to_string(number), i);
-        // glBindTexture(GL_TEXTURE_2D, textures[i]._id);
         textures[i].bind();
     }
+    shader.setFloat("tess_level", tess_level);
+    shader.setFloat("heightfix_level", heightfix_level);
+    shader.setFloat("scale_level", scale_level);
+    
     glBindVertexArray(VAO);
-    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     glPatchParameteri(GL_PATCH_VERTICES, indices.size());
     glDrawElements(GL_PATCHES, indices.size(), GL_UNSIGNED_INT, 0);
-    // glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, 0);
     glBindVertexArray(0);
     glActiveTexture(GL_TEXTURE0);
 }

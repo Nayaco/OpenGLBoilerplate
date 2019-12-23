@@ -4,6 +4,13 @@ std::string  Context::window_name;
 unsigned int Context::window_width;
 unsigned int Context::window_height;
 
+float Context::game_time;
+float Context::delta_time;
+float Context::current_frame;
+float Context::last_frame;
+
+GLFWwindow* Context::getWindow() { return window; }
+
 void Context::create(std::string w_name, unsigned int w_width, unsigned int w_height, 
                     unsigned int gl_major, unsigned int gl_minor, unsigned int gl_sample) {
     glfwInit();
@@ -31,14 +38,27 @@ void Context::create(std::string w_name, unsigned int w_width, unsigned int w_he
         glEnable(GL_DEPTH_TEST);
         glDepthFunc(GL_LEQUAL);
     }
+    game_time     = 0.0f;
+    delta_time    = 0.0f;
+    last_frame    = 0.0f;
+    current_frame = 0.0f;
 }
 
-GLFWwindow* Context::getWindow() { return window; }
+void Context::close() { glfwSetWindowShouldClose(window, true); }
 
 void Context::destroy() { glfwTerminate(); }
+
+void Context::update() { handleDeltaFrame(); }
 
 void Context::updateWindow(unsigned int w_width, unsigned int w_height) {
     window_height = w_width;
     window_width = w_height;
     glViewport(0, 0, window_width, window_height);
+}
+
+void Context::handleDeltaFrame() {
+    current_frame = glfwGetTime();
+    delta_time = current_frame - last_frame;
+    last_frame = current_frame;
+    game_time += delta_time;
 }

@@ -44,7 +44,7 @@ unsigned int Texture::LoadCubemap(vector<string> const &faces) {
     int width, height, nrChannels, _ext;
     glGenTextures(1, &_id);
     glBindTexture(GL_TEXTURE_CUBE_MAP, _id);
-    for (auto i = 0; i < faces.size(); ++i) {
+    for (size_t i = 0; i < faces.size(); ++i) {
         unsigned char* data = stbi_load(faces[i].c_str(), &width, &height, &nrChannels, 0);
         if (data) {
             GLenum format;

@@ -11,21 +11,26 @@ uniform mat4 model;
 uniform mat4 view;
 uniform mat4 projection;
 
+uniform float heightfix_level;
+uniform float scale_level;
+
 uniform sampler2D texture_height_1;
 uniform sampler2D texture_normal_1;
 uniform sampler2D texture_color_1;
-// uniform sampler2D texture_diffuse_1;
-
 
 void main() {
     float u = gl_TessCoord.x;
     float v = gl_TessCoord.y;
     vec4 a = mix(gl_in[0].gl_Position, gl_in[1].gl_Position, u);
     vec4 b = mix(gl_in[3].gl_Position, gl_in[2].gl_Position, u);
+    
     UV = gl_TessCoord.xy;
     WorldPos = mix(a, b, v);
     Normal = vec4(0.0f, 0.0f, 1.0f, 0.0f);
-    float height = texture(texture_height_1, UV).r * 10 - 5;
-    Color = vec4(0.5f + height, 0.5f + height, 0.5f + height, 1.0f);
-    Position = gl_Position = projection * view * vec4(WorldPos.x, height, WorldPos.z, 1.0);
+    
+    float hi_level = texture(texture_height_1, UV).r;
+    float height = hi_level * scale_level + heightfix_level;
+    
+    Position = gl_Position = projection * view * vec4(WorldPos.x , height / 2.0f, WorldPos.z, 1.0f);
+    Color = vec4(hi_level, hi_level, hi_level, 1.0f);
 }

@@ -20,7 +20,7 @@ Shader::Shader(const char* vertexPath, const char* fragmentPath)
         vertexCode = vShaderStream.str();
         fragmentCode = fShaderStream.str();			
     }
-    catch (ifstream::failure e){
+    catch (ifstream::failure const &e){
         throw "ERROR::SHADER::FILE_NOT_SUCCESFULLY_READ";
     }
     const char* vShaderCode = vertexCode.c_str();
@@ -61,7 +61,7 @@ Shader::Shader(const char* vertexPath, const char* geoPath, const char* fragment
         fragmentCode = fsshaderStream.str();
         geoCode = gShaderStream.str();
     }
-    catch (ifstream::failure e) {
+    catch (ifstream::failure const &e) {
         throw "ERROR::SHADER::FILE_NOT_SUCCESFULLY_READ";
     }
     const char* vShaderCode = vertexCode.c_str();
@@ -78,6 +78,7 @@ Shader::Shader(const char* vertexPath, const char* geoPath, const char* fragment
     glShaderSource(fragment, 1, &fShaderCode, NULL);
     glCompileShader(fragment);
     checkCompileErrors(fragment, "F");
+    glShaderSource(geo, 1, &geoShaderCode, NULL);
     glCompileShader(geo);
     checkCompileErrors(geo, "GEO");
     
@@ -114,7 +115,7 @@ Shader::Shader(const char* vertexPath, const char* tcsPath, const char* tesPath,
             tcsCode = csshaderStream.str();
             tesCode = esshaderStream.str();
         }
-        catch (ifstream::failure e) {
+        catch (ifstream::failure const &e) {
             throw "ERROR::SHADER::FILE_NOT_SUCCESFULLY_READ";
         }
 
@@ -180,7 +181,7 @@ Shader::Shader(const char* vertexPath, const char* tcsPath, const char* tesPath,
         tesCode = esshaderStream.str();
         geoCode = gShaderStream.str();
     }
-    catch (ifstream::failure e) {
+    catch (ifstream::failure const &e) {
         throw "ERROR::SHADER::FILE_NOT_SUCCESFULLY_READ";
     }
     const char* vShaderCode = vertexCode.c_str();
@@ -207,6 +208,7 @@ Shader::Shader(const char* vertexPath, const char* tcsPath, const char* tesPath,
     glShaderSource(tes, 1, &teShaderCode, NULL);
     glCompileShader(tes);
     checkCompileErrors(tes, "TES");
+    glShaderSource(geo, 1, &geoShaderCode, NULL);
     glCompileShader(geo);
     checkCompileErrors(geo, "GEO");
     

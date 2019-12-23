@@ -8,21 +8,13 @@
 #include "Core/Scene/BaseScene.hpp"
 #include "Core/Graphics/Shader/Shader.hpp"
 
-#include "Core/Utility/Tool.hpp"
-
 class GameEngine {
 public:
     static std::string  window_name;
     static unsigned int window_width;
     static unsigned int window_height;
 
-    static float game_time;
-    static float delta_time;
-    static float current_frame;
-    static float last_frame;
-
     static BaseScene* scene;
-    // static
 
     static void setname(std::string w_name = "demo");
     static void setsize(unsigned int w_width = DEFAULT_SCREEN_WIDTH, 
@@ -32,10 +24,7 @@ public:
     static void bindScene(BaseScene* _scene);
 
     static void initialize();
-    static void createContex();
+    static void createContext();
     static void start_render();
-    
-    static void handleDeltaFrame();
-    static void resizeWindowCallback(GLFWwindow* window, int width, int height);
 };
 #endif

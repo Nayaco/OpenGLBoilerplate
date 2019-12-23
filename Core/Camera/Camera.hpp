@@ -4,16 +4,11 @@
 #include "BaseCamera.hpp"
 #include "Core/Context/Context.hpp"
 
-enum class Camera_Movement {
-    FORWARD,
-    BACKWARD,
-    LEFT,
-    RIGHT,
-};
+
 
 const float DEFAULT_YAW         = -90.0f;
 const float DEFAULT_PITCH       =  0.0f;
-const float DEFAULT_SPEED       =  2.5f;
+const float DEFAULT_SPEED       =  10.0f;
 const float DEFAULT_SENSITIVITY =  0.1f;
 const float DEFAULT_ZOOM        =  45.0f;
 const float DEFAULT_FAR         =  1000.0f;
@@ -21,6 +16,12 @@ const float DEFAULT_NEAR        =  0.1f;
 
 class Camera : public BaseCamera {
 public:
+    enum class Camera_Movement {
+        FORWARD,
+        BACKWARD,
+        LEFT,
+        RIGHT,
+    };
     glm::vec3 Position;
     glm::vec3 Front;
     glm::vec3 Up;
@@ -43,7 +44,7 @@ public:
             float upX, float upY, float upZ, 
             float yaw, float pitch,
             float far, float near);
-
+    virtual ~Camera(); 
     virtual glm::mat4 GetViewMatrix() const override;
     virtual glm::mat4 GetProjectionMatrix() const override;
 

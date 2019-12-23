@@ -8,6 +8,7 @@
 class TextureManager {
 private:
     static map<string, Texture> textures;
+    static map<string, imap2d>  heightmaps;
 public:
     static string name() {return "texture manager";}
     
@@ -16,7 +17,9 @@ public:
     static void Load2DDynamic(string const &tex_name, imap2d const &tex_map, int width, int height);
 
     static void set(string tex_name, Texture const& tex);
+    static void set(string tex_name, imap2d const& heightmap);
     static Texture get(string tex_name);
+    static imap2d& getHeightMap(string tex_name);
 };
 
 #endif

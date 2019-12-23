@@ -14,7 +14,7 @@ struct Vertex {
 using vertex_vector = vector<Vertex>;
 class BaseMesh {
 public:
-    virtual void Draw(Shader const &shader) const = 0;
+    virtual void draw(Shader const &shader) const = 0;
 private:
     virtual void setupMesh() = 0;
 };

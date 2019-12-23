@@ -1,9 +1,6 @@
 #include "Camera.hpp"
 
-Camera::Camera(glm::vec3 position = glm::vec3(0.0f, 0.0f, 0.0f), 
-            glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f), 
-            float yaw = DEFAULT_YAW, float pitch = DEFAULT_PITCH,
-            float far = DEFAULT_FAR, float near = DEFAULT_NEAR)
+Camera::Camera(glm::vec3 position, glm::vec3 up, float yaw, float pitch, float far, float near)
     :Front(glm::vec3(0.0f, 0.0f, -1.0f)), 
     MovementSpeed(DEFAULT_SPEED), MouseSensitivity(DEFAULT_SENSITIVITY), Zoom(DEFAULT_ZOOM) {
         Position = position;
@@ -30,6 +27,8 @@ Camera::Camera(float posX, float posY, float posZ,
     updateCameraVectors();
 }
 
+Camera::~Camera() { }
+
 glm::mat4 Camera::GetProjectionMatrix() const {
     return glm::perspective(glm::radians(Zoom), (float)Context::window_width / (float)Context::window_height, Near, Far);
 }
@@ -50,7 +49,7 @@ void Camera::ProcessKeyboard(Camera_Movement direction, float deltaTime) {
         Position += Right * velocity;
 }
 
-void Camera::ProcessMouseMovement(float xoffset, float yoffset, GLboolean constrainPitch = true) {
+void Camera::ProcessMouseMovement(float xoffset, float yoffset, GLboolean constrainPitch) {
     xoffset *= MouseSensitivity;
     yoffset *= MouseSensitivity;
     Yaw   += xoffset;

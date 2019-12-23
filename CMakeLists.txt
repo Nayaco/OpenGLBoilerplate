@@ -39,18 +39,21 @@ set(SOURCES
     "${CMAKE_CURRENT_SOURCE_DIR}/Core/Input/Input.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/Core/Utility/Random.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/Core/Utility/Noise/Noise.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/Core/Camera/Camera.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/Core/Graphics/Mesh/TerrainMesh/TerrainMesh.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/Core/Graphics/Shader/Shader.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/Core/Graphics/Texture/Texture.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/Core/Graphics/Skybox/Skybox.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/Core/ResourceManagers/ShaderManager.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/Core/ResourceManagers/TextureManager.cpp"  
     "${CMAKE_CURRENT_SOURCE_DIR}/Core/ResourceManagers/LightManager.cpp"  
+
+    "${CMAKE_CURRENT_SOURCE_DIR}/Components/Scenes/Demo/DemoScene.cpp"
     )
 set(EXE_NAME skyline)
 add_executable(${EXE_NAME} ${SOURCES})
 target_include_directories(${EXE_NAME} PRIVATE "${INC_DIR}")
 target_include_directories(${EXE_NAME} PRIVATE "${SRC_DIR}")
-target_include_directories(${EXE_NAME} PRIVATE "${TEST_DIR}")
 target_include_directories(${EXE_NAME} PRIVATE "${GLM_DIR}")
 target_include_directories(${EXE_NAME} PRIVATE "${STB_DIR}")
 target_include_directories(${EXE_NAME} PRIVATE "${GLAD_DIR}/include")
@@ -59,3 +62,21 @@ target_link_libraries(${EXE_NAME} "glad" "${CMAKE_DL_LIBS}")
 target_link_libraries(${EXE_NAME} "glfw" "${GLFW_LIBRARIES}")
 target_compile_definitions(${EXE_NAME} PRIVATE "GLFW_INCLUDE_NONE")
 set_property(TARGET ${EXE_NAME} PROPERTY CXX_STANDARD 11)
+
+
+set(GEN_SOURCES 
+    "${CMAKE_CURRENT_SOURCE_DIR}/Gen.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/Core/ExceptionHandle/ErrLog.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/Core/Utility/Random.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/Core/Utility/Noise/Noise.cpp"
+    )
+set(GEN_NAME genimap)
+add_executable(${GEN_NAME} ${GEN_SOURCES})
+target_include_directories(${GEN_NAME} PRIVATE "${INC_DIR}")
+target_include_directories(${GEN_NAME} PRIVATE "${SRC_DIR}")
+target_include_directories(${GEN_NAME} PRIVATE "${TEST_DIR}")
+target_include_directories(${GEN_NAME} PRIVATE "${GLM_DIR}")
+target_include_directories(${GEN_NAME} PRIVATE "${STB_DIR}")
+target_include_directories(${GEN_NAME} PRIVATE "${GLAD_DIR}/include")
+target_include_directories(${GEN_NAME} PRIVATE "${GLFW_DIR}/include")
+set_property(TARGET ${GEN_NAME} PROPERTY CXX_STANDARD 11)
