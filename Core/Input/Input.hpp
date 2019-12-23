@@ -2,7 +2,7 @@
 #define INPUT_HPP
 
 #include "Core/Common.hpp"
-
+#include "Core/Context/Context.hpp"
 class Input {
 public:
     struct MouseClick {
@@ -35,7 +35,13 @@ public:
     static std::function<void()> *onClick;
     static std::map<Keys, std::list<std::function<void(float, float)>* > > keyCallbacks;
 
-
+    static void bind();
+    
+    static void bindMousemoveCallback(std::function<void(float, float)>* func);
+    static void bindScrollCallback(std::function<void(float)>* func);
+    static void bindKeydownCallback(Keys key, std::function<void(float, float)>* func);
+    
+    static void resizeWindowCallback(GLFWwindow* window, int width, int height);
     static void mouseMoveCallback(GLFWwindow* window, double xpos, double ypos);
     static void scrollCallback(GLFWwindow* window, double xoffset, double yoffset);
     static void processKeyInput(GLFWwindow* window);

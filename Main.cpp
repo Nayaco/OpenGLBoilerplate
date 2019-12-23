@@ -12,6 +12,7 @@ int main(int argc, char const *argv[])
     
     logger.warning("1");GameEngine::setname();
     logger.warning("2");GameEngine::setsize();
+
     logger.warning("3");GameEngine::createWindow();
     logger.warning("4");GameEngine::bindScene(&demo_scene);
     logger.warning("5");GameEngine::initialize();

@@ -2,6 +2,7 @@
 #define DEMOSCENE_HPP
 
 #include "Core/Common.hpp"
+#include "Core/Context/Context.hpp"
 #include "Core/Scene/BaseScene.hpp"
 #include "Core/Graphics/Mesh/TerrainMesh/TerrainMesh.hpp"
 #include "Core/ResourceManagers/ShaderManager.hpp"
@@ -22,12 +23,8 @@ public:
 
     DemoScene() {
     }
-    virtual void setViewport(int scr_w, int scr_h) override {
-        screen_width = scr_w;
-        screen_height = scr_h;
-    }
     virtual void draw() const override {
-        glm::mat4 projection = glm::perspective(glm::radians(cam->Zoom), (float)screen_width / (float)screen_height, cut_near, cut_far);
+        glm::mat4 projection = glm::perspective(glm::radians(cam->Zoom), (float)Context::window_width / (float)Context::window_height, cut_near, cut_far);
         glm::mat4 view = cam->GetViewMatrix();
         
         Shader render_shader = ShaderManager::get(TER_SHADER_NAME);
@@ -44,7 +41,7 @@ public:
         texture_vector texes {TextureManager::get(TER_TEX_NAME)};
         
         mesh = new TerrainMesh(texes);
-        cam = new DemoCamera();
+        // cam = new DemoCamera();
     }
     virtual void destory() override {
         delete mesh;
