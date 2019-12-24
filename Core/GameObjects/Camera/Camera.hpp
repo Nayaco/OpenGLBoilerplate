@@ -4,8 +4,6 @@
 #include "BaseCamera.hpp"
 #include "Core/Context/Context.hpp"
 
-
-
 const float DEFAULT_YAW         = -90.0f;
 const float DEFAULT_PITCH       =  0.0f;
 const float DEFAULT_SPEED       =  10.0f;

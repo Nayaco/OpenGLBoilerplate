@@ -1,6 +1,6 @@
 #include "Skybox.hpp"
 
-Skybox::Skybox(texture_vector textures)
+Skybox::Skybox(Texture texture)
     :vertices { 
         Vertex{position: glm::vec3( 1.0f, 1.0f, 1.0f),},
         Vertex{position: glm::vec3( 1.0f, 1.0f,-1.0f),},
@@ -12,25 +12,14 @@ Skybox::Skybox(texture_vector textures)
         Vertex{position: glm::vec3(-1.0f, 1.0f, 1.0f),},
     },
     indices {
-        0, 2, 1,
-        0, 3, 2,
-        
-        4, 5, 6,
-        4, 6, 7,
-
-        2, 3, 6,
-        3, 6, 7,
-        
-        0, 1, 5,
-        0, 4, 5,
-
-        0, 3, 4,
-        3, 4, 7,
-
-        1, 2, 5,
-        2, 5, 6,
+        0, 2, 1, 0, 3, 2,
+        4, 5, 6, 4, 6, 7,
+        2, 3, 6, 3, 6, 7,
+        0, 1, 5, 0, 4, 5,
+        0, 3, 4, 3, 4, 7,
+        1, 2, 5, 2, 5, 6,
     } {
-    this->textures = textures;
+    this->texture = texture;
     sky_color = glm::vec3(1.0f);
     setupMesh();
 }
@@ -42,21 +31,11 @@ void Skybox::setColor(glm::vec3 color) {
 }
 void Skybox::draw(Shader const &shader) const {
     glDepthFunc(GL_LEQUAL);
-    if (textures.size() < 1) {
-        throw "SKYBOX: should have a cube texture";
-    } 
-    for(size_t i = 0; i < textures.size(); i++) {
-        string name;
-        unsigned int number;
-        glActiveTexture(GL_TEXTURE0 + i);
-        switch (textures[i]._type) {
-            case TEX_TYPE::CUBEMAP:     {name = "texture_cube"; number = 0; break;}
-            default: {throw "SKYBOX: texture type unusable";}
-        }
-        shader.setInt(name + "_" + std::to_string(number), i);
-        textures[i].bind();
-    }
+    texture.bind();
+
+    shader.setInt("texture_cube_0", 0);
     shader.setVec3("sky_color", sky_color);
+    
     glBindVertexArray(VAO);
     glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
     glBindVertexArray(0);

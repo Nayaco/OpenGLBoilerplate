@@ -11,9 +11,6 @@ uniform mat4 model;
 uniform mat4 view;
 uniform mat4 projection;
 
-uniform float heightfix_level;
-uniform float scale_level;
-
 uniform sampler2D texture_height_1;
 uniform sampler2D texture_normal_1;
 uniform sampler2D texture_color_1;
@@ -28,9 +25,7 @@ void main() {
     WorldPos = mix(a, b, v);
     Normal = vec4(0.0f, 0.0f, 1.0f, 0.0f);
     
-    float hi_level = texture(texture_height_1, UV).r;
-    float height = hi_level * scale_level + heightfix_level;
-    
-    Position = gl_Position = projection * view * vec4(WorldPos.x , height / 2.0f, WorldPos.z, 1.0f);
-    Color = vec4(hi_level, hi_level, hi_level, 1.0f);
+    float height = texture(texture_height_1, UV).r;
+    Position = gl_Position = projection * view  * model * vec4(WorldPos.x , height, WorldPos.z, 1.0f);
+    Color = vec4(height, height, height, 1.0f);
 }

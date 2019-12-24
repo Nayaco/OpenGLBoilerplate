@@ -5,8 +5,8 @@
 #include "Core/Config.hpp"
 #include "Core/Context/Context.hpp"
 #include "Core/Input/Input.hpp"
-#include "Core/Scene/BaseScene.hpp"
 #include "Core/Graphics/Shader/Shader.hpp"
+#include "Core/GameObjects/Scene/BaseScene.hpp"
 
 class GameEngine {
 public:

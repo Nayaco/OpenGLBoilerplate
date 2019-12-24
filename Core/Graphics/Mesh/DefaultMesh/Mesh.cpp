@@ -11,15 +11,17 @@ void Mesh::draw(Shader const &shader) const {
     unsigned int specularNr = 1;
     unsigned int normalNr   = 1;
     unsigned int heightNr   = 1;
+    unsigned int ambientNr  = 1;
     for(auto i = 0; i < textures.size(); i++) {
         string name;
         unsigned int number;
         glActiveTexture(GL_TEXTURE0 + i); 
-        switch (textures[i]._type) {
+        switch (textures[i]._texture_type) {
             case TEX_TYPE::DEFAULT:     {name = "texture_color"; number = 0; break;}
             case TEX_TYPE::DIFFUSEMAP:  {name = "texture_diffuse"; number = diffuseNr; diffuseNr++; break;}
             case TEX_TYPE::SPECULARMAP: {name = "texture_specular"; number = specularNr; specularNr++; break;}
             case TEX_TYPE::NORMALMAP:   {name = "texture_normal"; number = normalNr; normalNr++; break;}
+            case TEX_TYPE::AMBIENTMAP:  {name = "texture_ambient"; number = ambientNr; ambientNr++; break;}
             case TEX_TYPE::HEIGHTMAP:   {name = "texture_height"; number = heightNr; heightNr++; break;}
             default: {throw "MESH: texture type unusable";}              
         }

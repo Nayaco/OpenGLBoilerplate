@@ -14,40 +14,35 @@ void DemoScene::draw() const {
     glm::mat4 projection = cam->GetProjectionMatrix();
     glm::mat4 view = cam->GetViewMatrix();
     
-    Shader render_shader = ShaderManager::get(TER_SHADER_NAME);
-    Shader sky_shader = ShaderManager::get(SKY_SHADER_NAME);
+    Shader render_shader = ResourceManager::getShader(TER_SHADER_NAME);
+    Shader sky_shader = ResourceManager::getShader(SKY_SHADER_NAME);
 
     render_shader.use();
     render_shader.setMat4("projection", projection);
     render_shader.setMat4("view", view);
-    render_shader.setMat4("model", glm::mat4(1.0f));
-    mesh->draw(render_shader);
 
+    terrain->draw(render_shader);
+    
     sky_shader.use();
     view = glm::mat4(glm::mat3(view));
     sky_shader.setMat4("projection", projection);
     sky_shader.setMat4("view", view);
-    sky_shader.setMat4("model", glm::mat4(1.0f));
     skybox->draw(sky_shader);
 }
 
 void DemoScene::initialize() {
-    ShaderManager::loadVTTF(TER_SHADER_NAME, TER_SHADER);
-    ShaderManager::loadVF(SKY_SHADER_NAME, SKY_SHADER);
-    TextureManager::Load2D(TER_TEX_NAME, TER_TEX, TEX_TYPE::HEIGHTMAP);
-    TextureManager::Load2DCube(SKY_TEX_NAME, SKYMAP_NAMES);
+    ResourceManager::loadVF(TER_SHADER_NAME, TER_SHADER);
+    ResourceManager::loadVF(SKY_SHADER_NAME, SKY_SHADER);
+    ResourceManager::Load3D(SKY_TEX_NAME, SKYMAP_NAMES);
 
-    texture_vector texes {TextureManager::get(TER_TEX_NAME)};
-    texture_vector sky_texes {TextureManager::get(SKY_TEX_NAME)};
+    Texture sky_tex = ResourceManager::getTexture(SKY_TEX_NAME);
 
-    mesh = new TerrainMesh(texes);
-    skybox = new Skybox(sky_texes);
-    cam = new Camera(glm::vec3(0.0f, 20.0f, 100.0f));
+    terrain = new Terrain(0.0f, 0.0f, 50.0f, 50.0f, 10.0f, 8);
+    skybox = new Skybox(sky_tex);
+    cam = new Camera(glm::vec3(0.0f, 15.0f, 50.0f));
+    terrain->setOctave(10);
+    terrain->generate(texture_vector{ });
     
-    mesh->setHeightFixLevel(-25.0f);
-    mesh->setScaleLevel(50.0f);
-    mesh->setTessLevel(400.0f);
-
     mmove = std::bind(&DemoScene::mouseMovecallback, this, std::placeholders::_1, std::placeholders::_2);
     mscroll = std::bind(&DemoScene::scrollcallback, this, std::placeholders::_1);
     kup = std::bind(&DemoScene::keyUp, this);
@@ -63,7 +58,8 @@ void DemoScene::initialize() {
 }
 
 void DemoScene::destory() {
-    delete mesh;
+    terrain->destroy();
+    delete terrain;
     delete cam;
 }
 

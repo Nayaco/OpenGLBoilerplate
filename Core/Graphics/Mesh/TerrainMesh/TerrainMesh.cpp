@@ -1,49 +1,25 @@
 #include "TerrainMesh.hpp"
-TerrainMesh::TerrainMesh(texture_vector textures, float _width, float _height) 
-    :vertices { 
-        Vertex{position: glm::vec3(-_width / 2, 0.0f, _height / 2),},
-        Vertex{position: glm::vec3(-_width / 2, 0.0f,-_height / 2),},
-        Vertex{position: glm::vec3( _width / 2, 0.0f,-_height / 2),},
-        Vertex{position: glm::vec3( _width / 2, 0.0f, _height / 2),},
-    },
-    indices {
-        0, 1, 2, 3,
-    } {
-    mesh_width = _width;
-    mesh_height = _height;
+
+TerrainMesh::TerrainMesh(texture_vector textures, imap2d &heightmap, float _width, float _height) {
+    mesh_width = _width - 1;
+    mesh_height = _height - 1;
     
-    tess_level = default_tess_level;
-    heightfix_level = default_height_fix_level;
-    scale_level = default_scale_level;
+    genVertexes(heightmap);
+
     this->textures = textures;
     setupMesh(); 
 }
 
 TerrainMesh::~TerrainMesh() {}
 
-void TerrainMesh::setHeightFixLevel(float fixlevel) {
-    heightfix_level = fixlevel;
-}
-
-void TerrainMesh::setTessLevel(float tesslevel) {
-    tess_level = tesslevel;
-}
-
-void TerrainMesh::setScaleLevel(float scalelevel) {
-    scale_level = scalelevel;
-}
-
 void TerrainMesh::draw(Shader const &shader) const {
-    if (shader.hasTes == false) {
-        throw "TERMESH: tess shaders required";
-    }
     unsigned int normalNr   = 1;
     unsigned int heightNr   = 1;
     for(size_t i = 0; i < textures.size(); i++) {
         string name;
         unsigned int number;
         glActiveTexture(GL_TEXTURE0 + i);
-        switch (textures[i]._type) {
+        switch (textures[i]._texture_type) {
             case TEX_TYPE::DEFAULT:     {name = "texture_color"; number = 0; break;}
             case TEX_TYPE::NORMALMAP:   {name = "texture_normal"; number = normalNr; normalNr++; break;}
             case TEX_TYPE::HEIGHTMAP:   {name = "texture_height"; number = heightNr; heightNr++; break;}
@@ -52,16 +28,12 @@ void TerrainMesh::draw(Shader const &shader) const {
         shader.setInt(name + "_" + std::to_string(number), i);
         textures[i].bind();
     }
-    shader.setFloat("tess_level", tess_level);
-    shader.setFloat("heightfix_level", heightfix_level);
-    shader.setFloat("scale_level", scale_level);
-    
     glBindVertexArray(VAO);
-    glPatchParameteri(GL_PATCH_VERTICES, indices.size());
-    glDrawElements(GL_PATCHES, indices.size(), GL_UNSIGNED_INT, 0);
+    glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
     glBindVertexArray(0);
     glActiveTexture(GL_TEXTURE0);
 }
+
 void TerrainMesh::setupMesh() {
     glGenVertexArrays(1, &VAO);
     glGenBuffers(1, &VBO);
@@ -85,4 +57,28 @@ void TerrainMesh::setupMesh() {
     glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, bitangent));
     
     glBindVertexArray(0);
+}
+
+void TerrainMesh::genVertexes(imap2d &heightmap) {
+    float mesh_batch_width = 1.0f / (float)mesh_width;
+    float mesh_batch_height = 1.0f / (float)mesh_height;
+    
+    for (auto i = 0; i < mesh_width + 1; ++i) {
+        for (auto j = 0; j < mesh_height + 1; ++j) {
+            float u = mesh_batch_width * i;
+            float v = mesh_batch_height * j;
+            vertices.push_back(Vertex{position: glm::vec3(u, heightmap[i][j], v),});
+        }
+    }
+    for (auto i = 0; i < mesh_width; ++i) {
+        for (auto j = 0; j < mesh_height; ++j) {
+            indices.push_back(i * (mesh_height + 1) + j);
+            indices.push_back(i * (mesh_height + 1) + j + 1);
+            indices.push_back((i + 1) * (mesh_height + 1) + j + 1);
+
+            indices.push_back(i * (mesh_height + 1) + j);
+            indices.push_back((i + 1) * (mesh_height + 1) + j);
+            indices.push_back((i + 1) * (mesh_height + 1) + j + 1);
+        }
+    }
 }

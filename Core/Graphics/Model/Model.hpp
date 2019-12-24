@@ -7,7 +7,8 @@
 
 #include "BaseModel.hpp"
 
-unsigned int TextureFromFile(const char *path, const string &directory, bool gamma = false);
+#include <stb_image.h>
+
 
 class Model : public BaseModel {
 public:
@@ -22,7 +23,9 @@ private:
     void loadModel(string const &path);
     void processNode(aiNode *node, const aiScene *scene);
     Mesh processMesh(aiMesh *mesh, const aiScene *scene);
-    texture_vector Model::loadMaterialTextures(aiMaterial *mat, aiTextureType ai_tex_type, TEX_TYPE tex_type);
+    texture_vector Model::loadMaterialTextures(aiMaterial *mat, aiTextureType ai_tex_type);
+
+    static Texture TextureFromFile(string const &path, string const &directory, bool gamma = false);
 };
 
 using default_model_vector = vector<Model>;

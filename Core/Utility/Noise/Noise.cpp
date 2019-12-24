@@ -1,5 +1,5 @@
 #include "Noise.hpp"
-
+#include "Core/ExceptionHandle/ErrLog.hpp"
 namespace noise {
 
 // [[0.003765   0.015019   0.02379159 0.015019   0.003765  ]
@@ -8,22 +8,23 @@ namespace noise {
 //  [0.015019   0.05991246 0.0949073  0.05991246 0.015019  ]
 //  [0.003765   0.015019   0.02379159 0.015019   0.003765  ]]
 
-// imap2d blur(imap2d const& origin, imap2d const& kernel) {
-//     imap2d _res = origin;
-//     for (auto i = 0; i < origin.size(); i++) {
-//         for(auto j = 0; j < origin[0].size(); j++) {
-//             _res = 
-//             for(auto ii = 0; ii < kernel.size(); ii++) {
-//                 for(auto jj = 0; jj < kernel[0].size(); jj++) {
-                    
-//                 }
-//             }
-//         }
-//     }
-// }
 float lerp(float x0, float x1, float alpha) {
     // return x0 * (1 - alpha) + x1 * alpha;
     return glm::mix(x0, x1, alpha);
+}
+
+void seaLevelize(imap2d &imap) {
+    float minH = 1.0f;
+    for (auto i = 0; i < imap.size(); ++i) {
+        for (auto j = 0; j < imap[0].size(); ++j) {
+            minH = imap[i][j] < minH ? imap[i][j] : minH; 
+        }        
+    } 
+    for (auto i = 0; i < imap.size(); ++i) {
+        for (auto j = 0; j < imap[0].size(); ++j) {
+            imap[i][j] -= minH; 
+        }
+    }
 }
 
 imap2d whiteNoise(int width, int height) {
@@ -33,7 +34,7 @@ imap2d whiteNoise(int width, int height) {
 imap2d smoothNoise(
     imap2d const& white_noise, int octave, int width, int height) {
     imap2d _res(width);
-    int sample_period = (int)powf32(2, octave);
+    int sample_period = (int)powf(2, octave);
     float sample_frequency = 1.0f / sample_period;
     for (auto i = 0; i < width; ++i) {
         int sample_l = (i / sample_period) * sample_period;
@@ -64,52 +65,26 @@ imap2d perlNoise(imap2d const& white_noise, int octave_count, int width, int hei
     float amplitude = 1.0f;
     float total_amp = 0.0f;
     float total_mag = 0.0f;
+    
     for (auto octave = octave_count - 1; octave >= 0; --octave) {
         amplitude *= _persistance;
         total_amp += amplitude;
         for (auto i = 0; i < width; ++i) {
             perl_noise[i].reserve(height);
             for (auto j = 0; j < height; ++j) {
+                if (octave == octave_count - 1) perl_noise[i].push_back(0.0f);
                 perl_noise[i][j] += smooth_noises[octave][i][j] * amplitude;
             }
-            
         }
     }
-    // for (auto i = 0; i < width; ++i) {
-    //     for (auto j = 0; j < height; ++j) {
-    //         total_mag += perl_noise[i][j];
-    //     }
-    // }
-    // total_mag /= width * height;
-    // // imap1d edge_w(width);
-    // // imap1d edge_h(height);
-    // // for (auto i = 1; i < width - 1; ++i) {
-    // //     edge_w[i] = (perl_noise[i][0] + perl_noise[i - 1][0] + perl_noise[i + 1][0]);
-    // // }
-    // for (auto i = 0; i < width - 1; ++i) {
-    //     perl_noise[i][0] = total_mag;//edge_w[i] / 3.0f;
-    //     // edge_w[i] = (perl_noise[i][height - 1] + perl_noise[i - 1][height - 1] + perl_noise[i + 1][height - 1]);
-    // }
-    // for (auto i = 0; i < width - 1; ++i) {
-    //     perl_noise[i][height - 1] = total_mag;//edge_w[i] / 3.0f;
-    // }
-
-    // // for (auto i = 1; i < height - 1; ++i) {
-    // //     edge_h[i] = (perl_noise[0][i] + perl_noise[0][i - 1] + perl_noise[0][i + 1]);
-    // // }
-    // for (auto i = 0; i < height - 1; ++i) {
-    //     perl_noise[0][i] = total_mag;//edge_h[i] / 3.0f;
-    //     // edge_h[i] = (perl_noise[width - 1][i] + perl_noise[width - 1][i - 1] + perl_noise[width - 1][i + 1]);
-    // }
-    // for (auto i = 0; i < height - 1; ++i) {
-    //     perl_noise[width - 1][i] = total_mag;//edge_h[i] / 3.0f;
-    // }
     
     for (auto i = 0; i < width; ++i) {
         for(auto j = 0; j < height; ++j) {
             perl_noise[i][j] /= total_amp;
         }
     }
+    seaLevelize(perl_noise);
+
     return perl_noise;
 }
 }

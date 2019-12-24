@@ -6,7 +6,7 @@ Model::Model(string const &path, bool gamma): gammaCorrection(gamma) {
 
 void Model::Draw(Shader const &shader) const {
     for(auto &mesh: meshes) {
-        mesh.Draw(shader);
+        mesh.draw(shader);
     }
 }
 
@@ -65,26 +65,26 @@ Mesh Model::processMesh(aiMesh *mesh, const aiScene *scene) {
     aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];    
 
     texture_vector diffuseMaps = 
-        loadMaterialTextures(material, aiTextureType_DIFFUSE, TEX_TYPE::DIFFUSEMAP);
+        loadMaterialTextures(material, aiTextureType_DIFFUSE);
     textures.insert(textures.end(), diffuseMaps.begin(), diffuseMaps.end());
     texture_vector specularMaps = 
-        loadMaterialTextures(material, aiTextureType_SPECULAR, TEX_TYPE::SPECULARMAP);
+        loadMaterialTextures(material, aiTextureType_SPECULAR);
     textures.insert(textures.end(), specularMaps.begin(), specularMaps.end());
     texture_vector normalMaps = 
-        loadMaterialTextures(material, aiTextureType_HEIGHT, TEX_TYPE::NORMALMAP);
+        loadMaterialTextures(material, aiTextureType_HEIGHT);
     textures.insert(textures.end(), normalMaps.begin(), normalMaps.end());
     texture_vector heightMaps = 
-        loadMaterialTextures(material, aiTextureType_AMBIENT, TEX_TYPE::HEIGHTMAP);
+        loadMaterialTextures(material, aiTextureType_AMBIENT);
     textures.insert(textures.end(), heightMaps.begin(), heightMaps.end());
     
     return Mesh(vertices, indices, textures);
 }
 
-texture_vector Model::loadMaterialTextures(aiMaterial *mat, aiTextureType ai_tex_type, TEX_TYPE tex_type) {
+texture_vector Model::loadMaterialTextures(aiMaterial *mat, aiTextureType ai_tex_type) {
     texture_vector textures { };
     for(auto i = 0; i < mat->GetTextureCount(ai_tex_type); i++) {
         aiString str;
-        Texture texture { };
+        Texture texture;
         mat->GetTexture(ai_tex_type, i, &str);
         for(auto j = 0; j < textures_loaded.size(); j++) {
             if(std::strcmp(textures_loaded[j]._path.c_str(), str.C_Str()) == 0) {
@@ -92,10 +92,40 @@ texture_vector Model::loadMaterialTextures(aiMaterial *mat, aiTextureType ai_tex
                 goto skip_texture;
             }
         }
-        texture.LoadFromFile(str.C_Str(), this->directory, tex_type, false);
+        switch (ai_tex_type) {
+            case aiTextureType_DIFFUSE: { texture._texture_type = TEX_TYPE::DIFFUSEMAP; break; }
+            case aiTextureType_SPECULAR:{ texture._texture_type = TEX_TYPE::SPECULARMAP;break; }
+            case aiTextureType_HEIGHT:  { texture._texture_type = TEX_TYPE::HEIGHTMAP;  break; }
+            case aiTextureType_AMBIENT: { texture._texture_type = TEX_TYPE::AMBIENTMAP; break; }
+        }
+        texture = TextureFromFile(string(str.C_Str()), this->directory , false);
         textures.push_back(texture);
         textures_loaded.push_back(texture); 
 skip_texture:
     }
     return textures;
+}
+
+Texture Model::TextureFromFile(string const &path, string const &directory, bool gamma) {
+    Texture texture;
+    int width, height, nrChannels;
+    string filename = directory + "/" + path;
+    unsigned char *data = stbi_load(filename.c_str(), &width, &height, &nrChannels, 0);
+    if (data) {
+        GLenum format;
+        switch (nrChannels) {
+            case 1: {format = GL_RED; break;}
+            case 3: {format = GL_RGB; break;}
+            case 4: {format = GL_RGBA; break;}
+            default: throw "TEXTURE: unknow color space";
+        }
+        texture._format = format;
+        texture._path   = path;
+        texture.LoadTexture2D(width, height, data);
+        stbi_image_free(data);
+    }
+    else {
+        stbi_image_free(data);
+        throw "TEXTURE: file "+ filename + " not exists";
+    }
 }

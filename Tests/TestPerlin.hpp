@@ -32,13 +32,13 @@ static void ppmWrite(const char* filename, unsigned char* data, int w, int h) {
 }
 using std::cout;
 void perl_image() {
-    size_t _size = 200;
+    size_t _size = 50;
     unsigned char buff[_size * _size];
     imap2d white_map = noise::whiteNoise(_size, _size);
     for (auto i = 0; i < _size; ++i) 
         for(auto j = 0; j < _size; ++j) buff[i * _size + j] = round(white_map[i][j] * 255);
-    // ppmWrite("Resources/white.ppm", buff, _size, _size);
-    imap2d perl_map = noise::perlNoise(white_map, 15, _size, _size);
+    ppmWrite("Resources/white.ppm", buff, _size, _size);
+    imap2d perl_map = noise::perlNoise(white_map, 12, _size, _size);
     for (auto i = 0; i < _size; ++i) 
         for(auto j = 0; j < _size; ++j) buff[i * _size + j] = round(perl_map[i][j] * 255);
     ppmWrite("Resources/perl.ppm", buff, _size, _size);    

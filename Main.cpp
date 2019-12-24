@@ -16,8 +16,8 @@ int main(int argc, char const *argv[])
         logger.warning("4");GameEngine::bindScene(&demo_scene);
         logger.warning("5");GameEngine::initialize();
         logger.warning("6");GameEngine::start_render();
-    } catch (string e) {
-        logger.error(e);
+    } catch (char const *e) {
+        logger.error(string(e));
     }
     return 0;
 }

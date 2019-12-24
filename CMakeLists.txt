@@ -34,19 +34,24 @@ set(GLM_DIR "${DEP_DIR}/glm")
 set(SOURCES 
     "${CMAKE_CURRENT_SOURCE_DIR}/Main.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/Core/ExceptionHandle/ErrLog.cpp"
+    
     "${CMAKE_CURRENT_SOURCE_DIR}/Core/GameEngine.cpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/Core/Context/Context.cpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/Core/Input/Input.cpp"
+    
     "${CMAKE_CURRENT_SOURCE_DIR}/Core/Utility/Random.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/Core/Utility/Noise/Noise.cpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/Core/Camera/Camera.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/Core/Graphics/Mesh/TerrainMesh/TerrainMesh.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/Core/Graphics/Shader/Shader.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/Core/Graphics/Texture/Texture.cpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/Core/Graphics/Skybox/Skybox.cpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/Core/ResourceManagers/ShaderManager.cpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/Core/ResourceManagers/TextureManager.cpp"  
-    "${CMAKE_CURRENT_SOURCE_DIR}/Core/ResourceManagers/LightManager.cpp"  
+    
+    "${CMAKE_CURRENT_SOURCE_DIR}/Core/Context/Context.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/Core/Input/Input.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/Core/ResourceManager/ResourceManager.cpp"
+    
+    "${CMAKE_CURRENT_SOURCE_DIR}/Core/GameObjects/Camera/Camera.cpp"
+    
+    "${CMAKE_CURRENT_SOURCE_DIR}/Core/GameObjects/Skybox/Skybox.cpp"
+    
+    "${CMAKE_CURRENT_SOURCE_DIR}/Core/GameObjects/Terrain/Terrain.cpp"
 
     "${CMAKE_CURRENT_SOURCE_DIR}/Components/Scenes/Demo/DemoScene.cpp"
     )

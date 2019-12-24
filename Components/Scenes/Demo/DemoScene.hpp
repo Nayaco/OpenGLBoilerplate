@@ -3,18 +3,19 @@
 
 #include "Core/Common.hpp"
 #include "Core/Context/Context.hpp"
-#include "Core/Scene/BaseScene.hpp"
-#include "Core/Camera/Camera.hpp"
+#include "Core/GameObjects/Scene/BaseScene.hpp"
+#include "Core/GameObjects/Camera/Camera.hpp"
 #include "Core/Graphics/Mesh/TerrainMesh/TerrainMesh.hpp"
-#include "Core/Graphics/Skybox/Skybox.hpp"
-#include "Core/ResourceManagers/ShaderManager.hpp"
-#include "Core/ResourceManagers/TextureManager.hpp"
+#include "Core/ResourceManager/ResourceManager.hpp"
 #include "Core/Input/Input.hpp"
+#include "Core/GameObjects/Skybox/Skybox.hpp"
+#include "Core/GameObjects/Terrain/Terrain.hpp"
 
 #include "DemoSceneConfig.hpp"
 #include "Core/ExceptionHandle/ErrLog.hpp"
 class DemoScene : public BaseScene {
 public:
+    Terrain *terrain;
     TerrainMesh *mesh;
     Skybox *skybox;
     Camera *cam;

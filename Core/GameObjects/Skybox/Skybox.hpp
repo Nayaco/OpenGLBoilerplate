@@ -10,11 +10,11 @@ class Skybox : public BaseMesh {
 public:
     vertex_vector vertices;
     indice_vector indices;
-    texture_vector textures;
+    Texture       texture;
     unsigned int VAO;
     glm::vec3 sky_color;
     
-    Skybox(texture_vector textures);
+    Skybox(Texture texture);
     virtual ~Skybox();
     virtual void setColor(glm::vec3 color);
     virtual void draw(Shader const &shader) const override;
