@@ -2,12 +2,12 @@
 
 ALight::ALight(int _lightID): lightID(_lightID) { }
 
-void ALight::light(Shader const& shader) const {
-    shader.setVec3("alight_dir_" + std::to_string(lightID), lightDir);
+void ALight::use(Shader const& shader) const {
+    shader.setVec3("alight_" + std::to_string(lightID) + ".dir", lightDir);
     if (lightOn) {
-        shader.setVec3("alight_color_" + std::to_string(lightID), lightColor);
+        shader.setVec3("alight_" + std::to_string(lightID) + ".color", lightColor);
     } else {
-        shader.setVec3("alight_color_" + std::to_string(lightID), glm::vec3(0.0f, 0.0f, 0.0f));
+        shader.setVec3("alight_" + std::to_string(lightID) + ".color", glm::vec3(0.0f, 0.0f, 0.0f));
     }
 }
 

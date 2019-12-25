@@ -7,6 +7,7 @@
 int main(int argc, char const *argv[])
 {
     try {
+    try {
         DemoScene demo_scene;
         
         logger.warning("1");GameEngine::setname();
@@ -18,6 +19,9 @@ int main(int argc, char const *argv[])
         logger.warning("6");GameEngine::start_render();
     } catch (char const *e) {
         logger.error(string(e));
+    }
+    } catch (string e) {
+        logger.error(e);
     }
     return 0;
 }

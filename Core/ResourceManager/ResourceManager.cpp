@@ -2,6 +2,10 @@
 
 map<string, Shader>  ResourceManager::shaders  = { };
 map<string, Texture> ResourceManager::textures = { };
+map<string, BaseLight*> ResourceManager::lights = { };
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// SHADER
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 void ResourceManager::loadVF(string const& shader_name, string const& shader_path) {
     string vert_shader = shader_path + ".vert.glsl";
@@ -46,7 +50,9 @@ Shader ResourceManager::getShader(string const&shader_name) {
     return _shader->second;
 }
 
-
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// TEXTURE
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 void ResourceManager::Load2D(string const &tex_name, string const &tex_path) {
     Texture texture;
@@ -151,4 +157,29 @@ Texture ResourceManager::getTexture(string const&tex_name) {
         throw "Resource manager: texture not found";
     }
     return _tex->second;
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// LIGHT
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+void ResourceManager::GenPLight(string const &light_name, int light_id, glm::vec3 const &light_pos, glm::vec3 const &light_color) {
+    PLight* plight = new PLight(light_id);
+    plight->setUpPLight(light_pos, light_color);
+    lights.emplace(std::make_pair(light_name, plight));
+}
+
+void ResourceManager::GenALisht(string const &light_name, int light_id, glm::vec3 const &light_dir, glm::vec3 const &light_color) {
+    ALight* alight = new ALight(light_id);
+    alight->setUpALight(light_dir, light_color);
+    lights.emplace(std::make_pair(light_name, alight));
+}
+
+BaseLight* ResourceManager::getLight(string const &light_name) {
+    auto _light = lights.find(light_name);
+    if (_light == lights.end()) {
+        throw "Resource manager: light not found";
+    }
+    return _light->second;
 }

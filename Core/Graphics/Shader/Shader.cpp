@@ -55,7 +55,7 @@ Shader::Shader(const char* vertexPath, const char* geoPath, const char* fragment
         stringstream vsshaderStream, fsshaderStream, gShaderStream;
         vsshaderStream << vShaderFile.rdbuf(); // 1
         fsshaderStream << fShaderFile.rdbuf(); // 2
-        gShaderStream << gShaderFile.rdbuf();
+        gShaderStream << gShaderFile.rdbuf();  // 3
         vShaderFile.close(); fShaderFile.close(); gShaderFile.close();
         vertexCode = vsshaderStream.str();
         fragmentCode = fsshaderStream.str();

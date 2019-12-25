@@ -2,6 +2,7 @@
 #define BASEMESH_HPP
 
 #include "Core/Common.hpp"
+#include "Core/Graphics/Drawable.hpp"
 #include "Core/Graphics/Shader/Shader.hpp"
 #include "Core/Graphics/Texture/Texture.hpp"
 struct Vertex {
@@ -12,7 +13,7 @@ struct Vertex {
     glm::vec3 bitangent;
 };
 using vertex_vector = vector<Vertex>;
-class BaseMesh {
+class BaseMesh : public Drawable {
 public:
     virtual void draw(Shader const &shader) const = 0;
 private:

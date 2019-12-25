@@ -2,11 +2,13 @@
 #define TERRIAN_HPP
 
 #include "Core/Common.hpp"
+#include "Core/Utility/Random.hpp"
 #include "Core/Utility/Noise/Noise.hpp"
 #include "Core/Context/Context.hpp"
 #include "Core/Graphics/Shader/Shader.hpp"
 #include "Core/Graphics/Texture/Texture.hpp"
 #include "Core/Graphics/Mesh/TerrainMesh/TerrainMesh.hpp"
+
 
 class Terrain {
 public:
@@ -29,10 +31,17 @@ public:
     virtual void draw(Shader const &shader) const;
     virtual void setOctave(const int octave);
     virtual void setEdge(PLACEMENT exist_placement, Terrain* exist_terrain);
-    virtual void generate(texture_vector const &other_textures);
-
+    virtual void generate(texture_vector const &other_textures, float tess_level);
+    
     // virtual void staticGenerate(imap2d const &heightmap);
-    virtual void destroy(); 
+    virtual void destroy();
+
+private:
+    void processPOSX();
+    void processNEGX();
+    void processPOSZ();
+    void processNEGZ();
+    
 };
 
 #endif

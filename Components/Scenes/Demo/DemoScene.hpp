@@ -8,6 +8,7 @@
 #include "Core/Graphics/Mesh/TerrainMesh/TerrainMesh.hpp"
 #include "Core/ResourceManager/ResourceManager.hpp"
 #include "Core/Input/Input.hpp"
+#include "Core/GameObjects/Skymap/Skymap.hpp"
 #include "Core/GameObjects/Skybox/Skybox.hpp"
 #include "Core/GameObjects/Terrain/Terrain.hpp"
 
@@ -16,9 +17,15 @@
 class DemoScene : public BaseScene {
 public:
     Terrain *terrain;
+    Terrain *terrain2;
+    Terrain *terrain3;
+    Terrain *terrain4;
     TerrainMesh *mesh;
+
+    Skymap *skymap;
     Skybox *skybox;
     Camera *cam;
+    
     int screen_width;
     int screen_height;
     float cut_near = 0.1f;

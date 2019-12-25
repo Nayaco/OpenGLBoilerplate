@@ -12,10 +12,10 @@ public:
 
     PLight(int _lightID);
 
-    virtual void light(Shader const& shader) const override;
+    virtual void use(Shader const& shader) const override;
     virtual void setUpPLight(glm::vec3 , glm::vec3 );
-    virtual void enable();
-    virtual void disable();
+    virtual void enable() override;
+    virtual void disable() override;
     
 };
 

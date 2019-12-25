@@ -18,7 +18,7 @@ public:
     bool gammaCorrection;
     
     Model(string const &path, bool gamma = false);
-    virtual void Draw(Shader const &shader) const override;
+    virtual void draw(Shader const &shader) const override;
 private:
     void loadModel(string const &path);
     void processNode(aiNode *node, const aiScene *scene);

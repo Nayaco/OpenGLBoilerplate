@@ -7,9 +7,14 @@ Texture::Texture()
 ,_warps(GL_REPEAT)
 ,_warpt(GL_REPEAT)
 ,_filter_min(GL_LINEAR_MIPMAP_LINEAR)
-,_filter_max(GL_LINEAR_MIPMAP_LINEAR) { }
+,_filter_max(GL_LINEAR_MIPMAP_LINEAR)
+,_texture_type(TEX_TYPE::DEFAULT) { }
 
 const Texture& Texture::bind() const {
+    if(_texture_type == TEX_TYPE::CUBEMAP) {
+        glBindTexture(GL_TEXTURE_CUBE_MAP, _id);
+        return *this;
+    }
     glBindTexture(GL_TEXTURE_2D, _id);
     return *this;
 }
@@ -55,4 +60,21 @@ void Texture::LoadTexture3D(unsigned int width, unsigned int height, unsigned ch
 
 void Texture::GenShadowMap(unsigned int width, unsigned int height) {
     
+}
+
+void Texture::GenPostProcessMap(unsigned int width, unsigned int height) {
+    this->_width = width; this->_height = height;
+    this->_format =  GL_RGB;
+    this->_type   =  GL_RGB;
+    this->_filter_max = this->_filter_min = GL_LINEAR;
+    this->_texture_type = TEX_TYPE::COLORBUF;
+    this->_warpr = this->_warps = this->_warpt = GL_CLAMP_TO_EDGE;
+    
+    glGenTextures(1, &_id);
+    glBindTexture(GL_TEXTURE_2D, _id);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, this->_width, this->_height, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 }

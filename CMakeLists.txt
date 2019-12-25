@@ -42,15 +42,16 @@ set(SOURCES
     "${CMAKE_CURRENT_SOURCE_DIR}/Core/Graphics/Mesh/TerrainMesh/TerrainMesh.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/Core/Graphics/Shader/Shader.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/Core/Graphics/Texture/Texture.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/Core/Graphics/Light/ALight.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/Core/Graphics/Light/PLight.cpp"
     
     "${CMAKE_CURRENT_SOURCE_DIR}/Core/Context/Context.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/Core/Input/Input.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/Core/ResourceManager/ResourceManager.cpp"
     
+    "${CMAKE_CURRENT_SOURCE_DIR}/Core/GameObjects/Skymap/Skymap.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/Core/GameObjects/Camera/Camera.cpp"
-    
     "${CMAKE_CURRENT_SOURCE_DIR}/Core/GameObjects/Skybox/Skybox.cpp"
-    
     "${CMAKE_CURRENT_SOURCE_DIR}/Core/GameObjects/Terrain/Terrain.cpp"
 
     "${CMAKE_CURRENT_SOURCE_DIR}/Components/Scenes/Demo/DemoScene.cpp"

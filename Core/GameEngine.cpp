@@ -35,9 +35,10 @@ void GameEngine::start_render() {
     while (!glfwWindowShouldClose(Context::getWindow())) {
         Context::update();
         Input::processKeyInput();
-        glClearColor(0.1f, 0.1f, 0.1f, 0.0f);
+        glClearColor(1.0f, 1.0f, 1.0f, 0.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
+        glEnable(GL_CULL_FACE);
+        
         scene->draw();
 
         glfwSwapBuffers(Context::getWindow());

@@ -4,7 +4,7 @@ Model::Model(string const &path, bool gamma): gammaCorrection(gamma) {
     loadModel(path);
 }
 
-void Model::Draw(Shader const &shader) const {
+void Model::draw(Shader const &shader) const {
     for(auto &mesh: meshes) {
         mesh.draw(shader);
     }

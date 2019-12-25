@@ -45,6 +45,7 @@ public:
     virtual ~Camera(); 
     virtual glm::mat4 GetViewMatrix() const override;
     virtual glm::mat4 GetProjectionMatrix() const override;
+    virtual glm::vec3 GetViewPosition() const override;
 
     void ProcessKeyboard(Camera_Movement direction, float deltaTime);
     void ProcessMouseMovement(float xoffset, float yoffset, GLboolean constrainPitch = true);

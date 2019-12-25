@@ -1,12 +1,12 @@
 #include "TerrainMesh.hpp"
 
-TerrainMesh::TerrainMesh(texture_vector textures, imap2d &heightmap, float _width, float _height) {
-    mesh_width = _width - 1;
-    mesh_height = _height - 1;
+TerrainMesh::TerrainMesh(texture_vector textures, imap2d &heightmap, float _width, float _height, float _tess_level) {
+    mesh_width = _width;
+    mesh_height = _height;
+    this->tess_level = _tess_level;
+    this->textures = textures;
     
     genVertexes(heightmap);
-
-    this->textures = textures;
     setupMesh(); 
 }
 
@@ -60,25 +60,42 @@ void TerrainMesh::setupMesh() {
 }
 
 void TerrainMesh::genVertexes(imap2d &heightmap) {
-    float mesh_batch_width = 1.0f / (float)mesh_width;
-    float mesh_batch_height = 1.0f / (float)mesh_height;
-    
-    for (auto i = 0; i < mesh_width + 1; ++i) {
-        for (auto j = 0; j < mesh_height + 1; ++j) {
-            float u = mesh_batch_width * i;
-            float v = mesh_batch_height * j;
-            vertices.push_back(Vertex{position: glm::vec3(u, heightmap[i][j], v),});
+    float mesh_batch_width = 1.0f / (float)mesh_width / tess_level;
+    float mesh_batch_height = 1.0f / (float)mesh_height / tess_level;
+    for (auto i = 0; i < tess_level * mesh_width + 1; ++i) {
+        for (auto j = 0; j < tess_level * mesh_height + 1; ++j) {
+            float U = mesh_batch_width * i;
+            float V = mesh_batch_height * j;
+            float u = mesh_batch_width * i * mesh_width;
+            float v = mesh_batch_height * j * mesh_height;
+            float lf = floor(u);
+            float rt = ceil(u);
+            float dn = floor(v);
+            float up = ceil(v);
+            
+            if (lf > mesh_width - 1) lf -= 1.0f;
+            if (rt > mesh_width - 1) rt -= 1.0f;
+            if (dn > mesh_height - 1) dn -= 1.0f;
+            if (up > mesh_height - 1) up -= 1.0f;
+            
+            float uplerp = noise::lerp(heightmap[lf][up] , heightmap[rt][up], u - lf);
+            float dnlerp = noise::lerp(heightmap[lf][dn] , heightmap[rt][dn], u - lf);
+            float reshi = noise::lerp(dnlerp, uplerp, v - dn);
+
+            vertices.push_back(Vertex{position:glm::vec3(U, reshi,V)});
         }
     }
-    for (auto i = 0; i < mesh_width; ++i) {
-        for (auto j = 0; j < mesh_height; ++j) {
-            indices.push_back(i * (mesh_height + 1) + j);
-            indices.push_back(i * (mesh_height + 1) + j + 1);
-            indices.push_back((i + 1) * (mesh_height + 1) + j + 1);
-
-            indices.push_back(i * (mesh_height + 1) + j);
-            indices.push_back((i + 1) * (mesh_height + 1) + j);
-            indices.push_back((i + 1) * (mesh_height + 1) + j + 1);
+    
+    
+    for (auto i = 0; i < tess_level * mesh_width; ++i) {
+        for (auto j = 0; j < tess_level * mesh_height; ++j) {
+            indices.push_back(i * (tess_level * mesh_height + 1) + j);
+            indices.push_back(i * (tess_level * mesh_height + 1) + j + 1);
+            indices.push_back((i + 1) * (tess_level * mesh_height + 1) + j + 1);
+            
+            indices.push_back(i * (tess_level * mesh_height + 1) + j);
+            indices.push_back((i + 1) * (tess_level * mesh_height + 1) + j + 1);
+            indices.push_back((i + 1) * (tess_level * mesh_height + 1) + j);
         }
     }
 }

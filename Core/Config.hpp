@@ -7,6 +7,6 @@
 #define GAME_GL_MAJOR_VERSION 4
 #define GAME_GL_MINOR_VERSION 4
 
-#define GAME_GL_SAMPLE_RATE   8
+#define GAME_GL_SAMPLE_RATE   4
 
 #endif

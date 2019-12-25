@@ -12,6 +12,8 @@ enum class TEX_TYPE: unsigned int {
     NORMALMAP  = 12,
     HEIGHTMAP  = 13,
     AMBIENTMAP = 14,
+
+    COLORBUF   = 20,
 };
 
 struct Texture {
@@ -41,6 +43,8 @@ struct Texture {
         unsigned int width, unsigned int height, unsigned char **data);
 
     void GenShadowMap(unsigned int width, unsigned int height);
+
+    void GenPostProcessMap(unsigned int width, unsigned int height);
 };
 
 using texture_vector = vector<Texture>;
