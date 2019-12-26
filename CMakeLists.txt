@@ -70,19 +70,19 @@ target_compile_definitions(${EXE_NAME} PRIVATE "GLFW_INCLUDE_NONE")
 set_property(TARGET ${EXE_NAME} PROPERTY CXX_STANDARD 11)
 
 
-set(GEN_SOURCES 
-    "${CMAKE_CURRENT_SOURCE_DIR}/Gen.cpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/Core/ExceptionHandle/ErrLog.cpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/Core/Utility/Random.cpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/Core/Utility/Noise/Noise.cpp"
-    )
-set(GEN_NAME genimap)
-add_executable(${GEN_NAME} ${GEN_SOURCES})
-target_include_directories(${GEN_NAME} PRIVATE "${INC_DIR}")
-target_include_directories(${GEN_NAME} PRIVATE "${SRC_DIR}")
-target_include_directories(${GEN_NAME} PRIVATE "${TEST_DIR}")
-target_include_directories(${GEN_NAME} PRIVATE "${GLM_DIR}")
-target_include_directories(${GEN_NAME} PRIVATE "${STB_DIR}")
-target_include_directories(${GEN_NAME} PRIVATE "${GLAD_DIR}/include")
-target_include_directories(${GEN_NAME} PRIVATE "${GLFW_DIR}/include")
-set_property(TARGET ${GEN_NAME} PROPERTY CXX_STANDARD 11)
+# set(GEN_SOURCES 
+#     "${CMAKE_CURRENT_SOURCE_DIR}/Gen.cpp"
+#     "${CMAKE_CURRENT_SOURCE_DIR}/Core/ExceptionHandle/ErrLog.cpp"
+#     "${CMAKE_CURRENT_SOURCE_DIR}/Core/Utility/Random.cpp"
+#     "${CMAKE_CURRENT_SOURCE_DIR}/Core/Utility/Noise/Noise.cpp"
+#     )
+# set(GEN_NAME genimap)
+# add_executable(${GEN_NAME} ${GEN_SOURCES})
+# target_include_directories(${GEN_NAME} PRIVATE "${INC_DIR}")
+# target_include_directories(${GEN_NAME} PRIVATE "${SRC_DIR}")
+# target_include_directories(${GEN_NAME} PRIVATE "${TEST_DIR}")
+# target_include_directories(${GEN_NAME} PRIVATE "${GLM_DIR}")
+# target_include_directories(${GEN_NAME} PRIVATE "${STB_DIR}")
+# target_include_directories(${GEN_NAME} PRIVATE "${GLAD_DIR}/include")
+# target_include_directories(${GEN_NAME} PRIVATE "${GLFW_DIR}/include")
+# set_property(TARGET ${GEN_NAME} PROPERTY CXX_STANDARD 11)

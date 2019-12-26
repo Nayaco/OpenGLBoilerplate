@@ -12,6 +12,8 @@ const float DEFAULT_ZOOM        =  45.0f;
 const float DEFAULT_FAR         =  1000.0f;
 const float DEFAULT_NEAR        =  0.1f;
 
+// Eular Camera
+
 class Camera : public BaseCamera {
 public:
     enum class Camera_Movement {

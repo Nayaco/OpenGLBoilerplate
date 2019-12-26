@@ -7,7 +7,7 @@
 #include "Core/Graphics/Texture/Texture.hpp"
 #include "Core/Graphics/Mesh/BaseMesh.hpp"
 
-class Skybox : public Drawable {
+class Skybox {
 public:
     vertex_vector  vertices;
     indice_vector  indices;
@@ -17,12 +17,13 @@ public:
     glm::vec3      sky_color;
     bool           use_cube_map;
     
-    Skybox(texture_vector cube);
-    Skybox(Texture texture);
+    // Skybox(Texture texture, Shader const& shader);
+    Skybox(texture_vector cube, Shader const& shader);
     virtual ~Skybox();
     virtual void setColor(glm::vec3 color);
-    virtual void draw(Shader const &shader) const override;
+    // virtual void draw(Shader const &shader) const;
     virtual void draw() const;
+    virtual void update(texture_vector cube);
 private:
     unsigned int VAO;
     unsigned int VBO, EBO;

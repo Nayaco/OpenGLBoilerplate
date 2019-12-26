@@ -24,8 +24,8 @@ void Context::create(std::string w_name, unsigned int w_width, unsigned int w_he
         throw "CONTEXT: window " + window_name + " create failed";
         glfwTerminate();
     } else {
-        window_height = w_width;
-        window_width = w_height;
+        window_height = w_height;
+        window_width = w_width;
         window_name = w_name;
 
         glfwMakeContextCurrent(window);
@@ -51,8 +51,8 @@ void Context::destroy() { glfwTerminate(); }
 void Context::update() { handleDeltaFrame(); }
 
 void Context::updateWindow(unsigned int w_width, unsigned int w_height) {
-    window_height = w_width;
-    window_width = w_height;
+    window_height = w_height;
+    window_width = w_width;
     glViewport(0, 0, window_width, window_height);
 }
 

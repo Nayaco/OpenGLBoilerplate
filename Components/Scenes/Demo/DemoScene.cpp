@@ -11,7 +11,8 @@ float quadVertices[] = { // vertex attributes for a quad that fills the entire s
     1.0f,  1.0f,  1.0f, 1.0f
 };
 unsigned int quadVAO, quadVBO;
-
+imap2d staticmap;
+float skymap_time = 0;
 static vector<string> SKYMAP_NAMES = {
     string(SKY_TEX) + string("_rt.jpg"),
     string(SKY_TEX) + string("_lf.jpg"),
@@ -27,9 +28,21 @@ void DemoScene::draw() const {
     glm::mat4 view = cam->GetViewMatrix();
     
     Shader render_shader = ResourceManager::getShader(TER_SHADER_NAME);
-    Shader sky_shader = ResourceManager::getShader(SKY_SHADER_NAME);
-    // Shader test_shader = ResourceManager::getShader("test2");
-    auto light = ResourceManager::getLight(ALIGHT_NAME);
+    auto light = reinterpret_cast<ALight*>(ResourceManager::getLight(ALIGHT_NAME));
+    
+    skymap_time += Context::delta_time; 
+    if (skymap_time > 0.05) {
+        skymap_time = 0;
+        skymap->bind();
+        glm::vec3 sun_poss(0.0, 0.0, -1.0);
+        glm::mat4 sunposx = glm::mat4(1.0f);
+        int k = 0.1f * Context::game_time / (M_PI);
+        sunposx  = glm::rotate(sunposx, 0.1f * Context::game_time - (float)k * (float)M_PI, glm::vec3(0.4f, 0.9f, 0.0f));
+        skymap->update(glm::vec3(sunposx * glm::vec4(sun_poss, 1.0)), glm::vec3(1.0, 1.0, 1.0));
+        skymap->render();
+        skymap->unbind();
+        light->setUpALight(glm::vec3(sunposx * glm::vec4(sun_poss, 1.0)), glm::vec3(1.0, 1.0, 1.0));
+    }
 
     render_shader.use();
     render_shader.setMat4("projection", projection);
@@ -48,78 +61,55 @@ void DemoScene::draw() const {
     skybox->skybox_shader.setMat4("projection", projection);
     skybox->skybox_shader.setMat4("view", view);
     skybox->draw();
-
-    // sky_shader.use();
-    // sky_shader.setMat4("projection", projection);
-    // sky_shader.setMat4("view", view);
-    // skybox->draw(sky_shader);
-
-    // skymap->bind();
-    // skymap->render(glm::vec3(0.0, 0.1, -1.0), glm::vec3(1.0, 1.0, 1.0));
-    // skymap->unbind();
-
-    // test_shader.use();
-    // glBindVertexArray(quadVAO);
-    // glBindTexture(GL_TEXTURE_2D, skymap->skymap_texture[0]._id);	// use the color attachment texture as the texture of the quad plane
-    // glDrawArrays(GL_TRIANGLES, 0, 6);
 }
 
 void DemoScene::initialize() {
     ResourceManager::loadVGF(TER_SHADER_NAME, TER_SHADER);
-    ResourceManager::loadVF("test2", "Resources/Shaders/Test2/sc");
-    ResourceManager::loadVF(SKY_SHADER_NAME, SKY_SHADER);
-    ResourceManager::Load3D(SKY_TEX_NAME, SKYMAP_NAMES);
+    // ResourceManager::loadVF("test2", "Resources/Shaders/Test2/sc");
+    // ResourceManager::loadVF(SKY_SHADER_NAME, SKY_SHADER);
+    ResourceManager::loadVF("skymap", 
+                            "Resources/Shaders/SkyMap/skymap");
+    ResourceManager::loadVF("skybox", 
+                            "Resources/Shaders/Skybox/skybox");
+    
     ResourceManager::GenALisht(ALIGHT_NAME, 0, glm::vec3(0.0, 1.0, 0.0), glm::vec3(1.0, 1.0, 1.0));
-    Texture sky_tex = ResourceManager::getTexture(SKY_TEX_NAME);
+    // ResourceManager::Load3D(SKY_TEX_NAME, SKYMAP_NAMES);
+    // Texture sky_tex = ResourceManager::getTexture(SKY_TEX_NAME);
+    staticmap = noise::getFile("Resources/Textures/DemoTerrainTexture/TerrainMesh-bak3.ppm");
     
     texture_vector sky_texs;
-
-    // ResourceManager::Load2D("001", "Resources/Textures/DemoSkyTexture/SkyTexture_rt.jpg");
-    // ResourceManager::Load2D("002", "Resources/Textures/DemoSkyTexture/SkyTexture_lf.jpg");
-    // ResourceManager::Load2D("003", "Resources/Textures/DemoSkyTexture/SkyTexture_up.jpg");
-    // ResourceManager::Load2D("004", "Resources/Textures/DemoSkyTexture/SkyTexture_dn.jpg");
-    // ResourceManager::Load2D("005", "Resources/Textures/DemoSkyTexture/SkyTexture_ft.jpg");
-    // ResourceManager::Load2D("006", "Resources/Textures/DemoSkyTexture/SkyTexture_bk.jpg");
-    
-    
-    // sky_texs.push_back(ResourceManager::getTexture("002"));
-    // sky_texs.push_back(ResourceManager::getTexture("001"));
-    // sky_texs.push_back(ResourceManager::getTexture("003"));
-    // sky_texs.push_back(ResourceManager::getTexture("004"));
-    // sky_texs.push_back(ResourceManager::getTexture("005"));
-    // sky_texs.push_back(ResourceManager::getTexture("006"));
-
-    skymap = new Skymap();
+    skymap = new Skymap(ResourceManager::getShader("skymap"));
+    skymap->setTextureSize(100, 100);
     skymap->initialize();
     skymap->bind();
-    skymap->render(glm::vec3(0.0, 1.0, -1.0), glm::vec3(3.0, 3.0, 3.0));
+    skymap->update(glm::vec3(0.0, 0.1, -1.0), glm::vec3(1.0, 1.0, 1.0));
+    skymap->render();
     skymap->unbind();
-    
-    // logger.error("here");
-    
-    terrain = new Terrain(0.0f, 0.0f, 50.0f, 50.0f, 20.0f, 8);
+        
+    terrain  = new Terrain(0.0f, 0.0f, 50.0f, 50.0f, 20.0f, 8);
     terrain2 = new Terrain(-50.0f, 0.0f, 50.0f, 50.0f, 20.0f, 8);
     terrain3 = new Terrain(-50.0f, -50.0f, 50.0f, 50.0f, 20.0f, 8);
     terrain4 = new Terrain(0.0f, -50.0f, 50.0f, 50.0f, 20.0f, 8);
-    skybox = new Skybox(skymap->skymap_texture);
-    // skybox = new Skybox(sky_texs);
-    // skybox = new Skybox(sky_tex);
-    cam = new Camera(glm::vec3(0.0f, 15.0f, 50.0f));
     
-    terrain->setOctave(10);
-    terrain2->setOctave(10);
-    terrain3->setOctave(10);
-    terrain4->setOctave(10);
+    skybox   = new Skybox(skymap->skymap_texture, ResourceManager::getShader("skybox"));
+    
+    cam      = new Camera(glm::vec3(0.0f, 15.0f, 50.0f));
+    
+    terrain->setOctave( 11);
+    terrain2->setOctave(11);
+    terrain3->setOctave(11);
+    terrain4->setOctave(11);
 
     terrain2->setEdge(Terrain::PLACEMENT::POSX, terrain);
     terrain3->setEdge(Terrain::PLACEMENT::POSZ, terrain2);
     terrain4->setEdge(Terrain::PLACEMENT::NEGX, terrain3);    
     terrain4->setEdge(Terrain::PLACEMENT::POSZ, terrain);
     
-    terrain->generate(texture_vector{ } , 1.0);
-    terrain2->generate(texture_vector{ }, 1.0);
-    terrain3->generate(texture_vector{ }, 1.0);
-    terrain4->generate(texture_vector{ }, 1.0);
+    terrain->staticGenerate(staticmap, texture_vector{ }, 3.0);
+    // terrain->generate(texture_vector{ } , 1.0);
+    terrain2->generate(texture_vector{ }, 3.0);
+    terrain3->generate(texture_vector{ }, 3.0);
+    terrain4->generate(texture_vector{ }, 3.0);
     
     
     mmove = std::bind(&DemoScene::mouseMovecallback, this, std::placeholders::_1, std::placeholders::_2);
@@ -134,17 +124,6 @@ void DemoScene::initialize() {
     Input::bindKeydownCallback(Input::Keys::KEY_S, &kdn);
     Input::bindKeydownCallback(Input::Keys::KEY_A, &klf);
     Input::bindKeydownCallback(Input::Keys::KEY_D, &krt);
-
-    
-    glGenVertexArrays(1, &quadVAO);
-    glGenBuffers(1, &quadVBO);
-    glBindVertexArray(quadVAO);
-    glBindBuffer(GL_ARRAY_BUFFER, quadVBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(quadVertices), &quadVertices, GL_STATIC_DRAW);
-    glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)0);
-    glEnableVertexAttribArray(1);
-    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(2 * sizeof(float)));
 }
 
 void DemoScene::destory() {

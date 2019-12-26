@@ -117,7 +117,7 @@ Texture Model::TextureFromFile(string const &path, string const &directory, bool
             case 1: {format = GL_RED; break;}
             case 3: {format = GL_RGB; break;}
             case 4: {format = GL_RGBA; break;}
-            default: throw "TEXTURE: unknow color space";
+            default: throw "Model: unknow color space";
         }
         texture._format = format;
         texture._path   = path;
@@ -126,6 +126,6 @@ Texture Model::TextureFromFile(string const &path, string const &directory, bool
     }
     else {
         stbi_image_free(data);
-        throw "TEXTURE: file "+ filename + " not exists";
+        throw "Model: file "+ filename + " not exists";
     }
 }

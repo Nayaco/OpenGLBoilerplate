@@ -22,19 +22,19 @@ public:
 
     imap2d terrainmap;
     int octave;
-    float displaceX, displaceZ;
+    float place_x, place_z;
     float width, height;   
     float terrain_height; 
     Terrain(float _x, float _z, float _width, float _height, float _terrain_h, int octave);
-    virtual ~Terrain();
+    ~Terrain();
 
-    virtual void draw(Shader const &shader) const;
-    virtual void setOctave(const int octave);
-    virtual void setEdge(PLACEMENT exist_placement, Terrain* exist_terrain);
-    virtual void generate(texture_vector const &other_textures, float tess_level);
-    
-    // virtual void staticGenerate(imap2d const &heightmap);
-    virtual void destroy();
+    void draw(Shader const &shader) const;
+    void setOctave(const int octave);
+    void setEdge(PLACEMENT exist_placement, Terrain* exist_terrain);
+    void generate(texture_vector const &other_textures, float tess_level);
+    void staticGenerate(imap2d const &heightmap, texture_vector const &other_textures, float tess_level);
+
+    void destroy();
 
 private:
     void processPOSX();
