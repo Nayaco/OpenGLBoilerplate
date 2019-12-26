@@ -11,6 +11,7 @@
 #include "Core/GameObjects/Skymap/Skymap.hpp"
 #include "Core/GameObjects/Skybox/Skybox.hpp"
 #include "Core/GameObjects/Terrain/Terrain.hpp"
+#include "Core/GameObjects/Grass/GrassBlade.h"
 
 #include "DemoSceneConfig.hpp"
 #include "Core/ExceptionHandle/ErrLog.hpp"
@@ -21,6 +22,7 @@ public:
     Terrain *terrain3;
     Terrain *terrain4;
     TerrainMesh *mesh;
+    GrassBlade *grass;
 
     Skymap *skymap;
     Skybox *skybox;

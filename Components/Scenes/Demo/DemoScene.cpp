@@ -51,10 +51,13 @@ void DemoScene::draw() const {
     light->enable();
     light->use(render_shader);
 
-    terrain->draw(render_shader);
-    terrain2->draw(render_shader);
-    terrain3->draw(render_shader);
-    terrain4->draw(render_shader);
+    // terrain->draw(render_shader);
+    // terrain2->draw(render_shader);
+    // terrain3->draw(render_shader);
+    // terrain4->draw(render_shader);
+    grass->setViewMatrix(view);
+    grass->setProjectionMatrix(projection);
+    grass->render();
     
     view = glm::mat4(glm::mat3(view));
     skybox->skybox_shader.use();
@@ -95,6 +98,8 @@ void DemoScene::initialize() {
     
     cam      = new Camera(glm::vec3(0.0f, 15.0f, 50.0f));
     
+    grass = new GrassBlade(nullptr, glm::vec2(0.0), glm::vec2(0.0));
+
     terrain->setOctave( 11);
     terrain2->setOctave(11);
     terrain3->setOctave(11);
