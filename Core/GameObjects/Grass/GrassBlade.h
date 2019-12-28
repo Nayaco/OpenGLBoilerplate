@@ -31,9 +31,7 @@ private:
 
     void initBuffers();
     void setupShader();
-
-
-
+    
     //Plane_sine *plane_sine;
     NoiseGen noise_gen;
     FloatTexture tex_wind_noise;

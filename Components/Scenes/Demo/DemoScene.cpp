@@ -82,7 +82,7 @@ void DemoScene::initialize() {
     
     texture_vector sky_texs;
     skymap = new Skymap(ResourceManager::getShader("skymap"));
-    skymap->setTextureSize(100, 100);
+    skymap->setTextureSize(80, 80);
     skymap->initialize();
     skymap->bind();
     skymap->update(glm::vec3(0.0, 0.1, -1.0), glm::vec3(1.0, 1.0, 1.0));

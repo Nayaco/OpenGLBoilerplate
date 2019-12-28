@@ -4,10 +4,8 @@
 #include "Core/Graphics/Shader/Shader.hpp"
 #include "Core/Utility/GrassUtils/Transform.hpp"
 
-class GrassElement{
-
+class GrassElement {
 public:
-
    GrassElement(){
       all_transf[0] = &transf_0_front;
       all_transf[1] = &transf_0_back;
@@ -18,7 +16,6 @@ public:
       wind_dir[1] = 2.0f;
    }
    
-
    float *get_wind_dir(){
       return wind_dir;
    }
@@ -44,7 +41,6 @@ public:
       transf_1_back.rotate(1.0f, 0.0f, 0.0f, 3.1415f/2.0f);
    }
 
-
    glm::mat4 get_transf_0(){
       return model_matrix * transf_0_front.get_matrix();
    }
@@ -52,10 +48,7 @@ public:
    glm::mat4 get_transf_1(){
       return model_matrix * transf_1_front.get_matrix();
    }
-
-
 protected:
-
    float wind_dir[2];
    glm::mat4x4 model_matrix;
    Transform transf_0_front;

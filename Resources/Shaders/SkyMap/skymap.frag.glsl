@@ -86,12 +86,12 @@ vec3 atmosphere(vec3 r, vec3 r0, vec3 pSun, float iSun, float rPlanet, float rAt
     return iSun * (pRlh * kRlh * totalRlh + pMie * kMie * totalMie);
 }
 
-layout (location=0) in vec3 PositionRight;
-layout (location=1) in vec3 PositionLeft;
-layout (location=2) in vec3 PositionUp;
-layout (location=3) in vec3 PositionBottom;
-layout (location=4) in vec3 PositionFront;
-layout (location=5) in vec3 PositionBack;
+// layout (location=0) in vec3 PositionRight;
+// layout (location=1) in vec3 PositionLeft;
+// layout (location=2) in vec3 PositionUp;
+// layout (location=3) in vec3 PositionBottom;
+// layout (location=4) in vec3 PositionFront;
+// layout (location=5) in vec3 PositionBack;
 
 layout (location=0) out vec4 ColorRight;
 layout (location=1) out vec4 ColorLeft;
@@ -99,7 +99,15 @@ layout (location=2) out vec4 ColorUp;
 layout (location=3) out vec4 ColorBottom;
 layout (location=4) out vec4 ColorFront;
 layout (location=5) out vec4 ColorBack;
-// out vec4 FragColor;
+
+in VS_OUT {
+    vec3 PositionRight;
+    vec3 PositionLeft;
+    vec3 PositionUp;
+    vec3 PositionBottom;
+    vec3 PositionFront;
+    vec3 PositionBack;
+} fs_in;
 
 uniform vec3 skymap_sun_pos;
 uniform vec3 skymap_sun_color;
@@ -126,11 +134,10 @@ vec4 Color(vec3 vPosition) {
 }
 
 void main() {
-    // FragColor = Color(PositionFront);
-    ColorRight  = Color(PositionRight);
-    ColorLeft   = Color(PositionLeft);
-    ColorUp     = Color(PositionUp);
-    ColorBottom = Color(PositionBottom);
-    ColorFront  = Color(PositionFront);
-    ColorBack   = Color(PositionBack);
+    ColorRight  = Color(fs_in.PositionRight);
+    ColorLeft   = Color(fs_in.PositionLeft);
+    ColorUp     = Color(fs_in.PositionUp);
+    ColorBottom = Color(fs_in.PositionBottom);
+    ColorFront  = Color(fs_in.PositionFront);
+    ColorBack   = Color(fs_in.PositionBack);
 }

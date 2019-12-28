@@ -179,7 +179,6 @@ void GrassBlade::setupShader() {
     grassShader.setVec3("camera_position", camera_position);
 }
 
-
 void GrassBlade::render(){
 
     //coutner for the grass blades (which pixel to access)
