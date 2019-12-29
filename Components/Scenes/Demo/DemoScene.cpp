@@ -60,7 +60,7 @@ void DemoScene::draw() const {
     grass->render();
     
     view = glm::mat4(glm::mat3(view));
-    skybox->skybox_shader.use();
+    // skybox->skybox_shader.use();
     skybox->skybox_shader.setMat4("projection", projection);
     skybox->skybox_shader.setMat4("view", view);
     skybox->draw();
@@ -74,6 +74,8 @@ void DemoScene::initialize() {
                             "Resources/Shaders/SkyMap/skymap");
     ResourceManager::loadVF("skybox", 
                             "Resources/Shaders/Skybox/skybox");
+    ResourceManager::loadVF("grassblade", 
+                            "Resources/Shaders/GrassBlade/grassBlades");
     
     ResourceManager::GenALisht(ALIGHT_NAME, 0, glm::vec3(0.0, 1.0, 0.0), glm::vec3(1.0, 1.0, 1.0));
     // ResourceManager::Load3D(SKY_TEX_NAME, SKYMAP_NAMES);
@@ -98,7 +100,7 @@ void DemoScene::initialize() {
     
     cam      = new Camera(glm::vec3(0.0f, 15.0f, 50.0f));
     
-    grass = new GrassBlade(nullptr, glm::vec2(0.0), glm::vec2(0.0));
+    grass = new GrassBlade(glm::vec3(.2f, .8f, .2f), glm::vec2(0.0), glm::vec2(10.0, 10.0), 2.0, ResourceManager::getShader("grassblade"));
 
     terrain->setOctave( 11);
     terrain2->setOctave(11);
@@ -136,6 +138,8 @@ void DemoScene::destory() {
     delete terrain;
     delete cam;
 }
+
+void DemoScene::update() { }
 
 void DemoScene::mouseMovecallback(float xpos, float ypos) {
     if (firstMouse) {

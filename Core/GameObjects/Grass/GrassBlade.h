@@ -12,7 +12,7 @@
 
 class GrassBlade {
 public:
-    GrassBlade(float * height, glm::vec2 center, glm::vec2 size);
+    GrassBlade(glm::vec3 _scale, glm::vec2 center, glm::vec2 size, float density, Shader const& shader);
 
     void render();
     void setLightPos(glm::vec3 position);
@@ -37,7 +37,6 @@ private:
     FloatTexture tex_wind_noise;
  
     uint grassNumber;
- 
     glm::vec3 camera_position;
     glm::vec3 light_position;
  
@@ -45,9 +44,6 @@ private:
  
     glm::mat4 view_matrix;
     glm::mat4 projection_matrix;
- 
-    const uint grassPerSide = 180;
-    const float size_to_draw = 200;
  
     GLuint _tex_grass;
     GLuint _tex_wind_noise;

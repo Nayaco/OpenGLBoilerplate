@@ -2,7 +2,7 @@
 #define TEXTURE_HPP
 
 #include "Core/Common.hpp"
-
+#include "Core/Utility/Random.hpp"
 enum class TEX_TYPE: unsigned int {
     DEFAULT    = 0,
     CUBEMAP    = 1,
@@ -33,7 +33,13 @@ struct Texture {
 
     const Texture& bind() const;
 
+    void GenRandomMap1D(
+        unsigned int size);
+
     void LoadTexture2D(
+        unsigned int width, unsigned int height, const unsigned char *data);
+    
+    void LoadTexture2DGamma(
         unsigned int width, unsigned int height, const unsigned char *data);
 
     void LoadTexture2DFloat(

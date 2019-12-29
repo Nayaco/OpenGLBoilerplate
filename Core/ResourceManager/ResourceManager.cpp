@@ -78,6 +78,30 @@ void ResourceManager::Load2D(string const &tex_name, string const &tex_path) {
     }
 }
 
+void ResourceManager::Load2DGC(string const &tex_name, string const &tex_path) {
+    Texture texture;
+    int width, height, nrChannels;
+    unsigned char *data = stbi_load(tex_path.c_str(), &width, &height, &nrChannels, 0);
+    if (data) {
+        GLenum format;
+        switch (nrChannels) {
+            case 1: {format = GL_RED; break;}
+            case 3: {format = GL_RGB; break;}
+            case 4: {format = GL_RGBA; break;}
+            default: throw "Resource manager: unknow color space";
+        }
+        texture._format = format;
+        texture._path   = tex_path;
+        texture.LoadTexture2DGamma(width, height, data);
+        stbi_image_free(data);
+        setTexture(tex_name, texture);
+    }
+    else {
+        stbi_image_free(data);
+        throw "Resource manager: file "+ tex_path + " not exists";
+    }
+}
+
 void ResourceManager::Load2DCube(string const &tex_name, vector<string> const &tex_faces) {
     int count = 0;
     for (auto &tex_path : tex_faces) {

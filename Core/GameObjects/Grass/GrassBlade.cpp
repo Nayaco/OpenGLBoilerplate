@@ -8,7 +8,7 @@ GLfloat GrassBlade::vertices[] =  {
              1.0f, 0.0f,  1.0f, // 4
             -1.0f, 0.0f,  2.0f, // 5
              1.0f, 0.0f,  2.0f, // 6
-         };
+        };
 
 GLint GrassBlade::indices[] = {
             0, 1, 2,
@@ -16,7 +16,7 @@ GLint GrassBlade::indices[] = {
             2, 3, 4,
             4, 3, 5,
             4, 5, 6,
-         };
+        };
 
 GLfloat GrassBlade::normals[] = {
     0, 1, 0,
@@ -37,100 +37,104 @@ GLfloat GrassBlade::texCoord[] = {
     1.0f,  1.0f  // 6
 };
 
-GrassBlade::GrassBlade(float * height, glm::vec2 center, glm::vec2 size) 
-    :grassShader("Resources/Shaders/GrassBlade/grassBlades.v.glsl", "Resources/Shaders/GrassBlade/grassBlades.f.glsl")
+GrassBlade::GrassBlade(glm::vec3 _scale, glm::vec2 center, glm::vec2 size, float density, Shader const& shader) 
+    :grassShader(shader)
     {
     srand(time(0));
     // generate the noise
-    std::vector<std::vector<float> > noise_val = noise_gen.get_2D_noise(512, 512, -1.0f, 1.0f, -1.0f, 1.0f);
+    imap2d noise_val = noise_gen.get_2D_noise(512, 512, -1.0f, 1.0f, -1.0f, 1.0f);
     tex_wind_noise.set_data(noise_val);
 
     initBuffers();
     // init the instances 
-    for (size_t i = 0; i < grassPerSide; i++) {
-         for (size_t j = 0; j < grassPerSide; j++) {
-            GrassElement *ge = new GrassElement;
-            ge->init_matrices(); //load the matrices
+    glm::vec2 grassPerSide= density * size;
 
-            Transform t;
-            float pos_x = -(size_to_draw/2.0f)*(1-(float(i)/(grassPerSide-1)))+(size_to_draw/2.0f)*(float(i)/(grassPerSide-1));
-            float pos_y = -(size_to_draw/2.0f)*(1-(float(j)/(grassPerSide-1)))+(size_to_draw/2.0f)*(float(j)/(grassPerSide-1));
+    for (size_t i = 0; i < grassPerSide.x; i++) {
+        for (size_t j = 0; j < grassPerSide.y; j++) {
+        GrassElement *ge = new GrassElement;
+        ge->init_matrices(); //load the matrices
 
-            int val_rand = rand() % 1000;
-            float frand = float(val_rand)/1000.0f;
+        Transform t;
+        float pos_x = -(size.x / 2.0f) * (1 - (float(i) / (grassPerSide.x - 1))) 
+                    + (size.x / 2.0f) * (float(i) / (grassPerSide.x - 1));
+        float pos_y = -(size.y / 2.0f) * (1 - (float(j) / (grassPerSide.y - 1))) 
+                    + (size.y / 2.0f) * (float(j) / (grassPerSide.y - 1));
 
-            pos_x += frand/10.0f-0.05;
-            pos_y += frand/10.0f-0.05;
+        int val_rand = rand() % 1000;
+        float frand = float(val_rand) / 1000.0f;
 
-            t.translate(pos_x, -3.0, pos_y);
-            t.rotate(0.0, 1.0, 0.0, pos_x*pos_y*5.244);
-            t.scale(0.3, 1.7, 0.3);
-            t.scale(1.0, 1.0 + frand, 1.0);
-            t.translate(0, 2.0, 0);
-            ge->set_model_matrix(t.get_matrix());
+        pos_x += frand / 10.0f - 0.05;
+        pos_y += frand / 10.0f - 0.05;
 
-            //the matrix given by ge has the transfor and the grass model transforms
-            modelMats.push_back(ge->get_transf_0());
-         }
-      }
-      //texture data definition
-      //perlin noise for the wind
-      glGenTextures(1, &_tex_wind_noise);
-      glBindTexture(GL_TEXTURE_2D, _tex_wind_noise);
-      glTexImage2D(GL_TEXTURE_2D, 0, GL_R32F, tex_wind_noise.get_width(), tex_wind_noise.get_height(), 0, GL_RED, GL_FLOAT, tex_wind_noise.get_tex_data());
-      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT); //can be clamp to edge, clamp to border or gl repeat
-      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
-      GLuint tex_id = glGetUniformLocation(grassShader.ID, "tex_wind");
-      glUniform1i(tex_id, 1 /*GL_TEXTURE1*/);
+        t.translate(pos_x, -3.0, pos_y);
+        t.rotate(0.0, 1.0, 0.0, pos_x * pos_y * 5.244);
+        t.scale(_scale);
+        t.scale(1.0, 1.0 + frand, 1.0);
+        t.translate(0, 2.0, 0);
+        ge->set_model_matrix(t.get_matrix());
 
-      glBindTexture(GL_TEXTURE_2D, 0);
+        //the matrix given by ge has the transfor and the grass model transforms
+        modelMats.push_back(ge->get_transf_0());
+        }
+    }
+    //texture data definition
+    //perlin noise for the wind
+    glGenTextures(1, &_tex_wind_noise);
+    glBindTexture(GL_TEXTURE_2D, _tex_wind_noise);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_R32F, tex_wind_noise.get_width(), tex_wind_noise.get_height(), 0, GL_RED, GL_FLOAT, tex_wind_noise.get_tex_data());
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT); //can be clamp to edge, clamp to border or gl repeat
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
+    GLuint tex_id = glGetUniformLocation(grassShader.ID, "tex_wind");
+    glUniform1i(tex_id, 1 /*GL_TEXTURE1*/);
 
-      wind_dir[0] = wind_dir[1] = 0.0f;
+    glBindTexture(GL_TEXTURE_2D, 0);
 
-      //list of matrices for instanced drawing
-      printf("will draw %lu grass\n", modelMats.size());
-      grassNumber = modelMats.size();
+    wind_dir[0] = wind_dir[1] = 0.0f;
 
-      glm::mat4x4 *matArrayBuffer = new glm::mat4x4[modelMats.size()];
-      for (size_t i = 0; i < grassNumber; i++) {
-         matArrayBuffer[i] = modelMats[i];
-      }
+    //list of matrices for instanced drawing
+    //   printf("will draw %lu grass\n", modelMats.size());
+    grassNumber = modelMats.size();
 
-      //buffers the matrices
-      GLuint _vbo_transf;
-      glGenBuffers(1, &_vbo_transf);
-      glBindBuffer(GL_ARRAY_BUFFER, _vbo_transf);
-      glBufferData(GL_ARRAY_BUFFER, grassNumber * sizeof(glm::mat4x4), matArrayBuffer, GL_STATIC_DRAW);
+    glm::mat4x4 *matArrayBuffer = new glm::mat4x4[modelMats.size()];
+    for (size_t i = 0; i < grassNumber; i++) {
+        matArrayBuffer[i] = modelMats[i];
+    }
 
-      uint32_t vec4_size = sizeof(glm::vec4);
+    //buffers the matrices
+    GLuint _vbo_transf;
+    glGenBuffers(1, &_vbo_transf);
+    glBindBuffer(GL_ARRAY_BUFFER, _vbo_transf);
+    glBufferData(GL_ARRAY_BUFFER, grassNumber * sizeof(glm::mat4x4), matArrayBuffer, GL_STATIC_DRAW);
 
-      //tells opengl about the format of matrix (4x4), have to be done for each rows
-      GLuint modelMatAttrib0 = glGetAttribLocation(grassShader.ID, "model_mat");
+    uint32_t vec4_size = sizeof(glm::vec4);
 
-      glEnableVertexAttribArray(modelMatAttrib0);
-      glVertexAttribPointer(modelMatAttrib0, 4, GL_FLOAT, GL_FALSE, 4 * vec4_size, (void*)0);
+    //tells opengl about the format of matrix (4x4), have to be done for each rows
+    GLuint modelMatAttrib0 = glGetAttribLocation(grassShader.ID, "model_mat");
 
-      glEnableVertexAttribArray(modelMatAttrib0+1);
-      glVertexAttribPointer(modelMatAttrib0 + 1, 4, GL_FLOAT, GL_FALSE, 4 * vec4_size, (void*)(uintptr_t)(vec4_size));
+    glEnableVertexAttribArray(modelMatAttrib0);
+    glVertexAttribPointer(modelMatAttrib0, 4, GL_FLOAT, GL_FALSE, 4 * vec4_size, (void*)0);
 
-      glEnableVertexAttribArray(modelMatAttrib0+2);
-      glVertexAttribPointer(modelMatAttrib0 + 2, 4, GL_FLOAT, GL_FALSE, 4 * vec4_size, (void*)(uintptr_t)(2 * vec4_size));
+    glEnableVertexAttribArray(modelMatAttrib0+1);
+    glVertexAttribPointer(modelMatAttrib0 + 1, 4, GL_FLOAT, GL_FALSE, 4 * vec4_size, (void*)(uintptr_t)(vec4_size));
 
-      glEnableVertexAttribArray(modelMatAttrib0+3);
-      glVertexAttribPointer(modelMatAttrib0 + 3, 4, GL_FLOAT, GL_FALSE, 4 * vec4_size, (void*)(uintptr_t)(3 * vec4_size));
+    glEnableVertexAttribArray(modelMatAttrib0+2);
+    glVertexAttribPointer(modelMatAttrib0 + 2, 4, GL_FLOAT, GL_FALSE, 4 * vec4_size, (void*)(uintptr_t)(2 * vec4_size));
 
-      glVertexAttribDivisor(modelMatAttrib0, 1);
-      glVertexAttribDivisor(modelMatAttrib0 + 1, 1);
-      glVertexAttribDivisor(modelMatAttrib0 + 2, 1);
-      glVertexAttribDivisor(modelMatAttrib0 + 3, 1);
+    glEnableVertexAttribArray(modelMatAttrib0+3);
+    glVertexAttribPointer(modelMatAttrib0 + 3, 4, GL_FLOAT, GL_FALSE, 4 * vec4_size, (void*)(uintptr_t)(3 * vec4_size));
 
-      glBindVertexArray(0);
+    glVertexAttribDivisor(modelMatAttrib0, 1);
+    glVertexAttribDivisor(modelMatAttrib0 + 1, 1);
+    glVertexAttribDivisor(modelMatAttrib0 + 2, 1);
+    glVertexAttribDivisor(modelMatAttrib0 + 3, 1);
 
-      grassNumber = modelMats.size();
-      modelMats.clear();
-      delete[] matArrayBuffer;
+    glBindVertexArray(0);
+
+    grassNumber = modelMats.size();
+    modelMats.clear();
+    delete[] matArrayBuffer;
 }
 
 void GrassBlade::initBuffers(){

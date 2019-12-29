@@ -12,7 +12,8 @@ static const Input::Keys KeyAll[] = {
     Input::Keys::KEY_A,
     Input::Keys::KEY_S,
     Input::Keys::KEY_D,
-    
+    Input::Keys::KEY_F,
+
     Input::Keys::KEY_SPACE,
     Input::Keys::KEY_ESC,
     Input::Keys::KEY_ENTER,

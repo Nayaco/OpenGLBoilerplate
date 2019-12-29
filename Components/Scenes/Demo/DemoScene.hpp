@@ -47,6 +47,7 @@ public:
     virtual void initialize() override;
     virtual void draw() const override;
     virtual void destory() override;
+    virtual void update() override;
 
     void mouseMovecallback(float xpos, float ypos);
     void scrollcallback(float yoffset);

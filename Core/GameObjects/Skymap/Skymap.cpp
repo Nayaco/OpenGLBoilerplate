@@ -68,7 +68,7 @@ void Skymap::initialize() {
     if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
         throw "SKYMAP: framebuffer no complete";
     
-    glBindRenderbuffer(GL_FRAMEBUFFER, 0);
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
 void Skymap::bind() {
@@ -80,11 +80,9 @@ void Skymap::bind() {
 }
 
 void Skymap::unbind() {
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
-    glClearColor(0.0f, 0.1f, 0.1f, 1.0f);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    glEnable(GL_CULL_FACE);
     glViewport(0, 0, Context::window_width, Context::window_height);
+    glEnable(GL_CULL_FACE);
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
 void Skymap::render() const {

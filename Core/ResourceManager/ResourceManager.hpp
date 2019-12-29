@@ -25,6 +25,7 @@ public:
 
     
     static void Load2D(string const &tex_name, string const &tex_path);
+    static void Load2DGC(string const &tex_name, string const &tex_path);
     static void Load2DCube(string const &tex_name, vector<string> const &tex_faces);
     static void Load2DDynamic(string const &tex_name, imap2d const &tex_map, int width, int height);
     static void Load3D(string const &tex_name, vector<string> const &tex_faces);

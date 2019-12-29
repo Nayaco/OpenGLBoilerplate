@@ -19,8 +19,43 @@ const Texture& Texture::bind() const {
     return *this;
 }
 
+void Texture::GenRandomMap1D(unsigned int size) {
+    this->_width = size;
+    this->_format =  GL_RGB;
+    this->_type   =  GL_RGB;
+    this->_filter_max = this->_filter_min = GL_LINEAR;
+    this->_texture_type = TEX_TYPE::DEFAULT;
+    this->_warps = GL_REPEAT;
+
+    const imap1d data = randomx::rand(size * 3);
+    
+    glGenTextures(1, &_id);
+    glBindTexture(GL_TEXTURE_1D, _id);
+    glTexImage1D(GL_TEXTURE_1D, 0, GL_RGB, size, 0.0f, GL_RGB, GL_FLOAT, data.data());
+    glTexParameterf(GL_TEXTURE_1D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameterf(GL_TEXTURE_1D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameterf(GL_TEXTURE_1D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+}
+
 void Texture::LoadTexture2D(unsigned int width, unsigned int height, const unsigned char *data) {
     this->_width = width; this->_height = height;
+    glGenTextures(1, &_id);
+    glBindTexture(GL_TEXTURE_2D, _id);
+    glTexImage2D(GL_TEXTURE_2D, 0, _type, this->_width, this->_height, 0, _format, GL_UNSIGNED_BYTE, data);
+    glGenerateMipmap(GL_TEXTURE_2D);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, this->_warps);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, this->_warpt);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, this->_filter_min);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, this->_filter_max);
+}
+
+void Texture::LoadTexture2DGamma(unsigned int width, unsigned int height, const unsigned char *data) {
+    this->_width = width; this->_height = height;
+    if (_format == GL_RGB) {
+        this->_type = GL_SRGB;
+    } else if (_format == GL_RGBA) {
+        this->_type = GL_SRGB_ALPHA;
+    }
     glGenTextures(1, &_id);
     glBindTexture(GL_TEXTURE_2D, _id);
     glTexImage2D(GL_TEXTURE_2D, 0, _type, this->_width, this->_height, 0, _format, GL_UNSIGNED_BYTE, data);
@@ -72,7 +107,7 @@ void Texture::GenPostProcessMap(unsigned int width, unsigned int height) {
     
     glGenTextures(1, &_id);
     glBindTexture(GL_TEXTURE_2D, _id);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, this->_width, this->_height, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, this->_width, this->_height, 0, GL_RGB, GL_FLOAT, NULL);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);

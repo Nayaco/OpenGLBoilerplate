@@ -6,14 +6,11 @@ layout (location=2) in vec2 TexCoord;
 layout (location=3) in vec3 Tangent;
 layout (location=4) in vec3 Bitangent;
 
-out vec3 TexCoord_inner;
-
 uniform mat4 model;
 uniform mat4 view;
 uniform mat4 projection;
 
 void main() {
-    TexCoord_inner = Position;
-    vec4 _pos = projection * view * vec4(Position, 1.0);
-    gl_Position = _pos.xyww;
+    vec4 pos = projection * view * model * vec4(Position - vec3(0.0, 5, 0.0), 1.0);
+    gl_Position = pos;
 }

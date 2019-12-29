@@ -32,13 +32,13 @@ public:
    void init_matrices(){
       transf_0_front.rotate(0.0f, 1.0f, 0.0f, 3.1415f/4.0f);
       transf_0_front.rotate(1.0f, 0.0f, 0.0f, 3.1415f/2.0f);
-      transf_0_back.rotate(0.0f, 1.0f, 0.0f, 5*3.1415f/4.0f);
-      transf_0_back.rotate(1.0f, 0.0f, 0.0f, 3.1415f/2.0f);
+      transf_0_back.rotate(0.0f, 1.0f, 0.0f,  5*3.1415f/4.0f);
+      transf_0_back.rotate(1.0f, 0.0f, 0.0f,  3.1415f/2.0f);
 
       transf_1_front.rotate(0.0f, 1.0f, 0.0f, 3*3.1415f/4.0f);
       transf_1_front.rotate(1.0f, 0.0f, 0.0f, 3.1415f/2.0f);
-      transf_1_back.rotate(0.0f, 1.0f, 0.0f, 7*3.1415f/4.0f);
-      transf_1_back.rotate(1.0f, 0.0f, 0.0f, 3.1415f/2.0f);
+      transf_1_back.rotate(0.0f, 1.0f, 0.0f,  7*3.1415f/4.0f);
+      transf_1_back.rotate(1.0f, 0.0f, 0.0f,  3.1415f/2.0f);
    }
 
    glm::mat4 get_transf_0(){

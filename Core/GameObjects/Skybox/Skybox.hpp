@@ -8,6 +8,9 @@
 #include "Core/Graphics/Mesh/BaseMesh.hpp"
 
 class Skybox {
+    unsigned int VAO;
+    unsigned int VBO, EBO;
+    virtual void setupMesh();
 public:
     vertex_vector  vertices;
     indice_vector  indices;
@@ -24,10 +27,8 @@ public:
     // virtual void draw(Shader const &shader) const;
     virtual void draw() const;
     virtual void update(texture_vector cube);
-private:
-    unsigned int VAO;
-    unsigned int VBO, EBO;
-    virtual void setupMesh();
+
+    virtual void setPV(glm::mat4 const &projection, glm::mat4 const &view);    
 };
 
 #endif

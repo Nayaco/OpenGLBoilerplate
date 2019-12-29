@@ -12,7 +12,7 @@ void GameEngine::setname(std::string w_name) {
 }
 
 void GameEngine::setsize(unsigned int w_width, unsigned int w_height) {
-    window_width = w_width;
+    window_width  = w_width;
     window_height = w_height;
 }
 
@@ -32,17 +32,14 @@ void GameEngine::createContext() {
 }
 
 void GameEngine::start_render() {
-    while (!glfwWindowShouldClose(Context::getWindow())) {
+    while (!Context::shouldClose()) {
         Context::update();
         Input::processKeyInput();
-        glClearColor(1.0f, 1.0f, 1.0f, 0.0f);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        glEnable(GL_CULL_FACE);
         
+        scene->update();
         scene->draw();
 
-        glfwSwapBuffers(Context::getWindow());
-        glfwPollEvents();
+        Context::swapbuffer();
     }
-    glfwTerminate();
+    Context::destroy();
 }

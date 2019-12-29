@@ -1,8 +1,15 @@
 #include "Random.hpp"
 
 namespace randomx {
-    
+
 static std::random_device _rand_dev;
+
+float random(float lower_bound, float upper_bound) {
+    std::mt19937 _mt(_rand_dev());
+    std::uniform_real_distribution<float> _gen(0.0f, 1.0f);
+    return _gen(_mt) * (upper_bound - lower_bound) + lower_bound;
+}
+
 imap1d rand(int __length) {
     std::mt19937 _mt(_rand_dev());
     std::uniform_real_distribution<float> _gen(0.0f, 1.0f);
@@ -12,6 +19,7 @@ imap1d rand(int __length) {
     }
     return _res;
 }
+
 imap2d rand2(int __width, int __height) {
     std::mt19937 _mt(_rand_dev());
     std::uniform_real_distribution<float> _gen(0.0f, 1.0f);

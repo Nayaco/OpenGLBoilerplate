@@ -1,31 +1,5 @@
 #include "Skybox.hpp"
 
-// Skybox::Skybox(Texture texture, Shader const& shader)
-//     :vertices { 
-//         Vertex{position: glm::vec3( 1.0f, 1.0f, 1.0f)},//0 
-//         Vertex{position: glm::vec3( 1.0f, 1.0f,-1.0f)},//1
-//         Vertex{position: glm::vec3(-1.0f, 1.0f,-1.0f)},//2
-//         Vertex{position: glm::vec3(-1.0f, 1.0f, 1.0f)},//3
-//         Vertex{position: glm::vec3( 1.0f,-1.0f, 1.0f)},//4
-//         Vertex{position: glm::vec3( 1.0f,-1.0f,-1.0f)},//5
-//         Vertex{position: glm::vec3(-1.0f,-1.0f,-1.0f)},//6
-//         Vertex{position: glm::vec3(-1.0f,-1.0f, 1.0f)},//7
-//     },
-//     indices {
-//         0, 2, 1, 0, 3, 2, // up
-//         4, 5, 6, 4, 6, 7, // down
-//         2, 3, 6, 3, 7, 6, // left
-//         0, 1, 5, 0, 5, 4, // right
-//         0, 4, 3, 3, 4, 7, // back
-//         1, 2, 5, 2, 6, 5, // front
-//     }, skybox_shader(shader){
-//     use_cube_map = true;
-//     this->texture = texture;
-//     sky_color = glm::vec3(1.0f);
-//     setupMesh();
-// }
-
-
 Skybox::Skybox(texture_vector cube, Shader const& shader)
     :vertices { 
         Vertex{position: glm::vec3( 1.0f, 1.0f, 1.0f), normal: glm::vec3(0.0, 1.0, 0.0)},//0 
@@ -112,6 +86,8 @@ void Skybox::setupMesh() {
 void Skybox::setColor(glm::vec3 color) { sky_color = color; }
 
 void Skybox::draw() const {
+    skybox_shader.use();
+
     glDepthFunc(GL_LEQUAL);
 
     skybox_shader.setInt("texture_skymap_rt", 0);
@@ -133,6 +109,36 @@ void Skybox::draw() const {
     glDepthFunc(GL_LESS);
 }
 
+void Skybox::setPV(glm::mat4 const &projection, glm::mat4 const &view) {
+    skybox_shader.setMat4("projection", projection);
+    skybox_shader.setMat4("view", view);
+}
+
+
+// Skybox::Skybox(Texture texture, Shader const& shader)
+//     :vertices { 
+//         Vertex{position: glm::vec3( 1.0f, 1.0f, 1.0f)},//0 
+//         Vertex{position: glm::vec3( 1.0f, 1.0f,-1.0f)},//1
+//         Vertex{position: glm::vec3(-1.0f, 1.0f,-1.0f)},//2
+//         Vertex{position: glm::vec3(-1.0f, 1.0f, 1.0f)},//3
+//         Vertex{position: glm::vec3( 1.0f,-1.0f, 1.0f)},//4
+//         Vertex{position: glm::vec3( 1.0f,-1.0f,-1.0f)},//5
+//         Vertex{position: glm::vec3(-1.0f,-1.0f,-1.0f)},//6
+//         Vertex{position: glm::vec3(-1.0f,-1.0f, 1.0f)},//7
+//     },
+//     indices {
+//         0, 2, 1, 0, 3, 2, // up
+//         4, 5, 6, 4, 6, 7, // down
+//         2, 3, 6, 3, 7, 6, // left
+//         0, 1, 5, 0, 5, 4, // right
+//         0, 4, 3, 3, 4, 7, // back
+//         1, 2, 5, 2, 6, 5, // front
+//     }, skybox_shader(shader){
+//     use_cube_map = true;
+//     this->texture = texture;
+//     sky_color = glm::vec3(1.0f);
+//     setupMesh();
+// }
 // void Skybox::draw(Shader const &shader) const {
 //     glDepthFunc(GL_LEQUAL);
 

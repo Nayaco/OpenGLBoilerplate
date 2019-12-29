@@ -16,6 +16,7 @@ public:
         KEY_A = GLFW_KEY_A,
         KEY_S = GLFW_KEY_S,
         KEY_D = GLFW_KEY_D,
+        KEY_F = GLFW_KEY_F,
         
         KEY_SPACE = GLFW_KEY_SPACE,
         KEY_ESC   = GLFW_KEY_ESCAPE,

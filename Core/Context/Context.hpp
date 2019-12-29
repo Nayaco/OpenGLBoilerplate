@@ -21,6 +21,8 @@ public:
     static void close();
     static void destroy();
     static void update();
+    static bool shouldClose();
+    static void swapbuffer();
     static void updateWindow(unsigned int w_width, unsigned int w_height);
     static void handleDeltaFrame();
 };

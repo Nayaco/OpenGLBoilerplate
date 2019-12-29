@@ -48,8 +48,19 @@ void Context::close() { glfwSetWindowShouldClose(window, true); }
 
 void Context::destroy() { glfwTerminate(); }
 
-void Context::update() { handleDeltaFrame(); }
+void Context::update() { 
+    glClearColor(0.1f, 0.1f, 0.1f, 0.0f);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glEnable(GL_CULL_FACE);
+    handleDeltaFrame(); 
+}
 
+bool Context::shouldClose() { return glfwWindowShouldClose(window); }
+
+void Context::swapbuffer() {
+    glfwSwapBuffers(window);
+    glfwPollEvents();
+}
 void Context::updateWindow(unsigned int w_width, unsigned int w_height) {
     window_height = w_height;
     window_width = w_width;
