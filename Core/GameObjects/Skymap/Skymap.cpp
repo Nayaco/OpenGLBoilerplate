@@ -73,8 +73,8 @@ void Skymap::initialize() {
 
 void Skymap::bind() {
     glBindFramebuffer(GL_FRAMEBUFFER, FBO);
-    glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
     glDisable(GL_CULL_FACE);
     glViewport(0, 0, map_width, map_height);
 }
@@ -83,6 +83,7 @@ void Skymap::unbind() {
     glViewport(0, 0, Context::window_width, Context::window_height);
     glEnable(GL_CULL_FACE);
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
 void Skymap::render() const {

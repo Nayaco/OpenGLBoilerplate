@@ -105,6 +105,7 @@ void ParticleSystem::update(float delta_time, int new_particles) {
 
 void ParticleSystem::draw(Shader const &shader) const {
     glBlendFunc(GL_SRC_ALPHA, GL_ONE);
+    shader.use();
     particle_texture.bind();
     glBindVertexArray(VAO);
     for (auto &p : particles) {

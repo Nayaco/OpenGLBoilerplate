@@ -30,7 +30,7 @@ struct Texture {
     unsigned int _filter_max;
     TEX_TYPE     _texture_type;
     Texture();
-
+    void destroy();
     const Texture& bind() const;
 
     void GenRandomMap1D(

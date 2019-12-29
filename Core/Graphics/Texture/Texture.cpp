@@ -10,6 +10,10 @@ Texture::Texture()
 ,_filter_max(GL_LINEAR_MIPMAP_LINEAR)
 ,_texture_type(TEX_TYPE::DEFAULT) { }
 
+void Texture::destroy() {
+    glDeleteTextures(1, &_id);
+}
+
 const Texture& Texture::bind() const {
     if(_texture_type == TEX_TYPE::CUBEMAP) {
         glBindTexture(GL_TEXTURE_CUBE_MAP, _id);

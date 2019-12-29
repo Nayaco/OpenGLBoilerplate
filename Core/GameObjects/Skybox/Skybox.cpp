@@ -86,16 +86,15 @@ void Skybox::setupMesh() {
 void Skybox::setColor(glm::vec3 color) { sky_color = color; }
 
 void Skybox::draw() const {
-    skybox_shader.use();
-
     glDepthFunc(GL_LEQUAL);
-
+    glDisable(GL_CULL_FACE);
+    skybox_shader.use();
     skybox_shader.setInt("texture_skymap_rt", 0);
     skybox_shader.setInt("texture_skymap_lf", 1);
     skybox_shader.setInt("texture_skymap_up", 2);
     skybox_shader.setInt("texture_skymap_dn", 3);
-    skybox_shader.setInt("texture_skymap_bk", 5);
     skybox_shader.setInt("texture_skymap_ft", 4);
+    skybox_shader.setInt("texture_skymap_bk", 5);
 
     for (auto i = 0; i < 6; ++i) {
         glActiveTexture(GL_TEXTURE0 + i);
@@ -104,16 +103,17 @@ void Skybox::draw() const {
     glBindVertexArray(VAO);
     glDrawArrays(GL_TRIANGLES, 0, 36);
     
+    glEnable(GL_CULL_FACE);
     glBindVertexArray(0);
     glActiveTexture(GL_TEXTURE0);
     glDepthFunc(GL_LESS);
 }
 
 void Skybox::setPV(glm::mat4 const &projection, glm::mat4 const &view) {
+    skybox_shader.use();
     skybox_shader.setMat4("projection", projection);
     skybox_shader.setMat4("view", view);
 }
-
 
 // Skybox::Skybox(Texture texture, Shader const& shader)
 //     :vertices { 
