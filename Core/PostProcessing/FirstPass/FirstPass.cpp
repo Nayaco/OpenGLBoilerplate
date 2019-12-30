@@ -23,7 +23,12 @@ void FirstPass::draw(const Shader &shader) const {
     shader.setFloat("exposure", exposure);
     shader.setInt("scene", 0);
     shader.setInt("bloomBlur", 1);
-
+    
+    for (auto i = 0; i < 2; i++) {
+        glActiveTexture(GL_TEXTURE0 + i);
+        texture_render[i].bind();
+    }
+    
     glBindVertexArray(VAO);
     glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
     glBindVertexArray(0);
@@ -45,6 +50,7 @@ void FirstPass::initialize() {
     glBindFramebuffer(GL_FRAMEBUFFER, FBO);
     for (auto i = 0; i < 3; i++) {
         texture_buffers[i].GenPostProcessMap(width, height);
+        texture_render[i] = texture_buffers[i];
         glFramebufferTexture2D(
             GL_FRAMEBUFFER,
             GL_COLOR_ATTACHMENT0 + i,
@@ -67,6 +73,11 @@ void FirstPass::initialize() {
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
+void FirstPass::bindTexture(
+    Texture const &firstpass_input_texture, unsigned int texture_order) {
+    texture_render[texture_order] = firstpass_input_texture;
+}
+
 void FirstPass::setSize(unsigned int width, unsigned int height) {
     this->width = width;
     this->height = height;
@@ -74,6 +85,7 @@ void FirstPass::setSize(unsigned int width, unsigned int height) {
     for (auto i = 0; i < 3; i++) {
         texture_buffers[i].destroy();
         texture_buffers[i].GenPostProcessMap(width, height);
+        texture_render[i] = texture_buffers[i];
         glFramebufferTexture2D(
             GL_FRAMEBUFFER,
             GL_COLOR_ATTACHMENT0 + i,

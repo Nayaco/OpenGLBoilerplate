@@ -7,7 +7,6 @@
 #include "Core/Graphics/Texture/Texture.hpp"
 #include "Core/Graphics/Mesh/BaseMesh.hpp"
 class FirstPass : public ScreenSpace {
-    enum : unsigned int{ TEX_COLOR_BUF = 0, TEX_BRIGHT_BUF = 1, TEX_DEPTH_BUF = 2};
     unsigned int FBO;
     unsigned int RBO;
     unsigned int VAO;
@@ -21,11 +20,14 @@ class FirstPass : public ScreenSpace {
 
     virtual void setupMesh();
 public:
+    enum : unsigned int{ TEX_COLOR_BUF = 0, TEX_BRIGHT_BUF = 1, TEX_DEPTH_BUF = 2};
     Texture texture_buffers[3];
+    Texture texture_render[3];
     
     FirstPass(unsigned int width, unsigned int height, 
         bool bloomon, float exposure);
     virtual void initialize();
+    virtual void bindTexture(Texture const &firstpass_input_texture, unsigned int texture_order);
     virtual void setSize(unsigned int width, unsigned int height);
     virtual void draw(const Shader &shader) const override;
     virtual void bind() const override;

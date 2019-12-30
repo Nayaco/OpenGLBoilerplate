@@ -17,8 +17,13 @@ void GameScene::draw() const {
     skybox->draw();
 
     firstpass->unbind();
-    glActiveTexture(GL_TEXTURE0);
-    firstpass->texture_buffers[0].bind();
+
+    bloom->bind();
+    bloom->bindTexture(firstpass->texture_buffers[FirstPass::TEX_BRIGHT_BUF]);
+    bloom->draw(ResourceManager::getShader("bloom"));
+    bloom->unbind();
+
+    firstpass->bindTexture(bloom->bloom_textures[bloom->horizon], FirstPass::TEX_BRIGHT_BUF);
     firstpass->draw(ResourceManager::getShader("firstpass"));
 }
 
@@ -33,7 +38,7 @@ void GameScene::update() {
     sunpos_vec = glm::vec3(sunpos_matrix * glm::vec4(sunpos_0, 1.0));
     // skymap
     skymap->update(sunpos_vec, glm::vec3(1.0, 1.0, 1.0));
-    sun->update(normalize(sunpos_vec), glm::vec3(1.5, 1.5, 1.5));
+    
     // sunlight
     auto sun_light = 
         reinterpret_cast<ALight*>(ResourceManager::getLight("global_sun_light"));
@@ -53,6 +58,8 @@ void GameScene::update() {
         0.2, 0.5, 0.2, 1.0);
     particle_sys->update(Context::delta_time, 1);
     // entity sun
+    float sunlight_color_factor = glm::dot(glm::normalize(sunpos_vec), glm::vec3(0.0, 1.0, 0.0));   
+    sun->update(normalize(sunpos_vec) * 0.8f, glm::vec3(1.5, 1.5 * (0.6 + powf(sunlight_color_factor, 1.2) * 0.4), 1.5 * (0.5 + powf(sunlight_color_factor, 1.2) * 0.5) ));
     auto sunshader = ResourceManager::getShader("entitysun");
     sunshader.use();
     sunshader.setMat4("projection", projection_matrix);
@@ -68,6 +75,7 @@ void GameScene::update() {
     }
     //firstpass
     firstpass->setSize(Context::window_width, Context::window_height);
+    bloom->setSize(Context::window_width, Context::window_height);
 }
 
 void GameScene::initialize() {
@@ -95,11 +103,14 @@ void GameScene::initialize() {
     ResourceManager::loadVF("entitysun", "Resources/Shaders/EntitySun/sun");
     ResourceManager::loadVGF("particle", "Resources/Shaders/Particle/particle_graph");
     ResourceManager::loadVF("firstpass", "Resources/Shaders/FirstPass/firstPass");
+    ResourceManager::loadVF("bloom", "Resources/Shaders/Bloom/bloom");
 
     ResourceManager::GenALisht("global_sun_light", 0, glm::vec3(0.0, 1.0, 0.0), glm::vec3(1.0, 1.0, 1.0));
 
     ResourceManager::Load2D("sprite", "Resources/Textures/Particle/particle.png");
 
+    cam      = new Camera(glm::vec3(0.0f, 0.0f, 2.0f));
+    
     skymap = new Skymap(ResourceManager::getShader("skymap"));
     skymap->setTextureSize(100, 100);
     skymap->initialize();
@@ -111,9 +122,10 @@ void GameScene::initialize() {
     particle_sys->initialize(glm::vec3(0.0), glm::vec3(0.0, -0.1, 0.0), 
         0.2, 0.5, 0.2, 1.0);
 
-    cam      = new Camera(glm::vec3(0.0f, 0.0f, 2.0f));
+    bloom     = new Bloom(Context::window_width, Context::window_height);  
+    bloom->initialize();
 
-    firstpass = new FirstPass(Context::window_width, Context::window_height, false, 1.0);
+    firstpass = new FirstPass(Context::window_width, Context::window_height, true, 1.0);
     firstpass->initialize();
 }
 

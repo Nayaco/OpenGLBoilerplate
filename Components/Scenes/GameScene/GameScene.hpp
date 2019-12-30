@@ -17,6 +17,8 @@
 #include "Core/GameObjects/Grass/GrassBlade.h"
 #include "Core/GameObjects/ParticleSystem/ParticleSystem.hpp"
 #include "Core/PostProcessing/FirstPass/FirstPass.hpp"
+#include "Core/PostProcessing/Bloom/Bloom.hpp"
+
 #include "Core/ExceptionHandle/ErrLog.hpp"
 
 #include "GameSceneConfig.hpp"
@@ -28,7 +30,8 @@ class GameScene : public BaseScene {
     Camera *cam;
     ParticleSystem *particle_sys;
     FirstPass *firstpass;
-
+    Bloom *bloom;
+    
     bool  firstMouse = true;
     float lastX      = 0.0f;
     float lastY      = 0.0f;
