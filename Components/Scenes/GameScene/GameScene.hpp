@@ -41,6 +41,7 @@ class GameScene : public BaseScene {
     glm::mat4 projection_matrix;
     glm::mat4 view_matrix;
     glm::vec3 sunpos_vec;
+    glm::vec3 suncolor_vec;
 
     std::function<void(float, float)> mmove_func;
     std::function<void(float)> mscroll_func;

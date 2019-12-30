@@ -29,20 +29,33 @@ void GameScene::draw() const {
 
 void GameScene::update() {
     // variables
-    game_time = Context::game_time - floor((Context::game_time / DAY_DURATION)) * DAY_DURATION;
+    game_time = Context::game_time - floor((Context::game_time / TURNAROUND_DURATION)) * TURNAROUND_DURATION;
     projection_matrix = cam->GetProjectionMatrix();
     view_matrix = cam->GetViewMatrix();
     // sunposition 
-    glm::mat4 sunpos_matrix = glm::mat4(1.0f);
-    sunpos_matrix = glm::rotate(sunpos_matrix, game_time * (float)(M_PI / DAY_DURATION) , glm::vec3(1.0f, 0.0f, 0.0f));
-    sunpos_vec = glm::vec3(sunpos_matrix * glm::vec4(sunpos_0, 1.0));
+    std::cout << game_time << std::endl;
+    if (game_time <= DAY_DURATION) {
+        glm::mat4 sunpos_matrix = glm::mat4(1.0f);
+        sunpos_matrix = glm::rotate(sunpos_matrix, 
+                game_time * (float)(DAY_DURATION / TURNAROUND_DURATION) * (float)(2.0 * M_PI / DAY_DURATION) , 
+                glm::vec3(1.0f, 0.0f, 0.0f));
+        sunpos_vec = glm::vec3(sunpos_matrix * glm::vec4(sunpos_0, 1.0));
+        suncolor_vec = glm::vec3(1.5, 1.5, 1.5);
+    } else {
+        glm::mat4 sunpos_matrix = glm::mat4(1.0f);
+        sunpos_matrix =  glm::rotate(sunpos_matrix, 
+                (float)(game_time - DAY_DURATION) * (float)(NIGHT_DURATION / TURNAROUND_DURATION) * (float)(2.0 * M_PI / NIGHT_DURATION) , 
+                glm::vec3(1.0f, 0.0f, 0.0f));
+        sunpos_vec = glm::vec3(sunpos_matrix * glm::vec4(sunpos_0, 1.0));
+        suncolor_vec = glm::vec3(0.75, 0.66, 0.45);
+    }
     // skymap
-    skymap->update(sunpos_vec, glm::vec3(1.0, 1.0, 1.0));
+    skymap->update(sunpos_vec, game_time <= DAY_DURATION ? suncolor_vec : suncolor_vec * 0.1f);
     
     // sunlight
     auto sun_light = 
         reinterpret_cast<ALight*>(ResourceManager::getLight("global_sun_light"));
-    sun_light->setUpALight(glm::vec3(sunpos_vec), glm::vec3(1.0, 1.0, 1.0));
+    sun_light->setUpALight(glm::vec3(sunpos_vec), suncolor_vec);
     // skybox
     auto view = glm::mat4(glm::mat3(view_matrix));
     skybox->setPV(projection_matrix, view);
@@ -58,8 +71,9 @@ void GameScene::update() {
         0.2, 0.5, 0.2, 1.0);
     particle_sys->update(Context::delta_time, 1);
     // entity sun
-    float sunlight_color_factor = glm::dot(glm::normalize(sunpos_vec), glm::vec3(0.0, 1.0, 0.0));   
-    sun->update(normalize(sunpos_vec) * 0.8f, glm::vec3(1.5, 1.5 * (0.6 + powf(sunlight_color_factor, 1.2) * 0.4), 1.5 * (0.5 + powf(sunlight_color_factor, 1.2) * 0.5) ));
+    float sunlight_color_factor = glm::max(glm::dot(glm::normalize(sunpos_vec), glm::vec3(0.0, 1.0, 0.0)), 0.0f);   
+    sun->update(normalize(sunpos_vec - glm::vec3(0.0, 0.1, 0.0)) * 0.8f, 
+        suncolor_vec * glm::vec3(1.0, (0.6 + powf(sunlight_color_factor, 1.2) * 0.4), (0.5 + powf(sunlight_color_factor, 1.2) * 0.5) ));
     auto sunshader = ResourceManager::getShader("entitysun");
     sunshader.use();
     sunshader.setMat4("projection", projection_matrix);
