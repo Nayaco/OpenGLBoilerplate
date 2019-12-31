@@ -15,7 +15,6 @@ void GameScene::draw() const {
 
     firstpass->unbind();
 
-
     bloom->bind();
     bloom->bindTexture(firstpass->texture_buffers[FirstPass::TEX_BRIGHT_BUF]);
     bloom->draw(ResourceManager::getShader("bloom"));
@@ -159,9 +158,9 @@ void GameScene::initialize() {
     firstpass = new FirstPass(Context::window_width, Context::window_height, true, 1.0);
     firstpass->initialize();
 
-    terrain  = new Terrain(0.0f, 0.0f, 50.0f, 50.0f, 20.0f, 8);
-    terrain->setOctave( 10);
-    terrain->generate(texture_vector{ }, 1.0);
+    terrain  = new Terrain(0.0f, 0.0f, 50.0f, 50.0f, 30.0f, 8);
+    terrain->setOctave( 12);
+    terrain->generate(texture_vector{ }, 3.0);
 }
 
 void GameScene::destory() {

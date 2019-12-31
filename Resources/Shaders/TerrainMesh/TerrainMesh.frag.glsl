@@ -37,5 +37,5 @@ void main() {
     vec3 reflectDir = reflect(lightDir, normDir);
     
     float diffuse = max(dot(normDir, lightDir), 0.0);
-    FragColor = vec4(0.8 * diffuse * vec3(alight_0.color) + 0.2 * vec3(1.0, 1.0, 1.0), 1.0);
+    FragColor = vec4(1.0);//vec4(0.8 * diffuse * vec3(alight_0.color) + 0.2 * vec3(1.0, 1.0, 1.0), 1.0);
 }

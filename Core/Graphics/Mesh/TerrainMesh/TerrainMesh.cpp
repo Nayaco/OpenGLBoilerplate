@@ -28,8 +28,11 @@ void TerrainMesh::draw(Shader const &shader) const {
         shader.setInt(name + "_" + std::to_string(number), i);
         textures[i].bind();
     }
+    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     glBindVertexArray(VAO);
+    
     glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
+    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     glBindVertexArray(0);
     glActiveTexture(GL_TEXTURE0);
 }
@@ -86,16 +89,30 @@ void TerrainMesh::genVertexes(imap2d &heightmap) {
         }
     }
     
-    
+    bool horizontal = true, 
+         vertical = true;
     for (auto i = 0; i < tess_level * mesh_width; ++i) {
         for (auto j = 0; j < tess_level * mesh_height; ++j) {
-            indices.push_back(i * (tess_level * mesh_height + 1) + j);
-            indices.push_back(i * (tess_level * mesh_height + 1) + j + 1);
-            indices.push_back((i + 1) * (tess_level * mesh_height + 1) + j + 1);
-            
-            indices.push_back(i * (tess_level * mesh_height + 1) + j);
-            indices.push_back((i + 1) * (tess_level * mesh_height + 1) + j + 1);
-            indices.push_back((i + 1) * (tess_level * mesh_height + 1) + j);
+            if (horizontal ^ vertical) {
+                indices.push_back(i * (tess_level * mesh_height + 1) + j);
+                indices.push_back(i * (tess_level * mesh_height + 1) + j + 1);
+                indices.push_back((i + 1) * (tess_level * mesh_height + 1) + j + 1);
+            } else {
+                indices.push_back(i * (tess_level * mesh_height + 1) + j);
+                indices.push_back(i * (tess_level * mesh_height + 1) + j + 1);
+                indices.push_back((i + 1) * (tess_level * mesh_height + 1) + j);
+            } 
+            if (horizontal ^ vertical) {
+                indices.push_back(i * (tess_level * mesh_height + 1) + j);
+                indices.push_back((i + 1) * (tess_level * mesh_height + 1) + j + 1);
+                indices.push_back((i + 1) * (tess_level * mesh_height + 1) + j);
+            } else {
+                indices.push_back((i + 1) * (tess_level * mesh_height + 1) + j + 1);
+                indices.push_back(i * (tess_level * mesh_height + 1) + j + 1);
+                indices.push_back((i + 1) * (tess_level * mesh_height + 1) + j);
+            }
+            horizontal = !horizontal;
         }
+        vertical = !vertical;
     }
 }

@@ -32,23 +32,23 @@ void Terrain::generate(texture_vector const &other_textures, float tess_level) {
     terrainmap = noise::whiteNoise(width, height);
     terrainmap = noise::perlNoise(terrainmap, octave, width, height);
     
-    // for (auto i = 0; i < width; i++) {
-    //     for (auto j = 0; j < height; j++) {
-    //         int _j_c = 0;
-    //         int _j_cb = 0;
-    //         for (auto k = 0; k < 9; k++) {
-    //             int _k_l = (k / 3) - 1;
-    //             int _k_c = (k % 3) - 1;
-    //             _j_c += (i + _k_l > 0) && (i + _k_l < width) && (j + _k_c > 0) && (j + _k_c < height) && terrainmap[i + _k_l][j + _k_c] < height_threshold ?
-    //                 1 : 0;
-    //             _j_cb += (i + _k_l > 0) && (i + _k_l < width) && (j + _k_c > 0) && (j + _k_c < height) && terrainmap[i + _k_l][j + _k_c] > height_threshold_high ?
-    //                 1 : 0;
-    //         }
-    //         terrainmap[i][j] = _j_cb > 3 && terrainmap[i][j] < 0.65 && i != 0 && j != 0 && i != width - 1 && j != height - 1 ? 
-    //             terrainmap[i][j] * 1.5f : terrainmap[i][j];
-    //         terrainmap[i][j] = _j_c > 3 ? terrainmap[i][j] / 3.0f : terrainmap[i][j];
-    //     }
-    // }
+    for (auto i = 0; i < width; i++) {
+        for (auto j = 0; j < height; j++) {
+            int _j_c = 0;
+            int _j_cb = 0;
+            for (auto k = 0; k < 9; k++) {
+                int _k_l = (k / 3) - 1;
+                int _k_c = (k % 3) - 1;
+                _j_c += (i + _k_l > 0) && (i + _k_l < width) && (j + _k_c > 0) && (j + _k_c < height) && terrainmap[i + _k_l][j + _k_c] < height_threshold ?
+                    1 : 0;
+                _j_cb += (i + _k_l > 0) && (i + _k_l < width) && (j + _k_c > 0) && (j + _k_c < height) && terrainmap[i + _k_l][j + _k_c] > height_threshold_high ?
+                    1 : 0;
+            }
+            terrainmap[i][j] = _j_cb > 3 && terrainmap[i][j] < 0.65 && i != 0 && j != 0 && i != width - 1 && j != height - 1 ? 
+                terrainmap[i][j] * 1.5f : terrainmap[i][j];
+            terrainmap[i][j] = _j_c > 3 ? terrainmap[i][j] / 1.5f : terrainmap[i][j];
+        }
+    }
     for (auto i = 0; i < width; i++) {
             for (auto j = 0; j < height; j++) {
                 if(i == 0 && j != 0) {
