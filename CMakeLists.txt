@@ -47,12 +47,14 @@ set(SOURCES
     "${CMAKE_CURRENT_SOURCE_DIR}/Core/GameEngine.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/Core/Utility/Random.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/Core/Utility/Noise/Noise.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/Core/Utility/ByteBuffer.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/Core/Graphics/Mesh/TerrainMesh/TerrainMesh.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/Core/Graphics/Shader/Shader.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/Core/Graphics/Texture/Texture.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/Core/Graphics/Light/ALight.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/Core/Graphics/Light/PLight.cpp"
-    
+    "${CMAKE_CURRENT_SOURCE_DIR}/Core/Graphics/Framebuffer/FrameBuffer.cpp"
+     
     "${CMAKE_CURRENT_SOURCE_DIR}/Core/Context/Context.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/Core/Input/Input.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/Core/ResourceManager/ResourceManager.cpp"
@@ -65,7 +67,10 @@ set(SOURCES
     "${CMAKE_CURRENT_SOURCE_DIR}/Core/GameObjects/Terrain/Terrain.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/Core/GameObjects/Grass/GrassBlade.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/Core/GameObjects/ParticleSystem/ParticleSystem.cpp"
-
+    "${CMAKE_CURRENT_SOURCE_DIR}/Core/GameObjects/Tile/WaterGenerator.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/Core/GameObjects/Tile/WaterRenderer.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/Core/GameObjects/Tile/WaterTile.cpp"
+    
     "${CMAKE_CURRENT_SOURCE_DIR}/Core/PostProcessing/FirstPass/FirstPass.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/Core/PostProcessing/Bloom/Bloom.cpp"
         

@@ -11,6 +11,7 @@ Terrain::Terrain(float _x, float _z, float _width, float _height, float _terrain
     terrain_height = _terrain_h;
     this->octave = octave;
     neighbor[0] = neighbor[1] = neighbor[2] = neighbor[3] = nullptr; 
+    reflection_refraction = 0;
 }
 
 Terrain::~Terrain() { }
@@ -20,6 +21,7 @@ void Terrain::draw(Shader const &shader) const {
     model = glm::translate(model, glm::vec3(place_x, 0.0f, place_z));
     model = glm::scale(model, glm::vec3(width, terrain_height, height));
     shader.setMat4("model", model);
+    shader.setInt("reflection_refraction", reflection_refraction);
     terrainmesh->draw(shader);
 }
 
@@ -211,6 +213,15 @@ void Terrain::processNEGZ() {
                 j / ((float)width / 4.0f * lerp_level[i]));
         }
     }
-
 }
+
+void Terrain::enableReflectionRefration() {
+    reflection_refraction = 1;
+}
+
+void Terrain::disableReflectionRefration() {
+    reflection_refraction = 0;
+}
+
+
 

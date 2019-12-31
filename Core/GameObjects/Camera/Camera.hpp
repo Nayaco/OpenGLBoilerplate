@@ -35,6 +35,7 @@ public:
     float Zoom;
     float Far;
     float Near;
+    bool  reflect;
 
     Camera(glm::vec3 position = glm::vec3(0.0f, 0.0f, 0.0f), 
             glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f), 
@@ -48,7 +49,8 @@ public:
     virtual glm::mat4 GetViewMatrix() const override;
     virtual glm::mat4 GetProjectionMatrix() const override;
     virtual glm::vec3 GetViewPosition() const override;
-
+    virtual glm::vec2 GetNearFar() const;
+    virtual void Reflect(float height);
     void ProcessKeyboard(Camera_Movement direction, float deltaTime);
     void ProcessMouseMovement(float xoffset, float yoffset, GLboolean constrainPitch = true);
     void ProcessMouseScroll(float yoffset);

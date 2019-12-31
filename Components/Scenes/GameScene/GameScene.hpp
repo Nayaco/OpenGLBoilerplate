@@ -8,6 +8,7 @@
 #include "Core/GameObjects/Camera/Camera.hpp"
 
 #include "Core/Graphics/Mesh/TerrainMesh/TerrainMesh.hpp"
+#include "Core/Graphics/Framebuffer/FrameBuffer.h"
 #include "Core/ResourceManager/ResourceManager.hpp"
 #include "Core/Input/Input.hpp"
 #include "Core/GameObjects/Skymap/Skymap.hpp"
@@ -17,9 +18,11 @@
 #include "Core/GameObjects/Grass/GrassBlade.h"
 #include "Core/GameObjects/ParticleSystem/ParticleSystem.hpp"
 #include "Core/GameObjects/Cloud/Cloud.hpp"
+#include "Core/GameObjects/Tile/WaterTile.h"
+#include "Core/GameObjects/Tile/WaterRenderer.h"
+#include "Core/GameObjects/Tile/WaterGenerator.h"
 #include "Core/PostProcessing/FirstPass/FirstPass.hpp"
 #include "Core/PostProcessing/Bloom/Bloom.hpp"
-
 #include "Core/ExceptionHandle/ErrLog.hpp"
 
 #include "GameSceneConfig.hpp"
@@ -34,6 +37,13 @@ class GameScene : public BaseScene {
     Bloom *bloom;
     Cloud *cloud;
     Terrain *terrain;
+    WaterGenerator *waterGenerator;
+    WaterRenderer *waterRenderer;
+    WaterTile water;
+    FrameBuffer *reflectionBuffer;
+    FrameBuffer *refractionBuffer;
+
+
     
     bool  firstMouse = true;
     float lastX      = 0.0f;

@@ -24,7 +24,9 @@ public:
     int octave;
     float place_x, place_z;
     float width, height;   
-    float terrain_height; 
+    float terrain_height;
+    bool reflection_refraction;
+
     Terrain(float _x, float _z, float _width, float _height, float _terrain_h, int octave);
     ~Terrain();
 
@@ -33,7 +35,8 @@ public:
     virtual void setEdge(PLACEMENT exist_placement, Terrain* exist_terrain);
     virtual void generate(texture_vector const &other_textures, float tess_level);
     virtual void staticGenerate(imap2d const &heightmap, texture_vector const &other_textures, float tess_level);
-
+    virtual void enableReflectionRefration();
+    virtual void disableReflectionRefration();
     virtual void destroy();
 
 private:

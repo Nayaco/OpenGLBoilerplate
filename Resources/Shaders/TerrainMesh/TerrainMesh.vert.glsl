@@ -15,8 +15,14 @@ uniform mat4 model;
 uniform mat4 view;
 uniform mat4 projection;
 
+uniform int flection_fraction;
+
 void main() {
     vec4 pos = model * vec4(Position, 1.0f);
     vs_out.FragPosition = pos.xyz / pos.w;
     vs_out.GLPosition = gl_Position = projection * view * model * vec4(Position, 1.0f);
+    if (flection_fraction == 1) {
+        gl_ClipDistance[0] = dot(pos, vec4(0, 1, 0,  0.2));
+        gl_ClipDistance[1] = dot(pos, vec4(0, -1, 0, 0.2));
+    }
 }

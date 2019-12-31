@@ -2,15 +2,41 @@
 
 const glm::vec3 sunpos_0(0.0, 0.0, -1.0);
 
-GameScene::GameScene() { }
+GameScene::GameScene() : water(0, 0, 0){ }
+
 void GameScene::draw() const {
+    // terrain->enableReflectionRefration();
+    // glEnable(GL_CLIP_DISTANCE0);
+    // reflectionBuffer->bind();
+    // // reflect camera
+    // cam->Reflect(0.0);
+    // // render the object that need reflected
+    // terrain->draw(ResourceManager::getShader("terrainmesh"));
+    // reflectionBuffer->unbind(Context::window_width, Context::window_height);
+    // cam->Reflect(0.0);
+    // glDisable(GL_CLIP_DISTANCE0);
+
+    // glEnable(GL_CLIP_DISTANCE1);
+    // refractionBuffer-> bind();
+    // // // rfract only terrain is needed
+    // terrain->draw(ResourceManager::getShader("terrainmesh"));
+    // refractionBuffer->unbind(Context::window_width, Context::window_height);
+    // glDisable(GL_CLIP_DISTANCE1);
+    // terrain->disableReflectionRefration();
+
+    //-----------------------
     firstpass->bind();
 
+    terrain->draw(ResourceManager::getShader("terrainmesh"));
+    waterRenderer->render(water, *cam, 
+        reflectionBuffer->getColorBuffer(),
+        refractionBuffer->getColorBuffer(),
+        refractionBuffer->getDepthBuffer());
     sun->draw(ResourceManager::getShader("entitysun"));
-    // terrain->draw(ResourceManager::getShader("terrainmesh"));
+    
 
     particle_sys->draw(ResourceManager::getShader("particle"));
-
+   
     skybox->draw();
 
     firstpass->unbind();
@@ -19,8 +45,10 @@ void GameScene::draw() const {
     bloom->bindTexture(firstpass->texture_buffers[FirstPass::TEX_BRIGHT_BUF]);
     bloom->draw(ResourceManager::getShader("bloom"));
     bloom->unbind();
+    // std::cout<<"here"<<std::endl;
 
-    // firstpass->bindTexture(FirstPass::TEX_BRIGHT_BUF, FirstPass::TEX_COLOR_BUF);
+    // Texture rfcb; rfcb._id = refractionBuffer->getColorBuffer();//reflectionBuffer->getColorBuffer();
+    // firstpass->bindTexture(rfcb, FirstPass::TEX_COLOR_BUF);
     firstpass->bindTexture(bloom->bloom_textures[bloom->horizon], FirstPass::TEX_BRIGHT_BUF);
     firstpass->draw(ResourceManager::getShader("firstpass"));
 }
@@ -87,7 +115,7 @@ void GameScene::update() {
         cloud->bind();
         cloud->render();
         cloud->unbind();
-    }
+    } 
     //firstpass
     firstpass->setSize(Context::window_width, Context::window_height);
     bloom->setSize(Context::window_width, Context::window_height);
@@ -161,6 +189,12 @@ void GameScene::initialize() {
     terrain  = new Terrain(0.0f, 0.0f, 50.0f, 50.0f, 30.0f, 8);
     terrain->setOctave( 12);
     terrain->generate(texture_vector{ }, 3.0);
+
+    waterGenerator = new WaterGenerator();
+    water = waterGenerator->generate(800, 600);
+
+    reflectionBuffer = new FrameBuffer(800, 600, REFLECTION);
+    refractionBuffer = new FrameBuffer(800, 600, REFRACTION);
 }
 
 void GameScene::destory() {
