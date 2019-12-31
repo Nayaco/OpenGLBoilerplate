@@ -1,4 +1,4 @@
-#version 330 core
+# version 330 core
 
 // code from github.com/wwwtyro/glsl-atmosphere
 #define PI 3.141592

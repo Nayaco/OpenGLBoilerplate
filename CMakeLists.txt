@@ -1,11 +1,12 @@
 # Project definition
 cmake_minimum_required(VERSION 3.1)
 project(SKYLINE)
+set(CMAKE_CXX_STANDARD 11)
 
 if (LINUX) 
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -lGL -lX11 -lpthread -lXrandr -lXi")
 elseif(APPLE)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -lGL -pthread")
+    link_directories(/usr/local/lib)
 endif()
 
 set(LIBRARY_OUTPUT_PATH "${CMAKE_CURRENT_SOURCE_DIR}/Library")
@@ -70,15 +71,24 @@ set(SOURCES
         
     "${CMAKE_CURRENT_SOURCE_DIR}/Components/Scenes/GameScene/GameScene.cpp"
     )
+# copy to build folder
+file(GLOB RESOURCE_FILES "Resources")
+file(COPY
+        ${RESOURCE_FILES}
+        DESTINATION "${CMAKE_CURRENT_SOURCE_DIR}/Debug"
+        )
+
 set(EXE_NAME skyline)
+set(SYS_INCLUDE /usr/local/include/)
 add_executable(${EXE_NAME} ${SOURCES})
+include_directories(${SYS_INCLUDE})
 target_include_directories(${EXE_NAME} PRIVATE "${INC_DIR}")
 target_include_directories(${EXE_NAME} PRIVATE "${SRC_DIR}")
 target_include_directories(${EXE_NAME} PRIVATE "${GLM_DIR}")
 target_include_directories(${EXE_NAME} PRIVATE "${STB_DIR}")
 target_include_directories(${EXE_NAME} PRIVATE "${GLAD_DIR}/include")
 # target_include_directories(${EXE_NAME} PRIVATE "${ASSIMP_DIR}/include")
-if (ASSIMP_FOUND) 
+if (ASSIMP_FOUND)
     target_include_directories(${EXE_NAME} PRIVATE "${ASSIMP_INCLUDE_DIRS}")
     target_link_libraries(${EXE_NAME} "${ASSIMP_LIBRARIES}")
 endif()
@@ -88,4 +98,10 @@ target_link_libraries(${EXE_NAME} "glad" "${CMAKE_DL_LIBS}")
 target_link_libraries(${EXE_NAME} glfw)
 # target_link_libraries(${EXE_NAME} "${ASSIMP_DIR}/lib/libassimp.so.5.0.0")
 target_compile_definitions(${EXE_NAME} PRIVATE "GLFW_INCLUDE_NONE")
-set_property(TARGET ${EXE_NAME} PROPERTY CXX_STANDARD 11)
+target_link_libraries(${EXE_NAME} IL)
+
+if (APPLE)
+    target_link_libraries(${EXE_NAME} "-framework OpenGL")
+endif()
+
+#set_property(TARGET ${EXE_NAME} PROPERTY CXX_STANDARD 11)
