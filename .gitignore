@@ -6,3 +6,4 @@ Debug/*
 Library/*
 Makefile
 .vscode
+Dependences/assimp
