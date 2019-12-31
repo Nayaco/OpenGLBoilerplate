@@ -20,7 +20,8 @@ set(TEST_DIR "${CMAKE_CURRENT_SOURCE_DIR}/Tests")
 # ---------------------------------------------------------------------------------------------------------------------------#
 # Dependences
 # Dependence glfw
-find_package(glfw3)
+find_package(glfw3 REQUIRED)
+find_package(assimp REQUIRED)
 # set(GLFW_DIR "${DEP_DIR}/glfw3")
 # set(GLFW_BUILD_EXAMPLES OFF CACHE INTERNAL "Build the GLFW example programs")
 # set(GLFW_BUILD_TESTS OFF CACHE INTERNAL "Build the GLFW test programs")
@@ -36,7 +37,7 @@ set(STB_DIR "${DEP_DIR}")
 # Dependence glm
 set(GLM_DIR "${DEP_DIR}/glm")
 # Dependence assimp
-set(ASSIMP_DIR "${DEP_DIR}/assimp")
+# set(ASSIMP_DIR "${DEP_DIR}/assimp")
 # ---------------------------------------------------------------------------------------------------------------------------#
 # Executable definition and properties
 set(SOURCES 
@@ -76,11 +77,15 @@ target_include_directories(${EXE_NAME} PRIVATE "${SRC_DIR}")
 target_include_directories(${EXE_NAME} PRIVATE "${GLM_DIR}")
 target_include_directories(${EXE_NAME} PRIVATE "${STB_DIR}")
 target_include_directories(${EXE_NAME} PRIVATE "${GLAD_DIR}/include")
-target_include_directories(${EXE_NAME} PRIVATE "${ASSIMP_DIR}/include")
+# target_include_directories(${EXE_NAME} PRIVATE "${ASSIMP_DIR}/include")
+if (ASSIMP_FOUND) 
+    target_include_directories(${EXE_NAME} PRIVATE "${ASSIMP_INCLUDE_DIRS}")
+    target_link_libraries(${EXE_NAME} "${ASSIMP_LIBRARIES}")
+endif()
 # target_include_directories(${EXE_NAME} PRIVATE "${GLFW_DIR}/include")
 target_link_libraries(${EXE_NAME} "glad" "${CMAKE_DL_LIBS}")
 # target_link_libraries(${EXE_NAME} "glfw" "${GLFW_LIBRARIES}")
 target_link_libraries(${EXE_NAME} glfw)
-target_link_libraries(${EXE_NAME} "${ASSIMP_DIR}/lib/libassimp.so.5.0.0")
+# target_link_libraries(${EXE_NAME} "${ASSIMP_DIR}/lib/libassimp.so.5.0.0")
 target_compile_definitions(${EXE_NAME} PRIVATE "GLFW_INCLUDE_NONE")
 set_property(TARGET ${EXE_NAME} PROPERTY CXX_STANDARD 11)
