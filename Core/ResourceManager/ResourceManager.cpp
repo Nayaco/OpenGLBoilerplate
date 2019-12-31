@@ -68,6 +68,7 @@ void ResourceManager::Load2D(string const &tex_name, string const &tex_path) {
         }
         texture._format = format;
         texture._path   = tex_path;
+        texture._filter_max = texture._filter_min = GL_LINEAR;
         texture.LoadTexture2D(width, height, data);
         stbi_image_free(data);
         setTexture(tex_name, texture);

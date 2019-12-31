@@ -96,10 +96,15 @@ void Skybox::draw() const {
     skybox_shader.setInt("texture_skymap_ft", 4);
     skybox_shader.setInt("texture_skymap_bk", 5);
 
+    skybox_shader.setInt("cloud_texture", 6);
+    
     for (auto i = 0; i < 6; ++i) {
         glActiveTexture(GL_TEXTURE0 + i);
         skybox_textures[i].bind();
     }
+    glActiveTexture(GL_TEXTURE6);
+    cloud_textrue.bind();
+
     glBindVertexArray(VAO);
     glDrawArrays(GL_TRIANGLES, 0, 36);
     
@@ -107,6 +112,10 @@ void Skybox::draw() const {
     glBindVertexArray(0);
     glActiveTexture(GL_TEXTURE0);
     glDepthFunc(GL_LESS);
+}
+
+void Skybox::bindCloud(Texture const &_cloud_texture) {
+    cloud_textrue = _cloud_texture;
 }
 
 void Skybox::setPV(glm::mat4 const &projection, glm::mat4 const &view) {

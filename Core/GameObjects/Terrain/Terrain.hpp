@@ -1,5 +1,5 @@
 #ifndef TERRAIN_HPP
-#define TERRIAN_HPP
+#define TERRAIN_HPP
 
 #include "Core/Common.hpp"
 #include "Core/Utility/Random.hpp"
@@ -8,9 +8,9 @@
 #include "Core/Graphics/Shader/Shader.hpp"
 #include "Core/Graphics/Texture/Texture.hpp"
 #include "Core/Graphics/Mesh/TerrainMesh/TerrainMesh.hpp"
+#include "Core/Graphics/Drawable.hpp"
 
-
-class Terrain {
+class Terrain : public Drawable {
 public:
 
     enum class PLACEMENT: int {
@@ -28,19 +28,19 @@ public:
     Terrain(float _x, float _z, float _width, float _height, float _terrain_h, int octave);
     ~Terrain();
 
-    void draw(Shader const &shader) const;
-    void setOctave(const int octave);
-    void setEdge(PLACEMENT exist_placement, Terrain* exist_terrain);
-    void generate(texture_vector const &other_textures, float tess_level);
-    void staticGenerate(imap2d const &heightmap, texture_vector const &other_textures, float tess_level);
+    virtual void draw(Shader const &shader) const override;
+    virtual void setOctave(const int octave);
+    virtual void setEdge(PLACEMENT exist_placement, Terrain* exist_terrain);
+    virtual void generate(texture_vector const &other_textures, float tess_level);
+    virtual void staticGenerate(imap2d const &heightmap, texture_vector const &other_textures, float tess_level);
 
-    void destroy();
+    virtual void destroy();
 
 private:
-    void processPOSX();
-    void processNEGX();
-    void processPOSZ();
-    void processNEGZ();
+    virtual void processPOSX();
+    virtual void processNEGX();
+    virtual void processPOSZ();
+    virtual void processNEGZ();
     
 };
 

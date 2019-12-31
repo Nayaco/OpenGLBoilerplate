@@ -172,6 +172,7 @@ imap2d perlNoise(imap2d const& white_noise, int octave_count, int width, int hei
             perl_noise[i][j] /= total_amp;
         }
     }
+    
     seaLevelize(perl_noise);
 
     return perl_noise;

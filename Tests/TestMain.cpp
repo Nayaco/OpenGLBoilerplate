@@ -1,12 +1,12 @@
-#ifndef TEST_PERLIN_HPP
-#define TEST_PERLIN_HPP
+// #define STB_IMAGE_IMPLEMENTATION
+
 #define STB_IMAGE_IMPLEMENTATION
 #include "Core/Common.hpp"
 #include "Core/Utility/Noise/Noise.hpp"
 #include "Core/Utility/Random.hpp"
 
+// #include <stb_image.h>
 #include <stb_image_write.h>
-
 static void ppmRead(char* filename, unsigned char* data, int* w, int* h) {
     char header[1024];
     FILE* fp = NULL;
@@ -34,9 +34,11 @@ static void ppmWrite(const char* filename, unsigned char* data, int w, int h) {
     fclose(fp);
 }
 using std::cout;
+
 void perl_image() {
     size_t _size = 50;
     unsigned char buff[_size * _size];
+    unsigned char *buffk = new unsigned char[5];
     imap2d white_map = noise::whiteNoise(_size, _size);
     for (auto i = 0; i < _size; ++i) 
         for(auto j = 0; j < _size; ++j) buff[i * _size + j] = round(white_map[i][j] * 255);
@@ -45,9 +47,12 @@ void perl_image() {
     for (auto i = 0; i < _size; ++i) 
         for(auto j = 0; j < _size; ++j) buff[i * _size + j] = round(perl_map[i][j] * 255);    
     ppmWrite("Resources/perl.ppm", buff, _size, _size);    
+    // stbi_image_free(buffk);
     stbi_write_bmp("Resources/perl.bmp", _size, _size, 1, buff);
 }
 
-
-
-#endif
+int main(int argc, char const *argv[])
+{
+    perl_image();
+    return 0;
+}

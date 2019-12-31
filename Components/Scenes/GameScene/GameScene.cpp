@@ -23,6 +23,7 @@ void GameScene::draw() const {
     bloom->draw(ResourceManager::getShader("bloom"));
     bloom->unbind();
 
+    // firstpass->bindTexture(cloud->cloud_tex, FirstPass::TEX_COLOR_BUF);
     firstpass->bindTexture(bloom->bloom_textures[bloom->horizon], FirstPass::TEX_BRIGHT_BUF);
     firstpass->draw(ResourceManager::getShader("firstpass"));
 }
@@ -32,8 +33,8 @@ void GameScene::update() {
     game_time = Context::game_time - floor((Context::game_time / TURNAROUND_DURATION)) * TURNAROUND_DURATION;
     projection_matrix = cam->GetProjectionMatrix();
     view_matrix = cam->GetViewMatrix();
+    auto view = glm::mat4(glm::mat3(view_matrix));
     // sunposition 
-    std::cout << game_time << std::endl;
     if (game_time <= DAY_DURATION) {
         glm::mat4 sunpos_matrix = glm::mat4(1.0f);
         sunpos_matrix = glm::rotate(sunpos_matrix, 
@@ -49,15 +50,17 @@ void GameScene::update() {
         sunpos_vec = glm::vec3(sunpos_matrix * glm::vec4(sunpos_0, 1.0));
         suncolor_vec = glm::vec3(0.75, 0.66, 0.45);
     }
-    // skymap
+    // skymap and cloud
     skymap->update(sunpos_vec, game_time <= DAY_DURATION ? suncolor_vec : suncolor_vec * 0.1f);
-    
+    // auto cloud_shader = ResourceManager::getShader("cloud");
+    // cloud_shader.use();
+    // cloud_shader.setMat4("projection", projection_matrix);
+    // cloud_shader.setMat4("view", view_matrix);
     // sunlight
     auto sun_light = 
         reinterpret_cast<ALight*>(ResourceManager::getLight("global_sun_light"));
     sun_light->setUpALight(glm::vec3(sunpos_vec), suncolor_vec);
     // skybox
-    auto view = glm::mat4(glm::mat3(view_matrix));
     skybox->setPV(projection_matrix, view);
     // particle system
     auto particleshader = ResourceManager::getShader("particle");
@@ -86,6 +89,10 @@ void GameScene::update() {
         skymap->bind();        
         skymap->render();
         skymap->unbind();
+
+        cloud->bind();
+        cloud->render();
+        cloud->unbind();
     }
     //firstpass
     firstpass->setSize(Context::window_width, Context::window_height);
@@ -118,18 +125,25 @@ void GameScene::initialize() {
     ResourceManager::loadVGF("particle", "Resources/Shaders/Particle/particle_graph");
     ResourceManager::loadVF("firstpass", "Resources/Shaders/FirstPass/firstPass");
     ResourceManager::loadVF("bloom", "Resources/Shaders/Bloom/bloom");
+    ResourceManager::loadVF("cloud", "Resources/Shaders/Cloud/cloud");
 
     ResourceManager::GenALisht("global_sun_light", 0, glm::vec3(0.0, 1.0, 0.0), glm::vec3(1.0, 1.0, 1.0));
 
     ResourceManager::Load2D("sprite", "Resources/Textures/Particle/particle.png");
 
     cam      = new Camera(glm::vec3(0.0f, 0.0f, 2.0f));
-    
+
+    cloud  = new Cloud(ResourceManager::getShader("cloud"));
+    cloud->generate();
+    cloud->initialize();
+
     skymap = new Skymap(ResourceManager::getShader("skymap"));
     skymap->setTextureSize(100, 100);
     skymap->initialize();
 
     skybox   = new Skybox(skymap->skymap_texture, ResourceManager::getShader("skybox"));
+    skybox->bindCloud(cloud->cloud_tex);
+
     sun      = new EntitySun();
 
     particle_sys = new ParticleSystem(ResourceManager::getTexture("sprite"), 200);

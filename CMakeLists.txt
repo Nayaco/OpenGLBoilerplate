@@ -57,6 +57,7 @@ set(SOURCES
     
     "${CMAKE_CURRENT_SOURCE_DIR}/Core/GameObjects/Skymap/Skymap.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/Core/GameObjects/Camera/Camera.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/Core/GameObjects/Cloud/Cloud.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/Core/GameObjects/Skybox/Skybox.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/Core/GameObjects/Skybox/EntitySun.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/Core/GameObjects/Terrain/Terrain.cpp"
@@ -65,9 +66,8 @@ set(SOURCES
 
     "${CMAKE_CURRENT_SOURCE_DIR}/Core/PostProcessing/FirstPass/FirstPass.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/Core/PostProcessing/Bloom/Bloom.cpp"
-    
+        
     "${CMAKE_CURRENT_SOURCE_DIR}/Components/Scenes/GameScene/GameScene.cpp"
-    # "${CMAKE_CURRENT_SOURCE_DIR}/Components/Scenes/Demo/DemoScene.cpp"
     )
 set(EXE_NAME skyline)
 add_executable(${EXE_NAME} ${SOURCES})

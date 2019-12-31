@@ -24,101 +24,107 @@ static vector<string> SKYMAP_NAMES = {
 
 DemoScene::DemoScene() { }
 void DemoScene::draw() const {
-    glm::mat4 projection = cam->GetProjectionMatrix();
-    glm::mat4 view = cam->GetViewMatrix();
+    // glm::mat4 projection = cam->GetProjectionMatrix();
+    // glm::mat4 view = cam->GetViewMatrix();
     
-    Shader render_shader = ResourceManager::getShader(TER_SHADER_NAME);
-    auto light = reinterpret_cast<ALight*>(ResourceManager::getLight(ALIGHT_NAME));
+    // Shader render_shader = ResourceManager::getShader(TER_SHADER_NAME);
+    // auto light = reinterpret_cast<ALight*>(ResourceManager::getLight(ALIGHT_NAME));
     
-    skymap_time += Context::delta_time; 
-    if (skymap_time > 0.05) {
-        skymap_time = 0;
-        skymap->bind();
-        glm::vec3 sun_poss(0.0, 0.0, -1.0);
-        glm::mat4 sunposx = glm::mat4(1.0f);
-        int k = 0.1f * Context::game_time / (M_PI);
-        sunposx  = glm::rotate(sunposx, 0.1f * Context::game_time - (float)k * (float)M_PI, glm::vec3(0.4f, 0.9f, 0.0f));
-        skymap->update(glm::vec3(sunposx * glm::vec4(sun_poss, 1.0)), glm::vec3(1.0, 1.0, 1.0));
-        skymap->render();
-        skymap->unbind();
-        light->setUpALight(glm::vec3(sunposx * glm::vec4(sun_poss, 1.0)), glm::vec3(1.0, 1.0, 1.0));
-    }
+    // skymap_time += Context::delta_time; 
+    // if (skymap_time > 0.05) {
+    //     skymap_time = 0;
+    //     skymap->bind();
+    //     glm::vec3 sun_poss(0.0, 0.0, -1.0);
+    //     glm::mat4 sunposx = glm::mat4(1.0f);
+    //     int k = 0.1f * Context::game_time / (M_PI);
+    //     sunposx  = glm::rotate(sunposx, 0.1f * Context::game_time - (float)k * (float)M_PI, glm::vec3(0.4f, 0.9f, 0.0f));
+    //     skymap->update(glm::vec3(sunposx * glm::vec4(sun_poss, 1.0)), glm::vec3(1.0, 1.0, 1.0));
+    //     skymap->render();
+    //     skymap->unbind();
+    //     light->setUpALight(glm::vec3(sunposx * glm::vec4(sun_poss, 1.0)), glm::vec3(1.0, 1.0, 1.0));
+    // }
 
-    render_shader.use();
-    render_shader.setMat4("projection", projection);
-    render_shader.setMat4("view", view);
-    render_shader.setVec3("viewpos", cam->GetViewPosition());
-    light->enable();
-    light->use(render_shader);
+    // render_shader.use();
+    // render_shader.setMat4("projection", projection);
+    // render_shader.setMat4("view", view);
+    // render_shader.setVec3("viewpos", cam->GetViewPosition());
+    // light->enable();
+    // light->use(render_shader);
 
-    // terrain->draw(render_shader);
-    // terrain2->draw(render_shader);
-    // terrain3->draw(render_shader);
-    // terrain4->draw(render_shader);
-    grass->setViewMatrix(view);
-    grass->setProjectionMatrix(projection);
-    grass->render();
+    // // terrain->draw(render_shader);
+    // // terrain2->draw(render_shader);
+    // // terrain3->draw(render_shader);
+    // // terrain4->draw(render_shader);
+    // grass->setViewMatrix(view);
+    // grass->setProjectionMatrix(projection);
+    // grass->render();
     
-    view = glm::mat4(glm::mat3(view));
-    // skybox->skybox_shader.use();
-    skybox->skybox_shader.setMat4("projection", projection);
-    skybox->skybox_shader.setMat4("view", view);
-    skybox->draw();
+    // view = glm::mat4(glm::mat3(view));
+    // // skybox->skybox_shader.use();
+    // skybox->skybox_shader.setMat4("projection", projection);
+    // skybox->skybox_shader.setMat4("view", view);
+    // skybox->draw();
+    testmap->draw(ResourceManager::getShader("tests"));
+    // glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    // glClearColor(1.0, 1.0, 1.0, 1.0);
+
 }
 
 void DemoScene::initialize() {
-    ResourceManager::loadVGF(TER_SHADER_NAME, TER_SHADER);
-    // ResourceManager::loadVF("test2", "Resources/Shaders/Test2/sc");
-    // ResourceManager::loadVF(SKY_SHADER_NAME, SKY_SHADER);
-    ResourceManager::loadVF("skymap", 
-                            "Resources/Shaders/SkyMap/skymap");
-    ResourceManager::loadVF("skybox", 
-                            "Resources/Shaders/Skybox/skybox");
-    ResourceManager::loadVF("grassblade", 
-                            "Resources/Shaders/GrassBlade/grassBlades");
+    // ResourceManager::loadVGF(TER_SHADER_NAME, TER_SHADER);
+    // // ResourceManager::loadVF("test2", "Resources/Shaders/Test2/sc");
+    // // ResourceManager::loadVF(SKY_SHADER_NAME, SKY_SHADER);
+    // ResourceManager::loadVF("skymap", 
+    //                         "Resources/Shaders/SkyMap/skymap");
+    // ResourceManager::loadVF("skybox", 
+    //                         "Resources/Shaders/Skybox/skybox");
+    // ResourceManager::loadVF("grassblade", 
+    //                         "Resources/Shaders/GrassBlade/grassBlades");
+    ResourceManager::loadVF("tests", "Resources/Shaders/Tests/test");
+    // ResourceManager::GenALisht(ALIGHT_NAME, 0, glm::vec3(0.0, 1.0, 0.0), glm::vec3(1.0, 1.0, 1.0));
+    // // ResourceManager::Load3D(SKY_TEX_NAME, SKYMAP_NAMES);
+    // // Texture sky_tex = ResourceManager::getTexture(SKY_TEX_NAME);
+    // staticmap = noise::getFile("Resources/Textures/DemoTerrainTexture/TerrainMesh-bak3.ppm");
     
-    ResourceManager::GenALisht(ALIGHT_NAME, 0, glm::vec3(0.0, 1.0, 0.0), glm::vec3(1.0, 1.0, 1.0));
-    // ResourceManager::Load3D(SKY_TEX_NAME, SKYMAP_NAMES);
-    // Texture sky_tex = ResourceManager::getTexture(SKY_TEX_NAME);
-    staticmap = noise::getFile("Resources/Textures/DemoTerrainTexture/TerrainMesh-bak3.ppm");
-    
-    texture_vector sky_texs;
-    skymap = new Skymap(ResourceManager::getShader("skymap"));
-    skymap->setTextureSize(80, 80);
-    skymap->initialize();
-    skymap->bind();
-    skymap->update(glm::vec3(0.0, 0.1, -1.0), glm::vec3(1.0, 1.0, 1.0));
-    skymap->render();
-    skymap->unbind();
+    // texture_vector sky_texs;
+    // skymap = new Skymap(ResourceManager::getShader("skymap"));
+    // skymap->setTextureSize(80, 80);
+    // skymap->initialize();
+    // skymap->bind();
+    // skymap->update(glm::vec3(0.0, 0.1, -1.0), glm::vec3(1.0, 1.0, 1.0));
+    // skymap->render();
+    // skymap->unbind();
         
-    terrain  = new Terrain(0.0f, 0.0f, 50.0f, 50.0f, 20.0f, 8);
-    terrain2 = new Terrain(-50.0f, 0.0f, 50.0f, 50.0f, 20.0f, 8);
-    terrain3 = new Terrain(-50.0f, -50.0f, 50.0f, 50.0f, 20.0f, 8);
-    terrain4 = new Terrain(0.0f, -50.0f, 50.0f, 50.0f, 20.0f, 8);
+    // terrain  = new Terrain(0.0f, 0.0f, 50.0f, 50.0f, 20.0f, 8);
+    // terrain2 = new Terrain(-50.0f, 0.0f, 50.0f, 50.0f, 20.0f, 8);
+    // terrain3 = new Terrain(-50.0f, -50.0f, 50.0f, 50.0f, 20.0f, 8);
+    // terrain4 = new Terrain(0.0f, -50.0f, 50.0f, 50.0f, 20.0f, 8);
     
-    skybox   = new Skybox(skymap->skymap_texture, ResourceManager::getShader("skybox"));
+    // skybox   = new Skybox(skymap->skymap_texture, ResourceManager::getShader("skybox"));
     
-    cam      = new Camera(glm::vec3(0.0f, 15.0f, 50.0f));
+    // cam      = new Camera(glm::vec3(0.0f, 15.0f, 50.0f));
     
-    grass = new GrassBlade(glm::vec3(.2f, .8f, .2f), glm::vec2(0.0), glm::vec2(10.0, 10.0), 2.0, ResourceManager::getShader("grassblade"));
+    // grass = new GrassBlade(glm::vec3(.2f, .8f, .2f), glm::vec2(0.0), glm::vec2(10.0, 10.0), 2.0, ResourceManager::getShader("grassblade"));
 
-    terrain->setOctave( 11);
-    terrain2->setOctave(11);
-    terrain3->setOctave(11);
-    terrain4->setOctave(11);
+    // terrain->setOctave( 11);
+    // terrain2->setOctave(11);
+    // terrain3->setOctave(11);
+    // terrain4->setOctave(11);
 
-    terrain2->setEdge(Terrain::PLACEMENT::POSX, terrain);
-    terrain3->setEdge(Terrain::PLACEMENT::POSZ, terrain2);
-    terrain4->setEdge(Terrain::PLACEMENT::NEGX, terrain3);    
-    terrain4->setEdge(Terrain::PLACEMENT::POSZ, terrain);
+    // terrain2->setEdge(Terrain::PLACEMENT::POSX, terrain);
+    // terrain3->setEdge(Terrain::PLACEMENT::POSZ, terrain2);
+    // terrain4->setEdge(Terrain::PLACEMENT::NEGX, terrain3);    
+    // terrain4->setEdge(Terrain::PLACEMENT::POSZ, terrain);
     
-    terrain->staticGenerate(staticmap, texture_vector{ }, 3.0);
-    // terrain->generate(texture_vector{ } , 1.0);
-    terrain2->generate(texture_vector{ }, 3.0);
-    terrain3->generate(texture_vector{ }, 3.0);
-    terrain4->generate(texture_vector{ }, 3.0);
+    // terrain->staticGenerate(staticmap, texture_vector{ }, 3.0);
+    // // terrain->generate(texture_vector{ } , 1.0);
+    // terrain2->generate(texture_vector{ }, 3.0);
+    // terrain3->generate(texture_vector{ }, 3.0);
+    // terrain4->generate(texture_vector{ }, 3.0);
     
-    
+    testmap = new NPMT();
+    testmap->init();
+
     mmove = std::bind(&DemoScene::mouseMovecallback, this, std::placeholders::_1, std::placeholders::_2);
     mscroll = std::bind(&DemoScene::scrollcallback, this, std::placeholders::_1);
     kup = std::bind(&DemoScene::keyUp, this);

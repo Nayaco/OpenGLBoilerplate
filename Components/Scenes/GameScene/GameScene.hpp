@@ -16,6 +16,7 @@
 #include "Core/GameObjects/Terrain/Terrain.hpp"
 #include "Core/GameObjects/Grass/GrassBlade.h"
 #include "Core/GameObjects/ParticleSystem/ParticleSystem.hpp"
+#include "Core/GameObjects/Cloud/Cloud.hpp"
 #include "Core/PostProcessing/FirstPass/FirstPass.hpp"
 #include "Core/PostProcessing/Bloom/Bloom.hpp"
 
@@ -31,6 +32,7 @@ class GameScene : public BaseScene {
     ParticleSystem *particle_sys;
     FirstPass *firstpass;
     Bloom *bloom;
+    Cloud *cloud;
     
     bool  firstMouse = true;
     float lastX      = 0.0f;

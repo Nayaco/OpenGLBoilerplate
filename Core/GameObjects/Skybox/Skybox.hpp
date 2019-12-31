@@ -20,6 +20,8 @@ public:
     glm::vec3      sky_color;
     bool           use_cube_map;
     
+    Texture        cloud_textrue;
+    
     // Skybox(Texture texture, Shader const& shader);
     Skybox(texture_vector cube, Shader const& shader);
     virtual ~Skybox();
@@ -27,7 +29,7 @@ public:
     // virtual void draw(Shader const &shader) const;
     virtual void draw() const;
     virtual void update(texture_vector cube);
-
+    virtual void bindCloud(Texture const &_cloud_texture);
     virtual void setPV(glm::mat4 const &projection, glm::mat4 const &view);    
 };
 

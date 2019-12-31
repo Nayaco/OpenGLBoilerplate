@@ -1,4 +1,4 @@
-#ifndef DEMPSCENE_HPP
+#ifndef DEMOSCENE_HPP
 #define DEMOSCENE_HPP
 
 #include "Core/Common.hpp"
@@ -15,6 +15,9 @@
 
 #include "DemoSceneConfig.hpp"
 #include "Core/ExceptionHandle/ErrLog.hpp"
+
+#include "Components/Tests/Noisemap/Noisemap.hpp"
+
 class DemoScene : public BaseScene {
 public:
     Terrain *terrain;
@@ -28,6 +31,8 @@ public:
     Skybox *skybox;
     Camera *cam;
     
+    NPMT *testmap;
+
     int screen_width;
     int screen_height;
     float cut_near = 0.1f;
@@ -48,7 +53,7 @@ public:
     virtual void draw() const override;
     virtual void destory() override;
     virtual void update() override;
-
+    
     void mouseMovecallback(float xpos, float ypos);
     void scrollcallback(float yoffset);
 
