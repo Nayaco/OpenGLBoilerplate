@@ -4,19 +4,17 @@ const glm::vec3 sunpos_0(0.0, 0.0, -1.0);
 
 GameScene::GameScene() { }
 void GameScene::draw() const {
-    auto sun_light = 
-        reinterpret_cast<ALight*>(ResourceManager::getLight("global_sun_light"));
-    sun_light->enable();
-    
     firstpass->bind();
 
-    sun->draw(ResourceManager::getShader("entitysun"));
+    // sun->draw(ResourceManager::getShader("entitysun"));
+    terrain->draw(ResourceManager::getShader("terrainmesh"));
 
     particle_sys->draw(ResourceManager::getShader("particle"));
 
     skybox->draw();
 
     firstpass->unbind();
+
 
     bloom->bind();
     bloom->bindTexture(firstpass->texture_buffers[FirstPass::TEX_BRIGHT_BUF]);
@@ -52,14 +50,11 @@ void GameScene::update() {
     }
     // skymap and cloud
     skymap->update(sunpos_vec, game_time <= DAY_DURATION ? suncolor_vec : suncolor_vec * 0.1f);
-    // auto cloud_shader = ResourceManager::getShader("cloud");
-    // cloud_shader.use();
-    // cloud_shader.setMat4("projection", projection_matrix);
-    // cloud_shader.setMat4("view", view_matrix);
     // sunlight
     auto sun_light = 
         reinterpret_cast<ALight*>(ResourceManager::getLight("global_sun_light"));
     sun_light->setUpALight(glm::vec3(sunpos_vec), suncolor_vec);
+    sun_light->enable();
     // skybox
     skybox->setPV(projection_matrix, view);
     // particle system
@@ -97,6 +92,13 @@ void GameScene::update() {
     //firstpass
     firstpass->setSize(Context::window_width, Context::window_height);
     bloom->setSize(Context::window_width, Context::window_height);
+    //terrain
+    Shader terrain_shader = ResourceManager::getShader("terrainmesh");
+    terrain_shader.use();
+    terrain_shader.setMat4("projection", projection_matrix);
+    terrain_shader.setMat4("view", view_matrix);
+    terrain_shader.setVec3("viewpos", cam->GetViewPosition());
+    sun_light->use(terrain_shader);
 }
 
 void GameScene::initialize() {
@@ -118,6 +120,7 @@ void GameScene::initialize() {
     Input::bindKeydownCallback(Input::Keys::KEY_D, &keyd_func);
     Input::bindKeydownCallback(Input::Keys::KEY_W, &keyw_func);
     
+    ResourceManager::loadVGF("terrainmesh", "Resources/Shaders/TerrainMesh/TerrainMesh");
     ResourceManager::loadVF("skymap", "Resources/Shaders/SkyMap/skymap");
     ResourceManager::loadVF("skybox", "Resources/Shaders/Skybox/skybox");
     ResourceManager::loadVF("grassblade", "Resources/Shaders/GrassBlade/grassBlades");
@@ -155,6 +158,10 @@ void GameScene::initialize() {
 
     firstpass = new FirstPass(Context::window_width, Context::window_height, true, 1.0);
     firstpass->initialize();
+
+    terrain  = new Terrain(0.0f, 0.0f, 50.0f, 50.0f, 20.0f, 8);
+    terrain->setOctave( 10);
+    terrain->generate(texture_vector{ }, 1.0);
 }
 
 void GameScene::destory() {

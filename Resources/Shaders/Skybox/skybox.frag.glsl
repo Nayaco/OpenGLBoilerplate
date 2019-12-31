@@ -35,7 +35,7 @@ void main() {
         // vec3 cloud_tmp_coord = tmpos.xz
         // vec2 cloud_tex_coord_offset = 
         cloud_tex_coord = (vec2(tmpos.xz * (cloud_coord_height / tmpos.y)) / cloud_tex_edge_len);
-        cloud_tex_coord = cloud_tex_coord * pow(dot(cloud_tex_coord, cloud_tex_coord), 0.8) / pow(2.0, 0.8);
+        cloud_tex_coord = cloud_tex_coord * pow(dot(cloud_tex_coord, cloud_tex_coord), 0.4) / pow(2.0, 0.4);
         cloud_tex_coord = (cloud_tex_coord + 1.0) / 2.0;
     }
 

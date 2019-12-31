@@ -13,7 +13,7 @@ Cloud::Cloud(Shader const &shader) :
         Vertex {position:glm::vec3( 1.0,  1.0, 0.0), normal:glm::vec3(0.0), texCoords:glm::vec2(1.0, 1.0)},
         Vertex {position:glm::vec3( 1.0, -1.0, 0.0), normal:glm::vec3(0.0), texCoords:glm::vec2(1.0, 0.0)},
     }, cloud_shader(shader) {
-    width = height = 800.0;
+    width = height = 1600.0;
     cloud_x = cloud_z = 0.0;
     octave = 12;
     setupMesh();
@@ -129,7 +129,6 @@ void Cloud::generate() {
             maxH = glm::max(maxH, originmap[i][j]);
         }
     }
-    std::cout<<maxH<<std::endl;
     for (int i = 0; i < 2 * width; i++) {
         for (int j = 0; j < 2 * height; j++) {
             originmap[i][j] /= maxH;

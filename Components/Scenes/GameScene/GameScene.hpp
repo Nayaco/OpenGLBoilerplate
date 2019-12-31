@@ -33,6 +33,7 @@ class GameScene : public BaseScene {
     FirstPass *firstpass;
     Bloom *bloom;
     Cloud *cloud;
+    Terrain *terrain;
     
     bool  firstMouse = true;
     float lastX      = 0.0f;

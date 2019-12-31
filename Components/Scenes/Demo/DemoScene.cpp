@@ -84,7 +84,7 @@ void DemoScene::initialize() {
     // ResourceManager::GenALisht(ALIGHT_NAME, 0, glm::vec3(0.0, 1.0, 0.0), glm::vec3(1.0, 1.0, 1.0));
     // // ResourceManager::Load3D(SKY_TEX_NAME, SKYMAP_NAMES);
     // // Texture sky_tex = ResourceManager::getTexture(SKY_TEX_NAME);
-    // staticmap = noise::getFile("Resources/Textures/DemoTerrainTexture/TerrainMesh-bak3.ppm");
+    // staticmap = noise::getFile("Resources/Textures/DemoTerrainTestaticmap = noise::getFile("Resources/Textures/DemoTerrainTexture/TerrainMesh-bak3.ppm");
     
     // texture_vector sky_texs;
     // skymap = new Skymap(ResourceManager::getShader("skymap"));
