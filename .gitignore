@@ -6,4 +6,5 @@ Debug/*
 Library/*
 Makefile
 .vscode
+cmake-build-debug
 Dependences/assimp
