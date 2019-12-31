@@ -6,8 +6,8 @@ GameScene::GameScene() { }
 void GameScene::draw() const {
     firstpass->bind();
 
-    // sun->draw(ResourceManager::getShader("entitysun"));
-    terrain->draw(ResourceManager::getShader("terrainmesh"));
+    sun->draw(ResourceManager::getShader("entitysun"));
+    // terrain->draw(ResourceManager::getShader("terrainmesh"));
 
     particle_sys->draw(ResourceManager::getShader("particle"));
 
@@ -20,7 +20,7 @@ void GameScene::draw() const {
     bloom->draw(ResourceManager::getShader("bloom"));
     bloom->unbind();
 
-    // firstpass->bindTexture(cloud->cloud_tex, FirstPass::TEX_COLOR_BUF);
+    // firstpass->bindTexture(FirstPass::TEX_BRIGHT_BUF, FirstPass::TEX_COLOR_BUF);
     firstpass->bindTexture(bloom->bloom_textures[bloom->horizon], FirstPass::TEX_BRIGHT_BUF);
     firstpass->draw(ResourceManager::getShader("firstpass"));
 }

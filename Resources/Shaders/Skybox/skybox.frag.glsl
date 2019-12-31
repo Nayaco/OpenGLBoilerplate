@@ -1,4 +1,4 @@
-#version 440 core
+#version 330 core
 
 // layout (location=0) in vec3 ColorPosition;
 // layout (location=1) in vec3 ColorTexCoord;
@@ -10,7 +10,9 @@ in VS_OUT {
     vec3 ColorType;
 } fs_in;
 
-out vec4 FragColor;
+layout (location=0) out vec4 FragColor;
+layout (location=1) out vec4 Brightness;
+layout (location=2) out vec4 Clouding;
 
 uniform sampler2D texture_skymap_rt;
 uniform sampler2D texture_skymap_lf;
@@ -28,12 +30,9 @@ void main() {
     float cloud_tex_radius = 10.0;
     vec3 cloud_tex_sphere_center = vec3(0.0, -9.0, 0.0);
     vec2 cloud_tex_coord = vec2(-1.0, -1.0);
-
+    Clouding = vec4(0.0);
     vec3 tmpos = normalize(fs_in.ColorPosition * 2.0 - 1.0);
     if (tmpos.y > 0) {
-        // float cloud_rad_offset = length(tmpos - cloud_tex_sphere_center);
-        // vec3 cloud_tmp_coord = tmpos.xz
-        // vec2 cloud_tex_coord_offset = 
         cloud_tex_coord = (vec2(tmpos.xz * (cloud_coord_height / tmpos.y)) / cloud_tex_edge_len);
         cloud_tex_coord = cloud_tex_coord * pow(dot(cloud_tex_coord, cloud_tex_coord), 0.4) / pow(2.0, 0.4);
         cloud_tex_coord = (cloud_tex_coord + 1.0) / 2.0;
@@ -45,6 +44,9 @@ void main() {
             float factor = texture(cloud_texture, cloud_tex_coord).r;
             // float mixfac = exp(-length(cloud_tex_coord) * 0.2);
             FragColor = mix(FragColor, vec4(1.0), factor);
+            if (factor > 0.0) {
+                Clouding = vec4(factor);
+            }
         }
     }
     else if (fs_in.ColorType.x == -1.0) {
@@ -53,6 +55,9 @@ void main() {
             float factor = texture(cloud_texture, cloud_tex_coord).r;
             // float mixfac = exp(-length(cloud_tex_coord) * 0.2);
             FragColor = mix(FragColor, vec4(1.0), factor);
+            if (factor > 0.0) {
+                Clouding = vec4(factor);
+            }
         }
     }
     else if (fs_in.ColorType.y == 1.0) {
@@ -60,6 +65,9 @@ void main() {
         float factor = texture(cloud_texture, cloud_tex_coord).r;
         // float mixfac = exp(-length(cloud_tex_coord) * 0.2);
         FragColor = mix(FragColor, vec4(1.0), factor);
+        if (factor > 0.0) {
+            Clouding = vec4(factor);
+        }
     }
     else if (fs_in.ColorType.y == -1.0) {
         FragColor = texture(texture_skymap_dn, vec2(fs_in.ColorTexCoord.x, 1.0 - fs_in.ColorTexCoord.z));
@@ -70,6 +78,9 @@ void main() {
             float factor = texture(cloud_texture, cloud_tex_coord).r;
             // float mixfac = exp(-length(cloud_tex_coord) * 0.2);
             FragColor = mix(FragColor, vec4(1.0), factor);
+            if (factor > 0.0) {
+                Clouding = vec4(factor);
+            }
         }
     }
     else if (fs_in.ColorType.z == 1.0) {
@@ -78,6 +89,9 @@ void main() {
             float factor = texture(cloud_texture, cloud_tex_coord).r;
             // float mixfac = exp(-length(cloud_tex_coord) * 0.2);
             FragColor = mix(FragColor, vec4(1.0), factor);
+            if (factor > 0.0) {
+                Clouding = vec4(factor);
+            }
         }
     }
 }

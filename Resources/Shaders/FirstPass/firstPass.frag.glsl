@@ -1,10 +1,12 @@
-#version 440 core
+#version 330 core
+
 in vec2 ColorTexCoord;
 
 out vec4 FragColor;
 
 uniform sampler2D scene;
 uniform sampler2D bloomBlur;
+uniform sampler2D clouding;
 
 uniform bool bloom;
 uniform float exposure;
@@ -12,7 +14,7 @@ uniform float exposure;
 void main()
 {             
     const float gamma = 1.1;
-    vec3 hdrColor = texture(scene, ColorTexCoord).rgb;      
+    vec3 hdrColor = texture(scene, ColorTexCoord).rgb;     
     vec3 bloomColor = texture(bloomBlur, ColorTexCoord).rgb;
     if(bloom)
         hdrColor += bloomColor; // additive blending

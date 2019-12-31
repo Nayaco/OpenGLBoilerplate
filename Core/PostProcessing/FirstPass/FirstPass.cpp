@@ -23,8 +23,9 @@ void FirstPass::draw(const Shader &shader) const {
     shader.setFloat("exposure", exposure);
     shader.setInt("scene", 0);
     shader.setInt("bloomBlur", 1);
+    shader.setInt("clouding", 2);
     
-    for (auto i = 0; i < 2; i++) {
+    for (auto i = 0; i < 3; i++) {
         glActiveTexture(GL_TEXTURE0 + i);
         texture_render[i].bind();
     }
