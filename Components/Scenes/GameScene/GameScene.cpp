@@ -87,7 +87,7 @@ void GameScene::update() {
     }
     
     glm::vec2 plane_front2d = glm::normalize(glm::vec2(plane->front.x, plane->front.z));
-    cam->Position = plane->center + glm::vec3(-plane_front2d.x * 2.0, 2.5, -plane_front2d.y * 2.0);
+    cam->Position = plane->center + glm::vec3(-plane_front2d.x * 8.5, 4.0, -plane_front2d.y * 8.5);
     
     // cam->Yaw = plane->yaw;
     // cam->Pitch = plane->pitch;
@@ -127,10 +127,16 @@ void GameScene::update() {
     particleshader.setVec3("campos", cam->GetViewPosition());
     particleshader.setVec3("color", glm::vec3(1.0, 1.0, 1.0));
     particle_sys->setGenerator(
-        plane->center,
+        plane->center + plane->right - plane->front * 0.5f,
         glm::vec3(0.0, -0.1, 0.0), 
-        0.2, 0.5, 0.2, 1.0);
-    particle_sys->update(Context::delta_time, 1);
+        0.1, 0.1, 0.5, 6.0);
+    particle_sys->update(Context::delta_time, 2);
+
+    particle_sys->setGenerator(
+        plane->center - plane->right - plane->front * 0.5f,
+        glm::vec3(0.0, -0.1, 0.0), 
+        0.1, 0.1, 0.5, 6.0);
+    particle_sys->update(Context::delta_time, 2);
 
     // particle sys flare
     auto particleshader_flare = ResourceManager::getShader("particle_flare");
@@ -138,12 +144,12 @@ void GameScene::update() {
     particleshader_flare.setMat4("projection", projection_matrix);
     particleshader_flare.setMat4("view", view_matrix);
     particleshader_flare.setVec3("campos", cam->GetViewPosition());
-    particleshader_flare.setVec3("color", glm::vec3(4.0, 1.5, 1.3));
+    particleshader_flare.setVec3("color", glm::vec3(4.0, 0.2, 0.2));
     particle_sys_flare->setGenerator(
-        plane->position,
+        plane->center,
         glm::vec3(0.0, 0.1, 0.0), 
-        1.0, 2.0, 1.5, 2.8);
-    if(gameover)particle_sys_flare->update(Context::delta_time, 1);
+        2.0, 8.0, 2.5, 5.8);
+    if(gameover && !gameover_last)particle_sys_flare->update(Context::delta_time, 1000);
     else particle_sys_flare->update(Context::delta_time, 0);
     // entity sun
     float sunlight_color_factor = glm::max(glm::dot(glm::normalize(sunpos_vec), glm::vec3(0.0, 1.0, 0.0)), 0.0f);   
@@ -225,7 +231,7 @@ void GameScene::initialize() {
 
     ResourceManager::LoadFont("Resources/Fonts/arial.ttf");
 
-    cam      = new Camera(glm::vec3(0.0f, 4.0f, 2.0f));
+    cam      = new Camera(glm::vec3(0.0f, 4.0f, 2.0f), glm::vec3(0.0, 1.0, 0.0), 90.0f);
 
     font     = new Font(ResourceManager::getShader("font"));
     font->initialize(Context::window_width, Context::window_height);
@@ -247,7 +253,7 @@ void GameScene::initialize() {
     particle_sys->initialize(glm::vec3(0.0), glm::vec3(0.0, -0.1, 0.0), 
         0.2, 0.5, 0.2, 1.0);
 
-    particle_sys_flare = new ParticleSystem(ResourceManager::getTexture("sprite"), 200);
+    particle_sys_flare = new ParticleSystem(ResourceManager::getTexture("sprite"), 1000);
     particle_sys_flare->initialize(glm::vec3(0.0), glm::vec3(0.0, -0.1, 0.0), 
         0.2, 0.5, 0.2, 1.0);
 

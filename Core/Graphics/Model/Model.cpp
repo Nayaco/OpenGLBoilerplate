@@ -26,6 +26,7 @@ void Model::processNode(aiNode *node, const aiScene *scene) {
         aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
         meshes.push_back(processMesh(mesh, scene));
     }
+    // std::cout<<"here"<<node->mNumChildren<<std::endl;
     for(auto i = 0; i < node->mNumChildren; i++) {
         processNode(node->mChildren[i], scene);
     }
@@ -57,13 +58,13 @@ Mesh Model::processMesh(aiMesh *mesh, const aiScene *scene) {
                 glm::vec3(0.0f, 0.0f, 0.0f);
         vertices.push_back(vertex);
     }
+    
     for(auto i = 0; i < mesh->mNumFaces; i++) {
         aiFace face = mesh->mFaces[i];
         for(auto j = 0; j < face.mNumIndices; j++)
             indices.push_back(face.mIndices[j]);
     }
     aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];    
-
     texture_vector diffuseMaps = 
         loadMaterialTextures(material, aiTextureType_DIFFUSE);
     textures.insert(textures.end(), diffuseMaps.begin(), diffuseMaps.end());
@@ -94,6 +95,7 @@ texture_vector Model::loadMaterialTextures(aiMaterial *mat, aiTextureType ai_tex
                 break;
             }
         }
+        
         if(!flag)continue;
         switch (ai_tex_type) {
             case aiTextureType_DIFFUSE: { texture._texture_type = TEX_TYPE::DIFFUSEMAP; break; }
@@ -104,7 +106,7 @@ texture_vector Model::loadMaterialTextures(aiMaterial *mat, aiTextureType ai_tex
         texture = TextureFromFile(string(str.C_Str()), this->directory , false);
         textures.push_back(texture);
         textures_loaded.push_back(texture); 
-
+        
     }
     return textures;
 }
@@ -131,4 +133,5 @@ Texture Model::TextureFromFile(string const &path, string const &directory, bool
         stbi_image_free(data);
         throw "Model: file "+ filename + " not exists";
     }
+    return texture;
 }

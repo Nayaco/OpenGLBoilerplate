@@ -9,6 +9,6 @@ uniform vec3      color;
 void main() {
     FragColor = vec4(color, alpha);
     Brightness = vec4(0.0);
-    if(FragColor.r > 1.0) Brightness = vec4(1.0, 1.0, 1.0, 1.0);
+    if(FragColor.r > 1.0) Brightness = FragColor;
     
 }

@@ -14,6 +14,9 @@ struct Plane {
     glm::vec3 position;
     glm::vec3 center;
     glm::vec3 front;
+    glm::vec3 up;
+    glm::vec3 worldUp;
+    glm::vec3 right;
     float vel;
     
     float pitch;
