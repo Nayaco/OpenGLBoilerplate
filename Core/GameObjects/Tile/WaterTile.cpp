@@ -11,6 +11,6 @@ WaterTile::WaterTile(unsigned int vao, unsigned int vertexCount, float height) :
     std::cout << "Water tile VAO: " << vao << " with vertexCount: " << vertexCount << std::endl;
 }
 
-WaterTile::~WaterTile() {
+void WaterTile::release() {
     glDeleteVertexArrays(1, &vao);
 }

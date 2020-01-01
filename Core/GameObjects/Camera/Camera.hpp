@@ -37,7 +37,7 @@ public:
     float Near;
     bool  reflect;
 
-    Camera(glm::vec3 position = glm::vec3(0.0f, 0.0f, 0.0f), 
+    explicit Camera(glm::vec3 position = glm::vec3(0.0f, 0.0f, 0.0f),
             glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f), 
             float yaw = DEFAULT_YAW, float pitch = DEFAULT_PITCH, float far = DEFAULT_FAR, float near = DEFAULT_NEAR);
 
@@ -45,10 +45,11 @@ public:
             float upX, float upY, float upZ, 
             float yaw, float pitch,
             float far, float near);
-    virtual ~Camera(); 
-    virtual glm::mat4 GetViewMatrix() const override;
-    virtual glm::mat4 GetProjectionMatrix() const override;
-    virtual glm::vec3 GetViewPosition() const override;
+    virtual ~Camera();
+    // virtual is redundant as this function is declared override
+    glm::mat4 GetViewMatrix() const override;
+    glm::mat4 GetProjectionMatrix() const override;
+    glm::vec3 GetViewPosition() const override;
     virtual glm::vec2 GetNearFar() const;
     virtual void Reflect(float height);
     void ProcessKeyboard(Camera_Movement direction, float deltaTime);

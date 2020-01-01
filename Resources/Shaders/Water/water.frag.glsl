@@ -74,7 +74,7 @@ void main(void){
     vec3 finalColour = mix(reflectColour, refractColour, calculateFresnel());
 //    finalColour = finalColour * pass_diffuse + pass_specular;
 
-    out_colour = vec4(finalColour, 1.0);
+    out_colour = vec4(1.0, 1.0, 1.0, 1.0);
 
     //apply soft edges
     //out_colour.a = clamp(waterDepth / edgeSoftness, 0.0, 1.0);

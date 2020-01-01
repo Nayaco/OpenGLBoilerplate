@@ -1,3 +1,6 @@
+#include <Core/GameObjects/Tile/WaterGenerator.h>
+#include <Core/GameObjects/Tile/WaterRenderer.h>
+#include <Core/ResourceManager/ResourceManager.hpp>
 #include "GameEngine.hpp"
 
 #include "Core/ExceptionHandle/ErrLog.hpp"
@@ -31,11 +34,12 @@ void GameEngine::createContext() {
                     GAME_GL_SAMPLE_RATE);
 }
 
+
 void GameEngine::start_render() {
     while (!Context::shouldClose()) {
         Context::update();
         Input::processKeyInput();
-        
+
         scene->update();
         scene->draw();
 

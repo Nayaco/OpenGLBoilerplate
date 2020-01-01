@@ -8,7 +8,7 @@
 
 class ByteBuffer {
 public:
-    ByteBuffer(unsigned int byteCount);
+    explicit ByteBuffer(unsigned int byteCount);
 
     void write(void *src, unsigned int size);
 

@@ -7,7 +7,7 @@ class BaseScene {
 public:
     virtual void draw() const = 0;
     virtual void initialize() = 0;
-    virtual void destory() = 0;
+    virtual void destroy() = 0;
     virtual void update() = 0;
 
 };

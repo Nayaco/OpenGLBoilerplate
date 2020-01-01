@@ -2,65 +2,66 @@
 // Created by Henry Little on 2019/12/28.
 //
 
+//
+// Created by Henry Little on 2019/12/28.
+//
+
 #include "WaterRenderer.h"
 
 const float WaterRenderer::WAVE_SPEED = 0.00015f;
 
-WaterRenderer::WaterRenderer() :
-        waterShader("water/water.v.glsl", "water/water.f.glsl") {
+WaterRenderer::WaterRenderer(){
     time = 0.0f;
-    std::cout << "Shader loaded: " << waterShader.ID << std::endl;
 }
 
-void WaterRenderer::render(const WaterTile &water, Camera &camera,
+void WaterRenderer::render(const Shader &shader, WaterTile *water, Camera &camera,
                            GLuint reflectionTexture, GLuint refractionTexture, GLuint depthTexture) {
 //    prepare(water, camera);
-    glEnable(GL_BLEND);
-    glBindVertexArray(water.vao);
-    waterShader.use();
-    waterShader.setFloat("height", water.height);
-    updateTime();
-    loadCameraVariables(camera);
+    glBindVertexArray(water->vao);
+    shader.use();
+    shader.setFloat("height", water->height);
+    time += WAVE_SPEED;
+    shader.setFloat("waveTime", time);
+    loadCameraVariables(shader, camera);
     // bind all the textures
-    bindTextures(reflectionTexture, refractionTexture, depthTexture);
-    glDrawArrays(GL_TRIANGLES, 0, water.vertexCount);
+    // bindTextures(reflectionTexture, refractionTexture, depthTexture);
+    glDrawArrays(GL_TRIANGLES, 0, water->vertexCount);
     // reset to default
     glDisable(GL_BLEND);
     glBindVertexArray(0);
     glUseProgram(0);
 }
 
-void WaterRenderer::updateTime() {
+void WaterRenderer::updateTime(const Shader &shader) {
     time += WAVE_SPEED;
-    waterShader.setFloat("waveTime", time);
+    shader.setFloat("waveTime", time);
 }
 
-void WaterRenderer::loadCameraVariables(const Camera &camera) {
-    waterShader.setMat4("projection", camera.GetProjectionMatrix());
-    waterShader.setMat4("view", camera.GetViewMatrix());
-    waterShader.setVec3("cameraPos", camera.GetViewPosition());
-    waterShader.setVec2("nearFarPlanes", camera.GetNearFar());
+void WaterRenderer::loadCameraVariables(const Shader &shader, const Camera &camera) {
+    shader.setMat4("projection", camera.GetProjectionMatrix());
+    shader.setMat4("view", camera.GetViewMatrix());
+    shader.setVec3("cameraPos", camera.GetViewPosition());
+    shader.setVec2("nearFarPlanes", camera.GetNearFar());
 }
 
-void WaterRenderer::loadLightVariables() {
-    waterShader.setVec2("lightBias", glm::vec2(0.0f, 0.0f));
-    waterShader.setVec3("lightColour", glm::vec3(1.0f, 1.0f, 1.0f));
-    waterShader.setVec3("lightDirection", glm::vec3(1.0f, 1.0f, 1.0f));
+void WaterRenderer::loadLightVariables(const Shader &shader) {
+    shader.setVec2("lightBias", glm::vec2(0.0f, 0.0f));
+    shader.setVec3("lightColour", glm::vec3(1.0f, 1.0f, 1.0f));
+    shader.setVec3("lightDirection", glm::vec3(1.0f, 1.0f, 1.0f));
 }
 
 
-
-void WaterRenderer::bindTextures(GLuint reflection, GLuint refraction, GLuint depth) {
-    waterShader.use();
+void WaterRenderer::bindTextures(const Shader &shader, GLuint reflection, GLuint refraction, GLuint depth) {
+    shader.use();
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, reflection);
-    waterShader.setInt("reflectionTexture", 0);
+    shader.setInt("reflectionTexture", 0);
     glActiveTexture(GL_TEXTURE1);
     glBindTexture(GL_TEXTURE_2D, refraction);
-    waterShader.setInt("refractionTexture", 1);
+    shader.setInt("refractionTexture", 1);
     glActiveTexture(GL_TEXTURE2);
     glBindTexture(GL_TEXTURE_2D, depth);
-    waterShader.setInt("depthTexture", 2);
+    shader.setInt("depthTexture", 2);
 }
 
 

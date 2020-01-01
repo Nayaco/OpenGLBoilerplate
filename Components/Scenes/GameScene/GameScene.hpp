@@ -37,9 +37,8 @@ class GameScene : public BaseScene {
     Bloom *bloom;
     Cloud *cloud;
     Terrain *terrain;
-    WaterGenerator *waterGenerator;
     WaterRenderer *waterRenderer;
-    WaterTile water;
+    WaterTile *water;
     FrameBuffer *reflectionBuffer;
     FrameBuffer *refractionBuffer;
 
@@ -79,7 +78,7 @@ public:
 
     virtual void initialize() override;
     virtual void draw() const override;
-    virtual void destory() override;
+    virtual void destroy() override;
     virtual void update() override;
 };
 

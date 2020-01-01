@@ -16,7 +16,7 @@ public:
 
     WaterTile(unsigned int vao, unsigned int vertexCount, float height);
 
-    ~WaterTile();
+    void release();
 
 };
 

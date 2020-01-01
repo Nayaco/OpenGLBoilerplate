@@ -20,7 +20,7 @@ void Context::create(std::string w_name, unsigned int w_width, unsigned int w_he
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     glfwWindowHint(GLFW_SAMPLES, gl_sample);              // CONFIG_HPP DEFINES
 #ifdef __APPLE__
-    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, true);
+    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 #endif
     window = glfwCreateWindow(w_width, w_height, w_name.c_str(), NULL, NULL);
 
@@ -53,9 +53,9 @@ void Context::close() { glfwSetWindowShouldClose(window, true); }
 void Context::destroy() { glfwTerminate(); }
 
 void Context::update() {
-    glClearColor(0.1f, 0.1f, 0.1f, 0.0f);
+    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    glEnable(GL_CULL_FACE);
+//    glEnable(GL_CULL_FACE);
     handleDeltaFrame();
 }
 
