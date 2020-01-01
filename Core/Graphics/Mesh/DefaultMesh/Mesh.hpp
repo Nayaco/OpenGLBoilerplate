@@ -4,7 +4,7 @@
 #include "Core/Common.hpp"
 #include "Core/Graphics/Shader/Shader.hpp"
 #include "Core/Graphics/Texture/Texture.hpp"
-#include "BaseMesh.hpp"
+#include "Core/Graphics/Mesh/BaseMesh.hpp"
 
 class Mesh : public BaseMesh {
 public:

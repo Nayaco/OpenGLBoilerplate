@@ -37,21 +37,21 @@ GLfloat GrassBlade::texCoord[] = {
     1.0f,  1.0f  // 6
 };
 
-GrassBlade::GrassBlade(glm::vec3 _scale, glm::vec2 center, glm::vec2 size, float density, Shader const& shader) 
+GrassBlade::GrassBlade(glm::vec3 _scale, glm::vec3 center, glm::vec2 size, float density, Shader const& shader) 
     :grassShader(shader)
     {
     srand(time(0));
     // generate the noise
-    imap2d noise_val = noise_gen.get_2D_noise(512, 512, -1.0f, 1.0f, -1.0f, 1.0f);
+    imap2d noise_val = noise_gen.get_2D_noise(256, 256, -1.0f, 1.0f, -1.0f, 1.0f);
     tex_wind_noise.set_data(noise_val);
 
     initBuffers();
     // init the instances 
-    glm::vec2 grassPerSide= density * size;
+    glm::vec2 grassPerSide = density * size;
 
     for (size_t i = 0; i < grassPerSide.x; i++) {
         for (size_t j = 0; j < grassPerSide.y; j++) {
-        GrassElement *ge = new GrassElement;
+        GrassElement *ge = new GrassElement();
         ge->init_matrices(); //load the matrices
 
         Transform t;
@@ -66,13 +66,14 @@ GrassBlade::GrassBlade(glm::vec3 _scale, glm::vec2 center, glm::vec2 size, float
         pos_x += frand / 10.0f - 0.05;
         pos_y += frand / 10.0f - 0.05;
 
+        t.translate(center);
         t.translate(pos_x, -3.0, pos_y);
         t.rotate(0.0, 1.0, 0.0, pos_x * pos_y * 5.244);
         t.scale(_scale);
         t.scale(1.0, 1.0 + frand, 1.0);
         t.translate(0, 2.0, 0);
         ge->set_model_matrix(t.get_matrix());
-
+        
         //the matrix given by ge has the transfor and the grass model transforms
         modelMats.push_back(ge->get_transf_0());
         }
@@ -183,7 +184,7 @@ void GrassBlade::setupShader() {
     grassShader.setVec3("camera_position", camera_position);
 }
 
-void GrassBlade::render(){
+void GrassBlade::render() {
 
     //coutner for the grass blades (which pixel to access)
     wind_dir[0] += 0.0004f;

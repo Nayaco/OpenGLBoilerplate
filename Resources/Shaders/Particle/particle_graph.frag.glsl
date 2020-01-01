@@ -5,10 +5,10 @@ layout (location=0) out vec4 FragColor;
 layout (location=1) out vec4 Brightness;
 
 uniform float     alpha;
-
+uniform vec3      color;     
 void main() {
-    FragColor = vec4(0.8, 0.8, 0.8, alpha);
-    // if(FragColor.a < 0.1) discard;
+    FragColor = vec4(color, alpha);
+    Brightness = vec4(0.0);
+    if(FragColor.r > 1.0) Brightness = vec4(1.0, 1.0, 1.0, 1.0);
     
-    // if()
 }

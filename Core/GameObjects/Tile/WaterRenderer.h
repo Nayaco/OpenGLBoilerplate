@@ -13,20 +13,23 @@
 class WaterRenderer {
 public:
     WaterRenderer();
-    
-    void render(const WaterTile &water, Camera &camera,
+
+    void render(const Shader &shader, WaterTile *water, Camera &camera,
                 GLuint reflectionTexture, GLuint refractionTexture, GLuint depthTexture);
-private:
+
+    void updateTime(const Shader &shader);
     
+private:
+
     const static float WAVE_SPEED;
-    Shader waterShader;
     float time;
 
-    void updateTime();
 
-    void loadCameraVariables(const Camera &camera);
-    void bindTextures(GLuint reflection, GLuint refraction, GLuint depth);
-    void loadLightVariables();
+    void loadCameraVariables(const Shader &shader, const Camera &camera);
+
+    void bindTextures(const Shader &shader, GLuint reflection, GLuint refraction, GLuint depth);
+
+    void loadLightVariables(const Shader &shader);
 };
 
 

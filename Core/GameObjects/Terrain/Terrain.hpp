@@ -25,7 +25,7 @@ public:
     float place_x, place_z;
     float width, height;   
     float terrain_height;
-    bool reflection_refraction;
+    float reflection_refraction;
 
     Terrain(float _x, float _z, float _width, float _height, float _terrain_h, int octave);
     ~Terrain();

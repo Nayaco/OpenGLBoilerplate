@@ -3,6 +3,8 @@
 map<string, Shader>  ResourceManager::shaders  = { };
 map<string, Texture> ResourceManager::textures = { };
 map<string, BaseLight*> ResourceManager::lights = { };
+FT_Library  ResourceManager::font;
+FT_Face     ResourceManager::fontface;
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // SHADER
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -207,4 +209,33 @@ BaseLight* ResourceManager::getLight(string const &light_name) {
         throw "Resource manager: light not found";
     }
     return _light->second;
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// LIGHT
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+void ResourceManager::LoadFont(string const &font_path) {
+    if (FT_Init_FreeType(&font)) {
+        throw "Resource manager: font init failed";
+    }
+    if (FT_New_Face(font, font_path.c_str(), 0, &fontface)) {
+        throw "Resource manager: font face init failed";
+    }
+    FT_Set_Pixel_Sizes(fontface, 0, 48);
+}
+
+FT_Face ResourceManager::getFont() {
+    return fontface;
+}
+
+FT_Face ResourceManager::loadChar(char c) {
+    if (FT_Load_Char(fontface, c, FT_LOAD_RENDER)) {
+        throw "Resource manager: font char load failed";
+    } 
+    return fontface;
+}
+
+void ResourceManager::destroyFont() {
+    FT_Done_Face(fontface);
+    FT_Done_FreeType(font);
 }

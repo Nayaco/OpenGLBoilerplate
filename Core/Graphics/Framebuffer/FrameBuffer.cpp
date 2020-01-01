@@ -30,8 +30,8 @@ FrameBuffer::FrameBuffer(int width, int height, FBOType type) :
     if (fboStatus != GL_FRAMEBUFFER_COMPLETE) {
         std::cout << "Framebuffer not complete: " << fboStatus << std::endl;
     } else {
-        std::cout << "Framebuffer Created: " << ID << " colorAttach: " << colorAttachment << " depthAttach: "
-                  << depthAttachment << std::endl;
+        // std::cout << "Framebuffer Created: " << ID << " colorAttach: " << colorAttachment << " depthAttach: "
+        //           << depthAttachment << std::endl;
     }
 
     glBindFramebuffer(GL_FRAMEBUFFER, 0);

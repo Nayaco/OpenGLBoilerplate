@@ -85,7 +85,4 @@ void main(void){
     vec3 toLightVector = -normalize(lightDirection);
     pass_specular = calcSpecularLighting(pass_toCameraVector, toLightVector, pass_normal);
     pass_diffuse = calculateDiffuseLighting(toLightVector, pass_normal);
-
-
-
 }

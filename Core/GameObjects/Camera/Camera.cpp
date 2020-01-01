@@ -11,7 +11,7 @@ Camera::Camera(glm::vec3 position, glm::vec3 up, float yaw, float pitch, float f
         Near = near;
         reflect = false;
         updateCameraVectors();
-    }
+}
     
 Camera::Camera(float posX, float posY, float posZ, 
             float upX, float upY, float upZ, 
@@ -31,21 +31,13 @@ Camera::Camera(float posX, float posY, float posZ,
 
 Camera::~Camera() { }
 
-glm::mat4 Camera::GetProjectionMatrix() const {
-    return glm::perspective(glm::radians(Zoom), (float)Context::window_width / (float)Context::window_height, Near, Far);
-}
+glm::mat4 Camera::GetProjectionMatrix() const { return glm::perspective(glm::radians(Zoom), (float)Context::window_width / (float)Context::window_height, Near, Far); }
 
-glm::mat4 Camera::GetViewMatrix() const {
-    return glm::lookAt(Position, Position + Front, Up);
-}
+glm::mat4 Camera::GetViewMatrix() const { return glm::lookAt(Position, Position + Front, Up); }
 
-glm::vec3 Camera::GetViewPosition() const {
-    return Position;
-}
+glm::vec3 Camera::GetViewPosition() const { return Position; }
 
-glm::vec2 Camera::GetNearFar() const {
-    return glm::vec2(Near, Far);
-}
+glm::vec2 Camera::GetNearFar() const { return glm::vec2(Near, Far); }
 
 void Camera::Reflect(float height) {
     reflect = !reflect;
@@ -80,12 +72,9 @@ void Camera::ProcessMouseMovement(float xoffset, float yoffset, GLboolean constr
 }
 
 void Camera::ProcessMouseScroll(float yoffset) {
-    if (Zoom >= 1.0f && Zoom <= 45.0f)
-        Zoom -= yoffset;
-    if (Zoom <= 1.0f)
-        Zoom = 1.0f;
-    if (Zoom >= 45.0f)
-        Zoom = 45.0f;
+    if (Zoom >= 1.0f && Zoom <= 45.0f) Zoom -= yoffset;
+    if (Zoom <= 1.0f) Zoom = 1.0f;
+    if (Zoom >= 45.0f) Zoom = 45.0f;
 }
 
 void Camera::updateCameraVectors() {
@@ -99,9 +88,6 @@ void Camera::updateCameraVectors() {
         front.y = sin(glm::radians(-Pitch));
         front.z = sin(glm::radians(Yaw)) * cos(glm::radians(-Pitch));
     }
-    // front.x = cos(glm::radians(Yaw)) * cos(glm::radians(Pitch));
-    // front.y = sin(glm::radians(Pitch));
-    // front.z = sin(glm::radians(Yaw)) * cos(glm::radians(Pitch));
     Front = glm::normalize(front);
     Right = glm::normalize(glm::cross(Front, WorldUp));
     Up    = glm::normalize(glm::cross(Right, Front));

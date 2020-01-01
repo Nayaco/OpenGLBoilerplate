@@ -2,41 +2,65 @@
 
 const glm::vec3 sunpos_0(0.0, 0.0, -1.0);
 
-GameScene::GameScene() : water(0, 0, 0){ }
+GameScene::GameScene() { }
+
+float CalculateFrameRate() {    
+    static float framesPerSecond = 0.0f;
+    static float FPS = 0.0f;
+    static float lastTime = 0.0f;       
+    float currentTime = Context::game_time;    
+    ++framesPerSecond;
+    if( currentTime - lastTime > 0.5f ) {
+        lastTime = currentTime;
+        FPS = framesPerSecond * 2.0;
+        framesPerSecond = 0;
+    }
+    return FPS;
+}
 
 void GameScene::draw() const {
-    // terrain->enableReflectionRefration();
+    // chunk->terrain->enableReflectionRefration();
+
     // glEnable(GL_CLIP_DISTANCE0);
+    // glDisable(GL_CULL_FACE);
+    // cam->Reflect(2.5);
     // reflectionBuffer->bind();
-    // // reflect camera
-    // cam->Reflect(0.0);
-    // // render the object that need reflected
-    // terrain->draw(ResourceManager::getShader("terrainmesh"));
+    // chunk->draw_terrain(ResourceManager::getShader("terrainmesh"));
     // reflectionBuffer->unbind(Context::window_width, Context::window_height);
-    // cam->Reflect(0.0);
+    // cam->Reflect(2.5);
+    // glEnable(GL_CULL_FACE);
     // glDisable(GL_CLIP_DISTANCE0);
 
     // glEnable(GL_CLIP_DISTANCE1);
     // refractionBuffer-> bind();
     // // // rfract only terrain is needed
-    // terrain->draw(ResourceManager::getShader("terrainmesh"));
+    // chunk->draw_terrain(ResourceManager::getShader("terrainmesh"));
     // refractionBuffer->unbind(Context::window_width, Context::window_height);
     // glDisable(GL_CLIP_DISTANCE1);
-    // terrain->disableReflectionRefration();
+
+    // chunk->terrain->disableReflectionRefration();
 
     //-----------------------
+
     firstpass->bind();
 
-    terrain->draw(ResourceManager::getShader("terrainmesh"));
-    waterRenderer->render(water, *cam, 
-        reflectionBuffer->getColorBuffer(),
-        refractionBuffer->getColorBuffer(),
-        refractionBuffer->getDepthBuffer());
-    sun->draw(ResourceManager::getShader("entitysun"));
-    
+    plane->draw(ResourceManager::getShader("plane"));
+
+    // waterRenderer->render(ResourceManager::getShader("water"), water, *cam,
+    //                       reflectionBuffer->getColorBuffer(),
+    //                       refractionBuffer->getColorBuffer(),
+    //                       refractionBuffer->getDepthBuffer());
+
+
+    chunk->draw_terrain(ResourceManager::getShader("terrainmesh"));
+    chunk->draw_grass();
 
     particle_sys->draw(ResourceManager::getShader("particle"));
-   
+    particle_sys_flare->draw(ResourceManager::getShader("particle_flare"));
+
+    font->renderText("FPS:" + std::to_string(game_fps).substr(0, 4), 25.0f, 25.0f, 1.0f, glm::vec3(0.8, 0.8f, 0.8f));
+
+    sun->draw(ResourceManager::getShader("entitysun"));
     skybox->draw();
 
     firstpass->unbind();
@@ -45,10 +69,7 @@ void GameScene::draw() const {
     bloom->bindTexture(firstpass->texture_buffers[FirstPass::TEX_BRIGHT_BUF]);
     bloom->draw(ResourceManager::getShader("bloom"));
     bloom->unbind();
-    // std::cout<<"here"<<std::endl;
 
-    // Texture rfcb; rfcb._id = refractionBuffer->getColorBuffer();//reflectionBuffer->getColorBuffer();
-    // firstpass->bindTexture(rfcb, FirstPass::TEX_COLOR_BUF);
     firstpass->bindTexture(bloom->bloom_textures[bloom->horizon], FirstPass::TEX_BRIGHT_BUF);
     firstpass->draw(ResourceManager::getShader("firstpass"));
 }
@@ -56,6 +77,22 @@ void GameScene::draw() const {
 void GameScene::update() {
     // variables
     game_time = Context::game_time - floor((Context::game_time / TURNAROUND_DURATION)) * TURNAROUND_DURATION;
+    game_delat_time = Context::delta_time * 0.3;
+    game_fps =  CalculateFrameRate();
+    // plane camera 
+    gameover_last = gameover;
+    if(!gameover) {
+        plane->update(Context::delta_time);
+        gameover = plane->aabbbox.checkCollision(chunk->terrain->terrainmap, chunk->terrain->terrain_height);
+    }
+    
+    glm::vec2 plane_front2d = glm::normalize(glm::vec2(plane->front.x, plane->front.z));
+    cam->Position = plane->center + glm::vec3(-plane_front2d.x * 2.0, 2.5, -plane_front2d.y * 2.0);
+    
+    // cam->Yaw = plane->yaw;
+    // cam->Pitch = plane->pitch;
+    
+    //Camera
     projection_matrix = cam->GetProjectionMatrix();
     view_matrix = cam->GetViewMatrix();
     auto view = glm::mat4(glm::mat3(view_matrix));
@@ -75,8 +112,6 @@ void GameScene::update() {
         sunpos_vec = glm::vec3(sunpos_matrix * glm::vec4(sunpos_0, 1.0));
         suncolor_vec = glm::vec3(0.75, 0.66, 0.45);
     }
-    // skymap and cloud
-    skymap->update(sunpos_vec, game_time <= DAY_DURATION ? suncolor_vec : suncolor_vec * 0.1f);
     // sunlight
     auto sun_light = 
         reinterpret_cast<ALight*>(ResourceManager::getLight("global_sun_light"));
@@ -90,11 +125,26 @@ void GameScene::update() {
     particleshader.setMat4("projection", projection_matrix);
     particleshader.setMat4("view", view_matrix);
     particleshader.setVec3("campos", cam->GetViewPosition());
+    particleshader.setVec3("color", glm::vec3(1.0, 1.0, 1.0));
     particle_sys->setGenerator(
-        cam->GetViewPosition() + glm::vec3(0.0, 0.0, -2.0),
+        plane->center,
         glm::vec3(0.0, -0.1, 0.0), 
         0.2, 0.5, 0.2, 1.0);
     particle_sys->update(Context::delta_time, 1);
+
+    // particle sys flare
+    auto particleshader_flare = ResourceManager::getShader("particle_flare");
+    particleshader_flare.use();
+    particleshader_flare.setMat4("projection", projection_matrix);
+    particleshader_flare.setMat4("view", view_matrix);
+    particleshader_flare.setVec3("campos", cam->GetViewPosition());
+    particleshader_flare.setVec3("color", glm::vec3(4.0, 1.5, 1.3));
+    particle_sys_flare->setGenerator(
+        plane->position,
+        glm::vec3(0.0, 0.1, 0.0), 
+        1.0, 2.0, 1.5, 2.8);
+    if(gameover)particle_sys_flare->update(Context::delta_time, 1);
+    else particle_sys_flare->update(Context::delta_time, 0);
     // entity sun
     float sunlight_color_factor = glm::max(glm::dot(glm::normalize(sunpos_vec), glm::vec3(0.0, 1.0, 0.0)), 0.0f);   
     sun->update(normalize(sunpos_vec - glm::vec3(0.0, 0.1, 0.0)) * 0.8f, 
@@ -104,17 +154,18 @@ void GameScene::update() {
     sunshader.setMat4("projection", projection_matrix);
     sunshader.setMat4("view", view);
     // skymap
+    skymap->update(sunpos_vec, game_time <= DAY_DURATION ? suncolor_vec : suncolor_vec * 0.1f);
     static float delta_time;
     delta_time = 0.0 <= delta_time && delta_time < 0.04 ? Context::delta_time + delta_time : 0.0;
     sky_should_update = delta_time == 0.0;
+    cloud->update(game_delat_time, glm::dot(sunpos_vec, glm::vec3(0.0, 1.0, 0.0)) * (game_time <= DAY_DURATION ? 1.0 : 0.3));
+    cloud->bind();
+    cloud->render();
+    cloud->unbind();
     if (sky_should_update) {
         skymap->bind();        
         skymap->render();
         skymap->unbind();
-
-        cloud->bind();
-        cloud->render();
-        cloud->unbind();
     } 
     //firstpass
     firstpass->setSize(Context::window_width, Context::window_height);
@@ -126,6 +177,12 @@ void GameScene::update() {
     terrain_shader.setMat4("view", view_matrix);
     terrain_shader.setVec3("viewpos", cam->GetViewPosition());
     sun_light->use(terrain_shader);
+    chunk->setGrassMatrix(projection_matrix, view_matrix, cam->GetViewPosition(), glm::vec3(0.0, 1.0, 0.0));
+    //plane
+    Shader plane_shader = ResourceManager::getShader("plane");
+    plane_shader.use();
+    plane_shader.setMat4("projection", projection_matrix);
+    plane_shader.setMat4("view", view_matrix);
 }
 
 void GameScene::initialize() {
@@ -153,15 +210,25 @@ void GameScene::initialize() {
     ResourceManager::loadVF("grassblade", "Resources/Shaders/GrassBlade/grassBlades");
     ResourceManager::loadVF("entitysun", "Resources/Shaders/EntitySun/sun");
     ResourceManager::loadVGF("particle", "Resources/Shaders/Particle/particle_graph");
+    ResourceManager::loadVGF("particle_flare", "Resources/Shaders/Particle/particle_graph");
     ResourceManager::loadVF("firstpass", "Resources/Shaders/FirstPass/firstPass");
     ResourceManager::loadVF("bloom", "Resources/Shaders/Bloom/bloom");
     ResourceManager::loadVF("cloud", "Resources/Shaders/Cloud/cloud");
+    ResourceManager::loadVF("font", "Resources/Shaders/Font/font");
+    ResourceManager::loadVF("water", "Resources/Shaders/Water/water");
+    ResourceManager::loadVF("plane", "Resources/Shaders/Plane/plane");
+    
 
     ResourceManager::GenALisht("global_sun_light", 0, glm::vec3(0.0, 1.0, 0.0), glm::vec3(1.0, 1.0, 1.0));
 
     ResourceManager::Load2D("sprite", "Resources/Textures/Particle/particle.png");
 
-    cam      = new Camera(glm::vec3(0.0f, 0.0f, 2.0f));
+    ResourceManager::LoadFont("Resources/Fonts/arial.ttf");
+
+    cam      = new Camera(glm::vec3(0.0f, 4.0f, 2.0f));
+
+    font     = new Font(ResourceManager::getShader("font"));
+    font->initialize(Context::window_width, Context::window_height);
 
     cloud  = new Cloud(ResourceManager::getShader("cloud"));
     cloud->generate();
@@ -180,21 +247,26 @@ void GameScene::initialize() {
     particle_sys->initialize(glm::vec3(0.0), glm::vec3(0.0, -0.1, 0.0), 
         0.2, 0.5, 0.2, 1.0);
 
+    particle_sys_flare = new ParticleSystem(ResourceManager::getTexture("sprite"), 200);
+    particle_sys_flare->initialize(glm::vec3(0.0), glm::vec3(0.0, -0.1, 0.0), 
+        0.2, 0.5, 0.2, 1.0);
+
     bloom     = new Bloom(Context::window_width, Context::window_height);  
     bloom->initialize();
 
     firstpass = new FirstPass(Context::window_width, Context::window_height, true, 1.0);
     firstpass->initialize();
 
-    terrain  = new Terrain(0.0f, 0.0f, 50.0f, 50.0f, 30.0f, 8);
-    terrain->setOctave( 12);
-    terrain->generate(texture_vector{ }, 3.0);
+    chunk = new Chunk(CHUNK_PLACE_X, CHUNK_PLACE_Z, CHUNK_WIDTH, CHUNK_HEIGHT);
+    chunk->initialize_terrain(texture_vector{ }, TERRAIN_TESS, TERRAIN_HEIGHT_MAX, TERRAIN_OCTAVE);
+    chunk->initialize_grass(ResourceManager::getShader("grassblade"));
 
-    waterGenerator = new WaterGenerator();
-    water = waterGenerator->generate(800, 600);
-
+    water = WaterGenerator::generate(50, 2.5);
+    waterRenderer = new WaterRenderer();
     reflectionBuffer = new FrameBuffer(800, 600, REFLECTION);
     refractionBuffer = new FrameBuffer(800, 600, REFRACTION);
+
+    plane = new Plane();
 }
 
 void GameScene::destory() {
@@ -226,17 +298,22 @@ void GameScene::keyEsc() {
 void GameScene::keyF() { }
 
 void GameScene::keyA() {
-    cam->ProcessKeyboard(Camera::Camera_Movement::LEFT, Context::delta_time);
+    plane->ProcessKeyboard(Plane::Plane_Movement::LEFT, Context::delta_time);
+    // cam->ProcessKeyboard(Camera::Camera_Movement::LEFT, Context::delta_time);
 }
 
 void GameScene::keyS() {
-    cam->ProcessKeyboard(Camera::Camera_Movement::BACKWARD, Context::delta_time);
+    plane->ProcessKeyboard(Plane::Plane_Movement::BACKWARD, Context::delta_time);
+    // cam->ProcessKeyboard(Camera::Camera_Movement::BACKWARD, Context::delta_time);
+    
 }
 
 void GameScene::keyW() {
-    cam->ProcessKeyboard(Camera::Camera_Movement::FORWARD, Context::delta_time);
+    plane->ProcessKeyboard(Plane::Plane_Movement::FORWARD, Context::delta_time);
+    // cam->ProcessKeyboard(Camera::Camera_Movement::FORWARD, Context::delta_time);
 }
 
 void GameScene::keyD() {
-    cam->ProcessKeyboard(Camera::Camera_Movement::RIGHT, Context::delta_time);
+    plane->ProcessKeyboard(Plane::Plane_Movement::RIGHT, Context::delta_time);
+    // cam->ProcessKeyboard(Camera::Camera_Movement::RIGHT, Context::delta_time);
 }

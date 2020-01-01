@@ -8,13 +8,14 @@ EntitySun::EntitySun()
 }
 
 void EntitySun::draw(const Shader &shader) const {
+    glDepthFunc(GL_LEQUAL);
     shader.use();
     shader.setMat4("model", entity_model);
     shader.setVec3("suncolor", entity_suncolor);
     
     glBindVertexArray(VAO);
     glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
-    
+    glDepthFunc(GL_LESS);
     glBindVertexArray(0);
 }
 

@@ -1,7 +1,7 @@
 #include "Terrain.hpp"
 
 static const float height_threshold = 0.1;
-static const float height_threshold_high = 0.4;
+static const float height_threshold_high = 0.6;
 static const int   perl1d_level = 4;
 Terrain::Terrain(float _x, float _z, float _width, float _height, float _terrain_h, int octave) : terrainmap(_width) {
     place_x = _x;
@@ -17,11 +17,12 @@ Terrain::Terrain(float _x, float _z, float _width, float _height, float _terrain
 Terrain::~Terrain() { }
 
 void Terrain::draw(Shader const &shader) const {
+    shader.use();
     glm::mat4 model(1.0f);
     model = glm::translate(model, glm::vec3(place_x, 0.0f, place_z));
     model = glm::scale(model, glm::vec3(width, terrain_height, height));
     shader.setMat4("model", model);
-    shader.setInt("reflection_refraction", reflection_refraction);
+    shader.setFloat("reflection_refraction", reflection_refraction);
     terrainmesh->draw(shader);
 }
 
@@ -33,7 +34,20 @@ void Terrain::generate(texture_vector const &other_textures, float tess_level) {
     texture_vector all_textures(other_textures);
     terrainmap = noise::whiteNoise(width, height);
     terrainmap = noise::perlNoise(terrainmap, octave, width, height);
-    
+
+
+    // float maxH = 0.0f;
+    // for (auto i = 0; i < width; i++) {
+    //     for (auto j = 0; j < height; j++) {
+    //         maxH = glm::max(terrainmap[i][j], maxH);
+    //     }
+    // }
+    // for (auto i = 0; i < width; i++) {
+    //     for (auto j = 0; j < height; j++) {
+    //         terrainmap[i][j] /= maxH;
+    //     }
+    // }
+
     for (auto i = 0; i < width; i++) {
         for (auto j = 0; j < height; j++) {
             int _j_c = 0;
@@ -52,21 +66,23 @@ void Terrain::generate(texture_vector const &other_textures, float tess_level) {
         }
     }
     for (auto i = 0; i < width; i++) {
-            for (auto j = 0; j < height; j++) {
-                if(i == 0 && j != 0) {
-                    terrainmap[i][j] = terrainmap[i][j] * 0.2 + terrainmap[i + 1][j] * 0.8;
-                }
-                if(i == width && j != height) {
-                    terrainmap[i][j] = terrainmap[i][j] * 0.2 + terrainmap[i - 1][j] * 0.8;
-                }
-                if(j == 0 && i != width) {
-                    terrainmap[i][j] = terrainmap[i][j] * 0.2 + terrainmap[i][j + 1] * 0.8;
-                }
-                if(j == height && i!= 0) {
-                    terrainmap[i][j] = terrainmap[i][j] * 0.2 + terrainmap[i][j - 1] * 0.8;
-                }
+        for (auto j = 0; j < height; j++) {
+            if(i == 0 && j != 0) {
+                terrainmap[i][j] = terrainmap[i][j] * 0.2 + terrainmap[i + 1][j] * 0.8;
+            }
+            if(i == width && j != height) {
+                terrainmap[i][j] = terrainmap[i][j] * 0.2 + terrainmap[i - 1][j] * 0.8;
+            }
+            if(j == 0 && i != width) {
+                terrainmap[i][j] = terrainmap[i][j] * 0.2 + terrainmap[i][j + 1] * 0.8;
+            }
+            if(j == height && i!= 0) {
+                terrainmap[i][j] = terrainmap[i][j] * 0.2 + terrainmap[i][j - 1] * 0.8;
             }
         }
+    }
+
+    
     if (neighbor[(int)PLACEMENT::POSX] != nullptr)
         processPOSX();
     if (neighbor[(int)PLACEMENT::NEGX] != nullptr)
@@ -216,11 +232,11 @@ void Terrain::processNEGZ() {
 }
 
 void Terrain::enableReflectionRefration() {
-    reflection_refraction = 1;
+    reflection_refraction = 1.0;
 }
 
 void Terrain::disableReflectionRefration() {
-    reflection_refraction = 0;
+    reflection_refraction = 0.0;
 }
 
 

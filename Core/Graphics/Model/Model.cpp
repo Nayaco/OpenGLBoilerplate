@@ -5,7 +5,7 @@ Model::Model(string const &path, bool gamma): gammaCorrection(gamma) {
 }
 
 void Model::draw(Shader const &shader) const {
-    for(auto &mesh: meshes) {
+    for(auto &mesh: meshes) {        
         mesh.draw(shader);
     }
 }
@@ -86,12 +86,15 @@ texture_vector Model::loadMaterialTextures(aiMaterial *mat, aiTextureType ai_tex
         aiString str;
         Texture texture;
         mat->GetTexture(ai_tex_type, i, &str);
+        bool flag = true;
         for(auto j = 0; j < textures_loaded.size(); j++) {
             if(std::strcmp(textures_loaded[j]._path.c_str(), str.C_Str()) == 0) {
                 textures.push_back(textures_loaded[j]);
-                goto skip_texture;
+                flag = false;
+                break;
             }
         }
+        if(!flag)continue;
         switch (ai_tex_type) {
             case aiTextureType_DIFFUSE: { texture._texture_type = TEX_TYPE::DIFFUSEMAP; break; }
             case aiTextureType_SPECULAR:{ texture._texture_type = TEX_TYPE::SPECULARMAP;break; }
@@ -101,7 +104,7 @@ texture_vector Model::loadMaterialTextures(aiMaterial *mat, aiTextureType ai_tex
         texture = TextureFromFile(string(str.C_Str()), this->directory , false);
         textures.push_back(texture);
         textures_loaded.push_back(texture); 
-skip_texture:
+
     }
     return textures;
 }

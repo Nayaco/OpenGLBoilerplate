@@ -12,7 +12,6 @@ in VS_OUT {
 
 layout (location=0) out vec4 FragColor;
 layout (location=1) out vec4 Brightness;
-layout (location=2) out vec4 Clouding;
 
 uniform sampler2D texture_skymap_rt;
 uniform sampler2D texture_skymap_lf;
@@ -30,7 +29,6 @@ void main() {
     float cloud_tex_radius = 10.0;
     vec3 cloud_tex_sphere_center = vec3(0.0, -9.0, 0.0);
     vec2 cloud_tex_coord = vec2(-1.0, -1.0);
-    Clouding = vec4(0.0);
     vec3 tmpos = normalize(fs_in.ColorPosition * 2.0 - 1.0);
     if (tmpos.y > 0) {
         cloud_tex_coord = (vec2(tmpos.xz * (cloud_coord_height / tmpos.y)) / cloud_tex_edge_len);
@@ -45,7 +43,6 @@ void main() {
             // float mixfac = exp(-length(cloud_tex_coord) * 0.2);
             FragColor = mix(FragColor, vec4(1.0), factor);
             if (factor > 0.0) {
-                Clouding = vec4(factor);
             }
         }
     }
@@ -56,7 +53,6 @@ void main() {
             // float mixfac = exp(-length(cloud_tex_coord) * 0.2);
             FragColor = mix(FragColor, vec4(1.0), factor);
             if (factor > 0.0) {
-                Clouding = vec4(factor);
             }
         }
     }
@@ -66,7 +62,6 @@ void main() {
         // float mixfac = exp(-length(cloud_tex_coord) * 0.2);
         FragColor = mix(FragColor, vec4(1.0), factor);
         if (factor > 0.0) {
-            Clouding = vec4(factor);
         }
     }
     else if (fs_in.ColorType.y == -1.0) {
@@ -79,7 +74,6 @@ void main() {
             // float mixfac = exp(-length(cloud_tex_coord) * 0.2);
             FragColor = mix(FragColor, vec4(1.0), factor);
             if (factor > 0.0) {
-                Clouding = vec4(factor);
             }
         }
     }
@@ -90,7 +84,6 @@ void main() {
             // float mixfac = exp(-length(cloud_tex_coord) * 0.2);
             FragColor = mix(FragColor, vec4(1.0), factor);
             if (factor > 0.0) {
-                Clouding = vec4(factor);
             }
         }
     }

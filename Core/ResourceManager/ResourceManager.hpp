@@ -10,11 +10,15 @@
 #include "Core/Graphics/Light/PLight.hpp"
 
 #include <stb_image.h>
+#include <freetype2/ft2build.h>
+#include FT_FREETYPE_H
 
 class ResourceManager {
     static map<string, Shader>  shaders;
     static map<string, Texture> textures;
     static map<string, BaseLight*> lights;
+    static FT_Library  font;
+    static FT_Face     fontface;
 public:
     static void loadVF(string const &shader_name, string const &shader_path);
     static void loadVTTF(string const &shader_name, string const &shader_path);
@@ -35,5 +39,10 @@ public:
     static void GenPLight(string const &light_name, int light_id, glm::vec3 const &light_pos, glm::vec3 const &light_color);
     static void GenALisht(string const &light_name, int light_id, glm::vec3 const &light_dir, glm::vec3 const &light_color);
     static BaseLight* getLight(string const &light_name);
+
+    static void LoadFont(string const &font_path);
+    static FT_Face getFont();
+    static FT_Face loadChar(char c);
+    static void destroyFont();
 };
 #endif

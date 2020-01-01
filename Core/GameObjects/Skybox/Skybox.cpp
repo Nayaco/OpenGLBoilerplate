@@ -87,6 +87,7 @@ void Skybox::setColor(glm::vec3 color) { sky_color = color; }
 
 void Skybox::draw() const {
     glDepthFunc(GL_LEQUAL);
+    glEnable(GL_BLEND);
     glDisable(GL_CULL_FACE);
     skybox_shader.use();
     skybox_shader.setInt("texture_skymap_rt", 0);
@@ -108,6 +109,7 @@ void Skybox::draw() const {
     glBindVertexArray(VAO);
     glDrawArrays(GL_TRIANGLES, 0, 36);
     
+    glDisable(GL_BLEND);
     glEnable(GL_CULL_FACE);
     glBindVertexArray(0);
     glActiveTexture(GL_TEXTURE0);

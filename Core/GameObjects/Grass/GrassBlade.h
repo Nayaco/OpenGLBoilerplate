@@ -12,7 +12,7 @@
 
 class GrassBlade {
 public:
-    GrassBlade(glm::vec3 _scale, glm::vec2 center, glm::vec2 size, float density, Shader const& shader);
+    GrassBlade(glm::vec3 _scale, glm::vec3 center, glm::vec2 size, float density, Shader const& shader);
 
     void render();
     void setLightPos(glm::vec3 position);

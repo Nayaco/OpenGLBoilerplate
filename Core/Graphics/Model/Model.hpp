@@ -4,11 +4,9 @@
 #include "Core/Common.hpp"
 #include "Core/Graphics/Mesh/DefaultMesh/Mesh.hpp"
 #include "Core/Graphics/Shader/Shader.hpp"
+#include "Core/ResourceManager/ResourceManager.hpp"
 
 #include "BaseModel.hpp"
-
-#include <stb_image.h>
-
 
 class Model : public BaseModel {
 public:
@@ -23,7 +21,7 @@ private:
     void loadModel(string const &path);
     void processNode(aiNode *node, const aiScene *scene);
     Mesh processMesh(aiMesh *mesh, const aiScene *scene);
-    texture_vector Model::loadMaterialTextures(aiMaterial *mat, aiTextureType ai_tex_type);
+    texture_vector loadMaterialTextures(aiMaterial *mat, aiTextureType ai_tex_type);
 
     static Texture TextureFromFile(string const &path, string const &directory, bool gamma = false);
 };

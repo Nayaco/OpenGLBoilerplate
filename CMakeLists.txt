@@ -23,6 +23,7 @@ set(TEST_DIR "${CMAKE_CURRENT_SOURCE_DIR}/Tests")
 # Dependence glfw
 find_package(glfw3 REQUIRED)
 find_package(assimp REQUIRED)
+find_package(Freetype REQUIRED)
 # set(GLFW_DIR "${DEP_DIR}/glfw3")
 # set(GLFW_BUILD_EXAMPLES OFF CACHE INTERNAL "Build the GLFW example programs")
 # set(GLFW_BUILD_TESTS OFF CACHE INTERNAL "Build the GLFW test programs")
@@ -53,8 +54,12 @@ set(SOURCES
     "${CMAKE_CURRENT_SOURCE_DIR}/Core/Graphics/Texture/Texture.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/Core/Graphics/Light/ALight.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/Core/Graphics/Light/PLight.cpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/Core/Graphics/Framebuffer/FrameBuffer.cpp"
-     
+    "${CMAKE_CURRENT_SOURCE_DIR}/Core/Graphics/Font/Font.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/Core/Graphics/Mesh/DefaultMesh/Mesh.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/Core/Graphics/Model/Model.cpp"
+
+    "${CMAKE_CURRENT_SOURCE_DIR}/Core/Physics/AABB/AABBObject.cpp"
+
     "${CMAKE_CURRENT_SOURCE_DIR}/Core/Context/Context.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/Core/Input/Input.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/Core/ResourceManager/ResourceManager.cpp"
@@ -67,14 +72,18 @@ set(SOURCES
     "${CMAKE_CURRENT_SOURCE_DIR}/Core/GameObjects/Terrain/Terrain.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/Core/GameObjects/Grass/GrassBlade.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/Core/GameObjects/ParticleSystem/ParticleSystem.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/Core/GameObjects/Chunk/Chunk.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/Core/PostProcessing/FirstPass/FirstPass.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/Core/PostProcessing/Bloom/Bloom.cpp"
+    
+    "${CMAKE_CURRENT_SOURCE_DIR}/Components/Scenes/GameScene/GameScene.cpp"
+    
+    "${CMAKE_CURRENT_SOURCE_DIR}/Core/Graphics/Framebuffer/FrameBuffer.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/Core/GameObjects/Tile/WaterGenerator.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/Core/GameObjects/Tile/WaterRenderer.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/Core/GameObjects/Tile/WaterTile.cpp"
     
-    "${CMAKE_CURRENT_SOURCE_DIR}/Core/PostProcessing/FirstPass/FirstPass.cpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/Core/PostProcessing/Bloom/Bloom.cpp"
-        
-    "${CMAKE_CURRENT_SOURCE_DIR}/Components/Scenes/GameScene/GameScene.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/Components/Plane/Plane.cpp"
     )
 # copy to build folder
 file(GLOB RESOURCE_FILES "Resources")
@@ -92,19 +101,15 @@ target_include_directories(${EXE_NAME} PRIVATE "${SRC_DIR}")
 target_include_directories(${EXE_NAME} PRIVATE "${GLM_DIR}")
 target_include_directories(${EXE_NAME} PRIVATE "${STB_DIR}")
 target_include_directories(${EXE_NAME} PRIVATE "${GLAD_DIR}/include")
-# target_include_directories(${EXE_NAME} PRIVATE "${ASSIMP_DIR}/include")
-if (ASSIMP_FOUND)
-    target_include_directories(${EXE_NAME} PRIVATE "${ASSIMP_INCLUDE_DIRS}")
-    target_link_libraries(${EXE_NAME} "${ASSIMP_LIBRARIES}")
-endif()
-# target_include_directories(${EXE_NAME} PRIVATE "${GLFW_DIR}/include")
+target_include_directories(${EXE_NAME} PRIVATE "${FREETYPE_INCLUDE_DIRS}")
+    message("OKOK")
+target_include_directories(${EXE_NAME} PRIVATE "${ASSIMP_INCLUDE_DIRS}")
+target_link_libraries(${EXE_NAME} "${ASSIMP_LIBRARIES}")
 target_link_libraries(${EXE_NAME} "glad" "${CMAKE_DL_LIBS}")
-# target_link_libraries(${EXE_NAME} "glfw" "${GLFW_LIBRARIES}")
 target_link_libraries(${EXE_NAME} glfw)
-# target_link_libraries(${EXE_NAME} "${ASSIMP_DIR}/lib/libassimp.so.5.0.0")
 target_compile_definitions(${EXE_NAME} PRIVATE "GLFW_INCLUDE_NONE")
 target_link_libraries(${EXE_NAME} IL)
-
+target_link_libraries(${EXE_NAME} "${FREETYPE_LIBRARIES}")
 if (APPLE)
     target_link_libraries(${EXE_NAME} "-framework OpenGL")
 endif()

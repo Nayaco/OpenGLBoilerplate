@@ -1,29 +1,31 @@
 #ifndef GAMESCENE_HPP
 #define GAMESCENE_HPP
-
+#include <time.h>
 #include "Core/Common.hpp"
 #include "Core/Context/Context.hpp"
 #include "Core/GameObjects/Scene/BaseScene.hpp"
 
 #include "Core/GameObjects/Camera/Camera.hpp"
 
-#include "Core/Graphics/Mesh/TerrainMesh/TerrainMesh.hpp"
-#include "Core/Graphics/Framebuffer/FrameBuffer.h"
 #include "Core/ResourceManager/ResourceManager.hpp"
 #include "Core/Input/Input.hpp"
 #include "Core/GameObjects/Skymap/Skymap.hpp"
 #include "Core/GameObjects/Skybox/Skybox.hpp"
 #include "Core/GameObjects/Skybox/EntitySun.hpp"
-#include "Core/GameObjects/Terrain/Terrain.hpp"
-#include "Core/GameObjects/Grass/GrassBlade.h"
+#include "Core/GameObjects/Chunk/Chunk.hpp"
 #include "Core/GameObjects/ParticleSystem/ParticleSystem.hpp"
 #include "Core/GameObjects/Cloud/Cloud.hpp"
-#include "Core/GameObjects/Tile/WaterTile.h"
-#include "Core/GameObjects/Tile/WaterRenderer.h"
-#include "Core/GameObjects/Tile/WaterGenerator.h"
 #include "Core/PostProcessing/FirstPass/FirstPass.hpp"
 #include "Core/PostProcessing/Bloom/Bloom.hpp"
 #include "Core/ExceptionHandle/ErrLog.hpp"
+#include "Core/Graphics/Font/Font.hpp"
+
+#include "Components/Plane/Plane.hpp"
+
+#include "Core/Graphics/Framebuffer/FrameBuffer.h"
+#include "Core/GameObjects/Tile/WaterTile.h"
+#include "Core/GameObjects/Tile/WaterRenderer.h"
+#include "Core/GameObjects/Tile/WaterGenerator.h"
 
 #include "GameSceneConfig.hpp"
 
@@ -32,24 +34,31 @@ class GameScene : public BaseScene {
     Skybox *skybox;
     EntitySun *sun;
     Camera *cam;
-    ParticleSystem *particle_sys;
     FirstPass *firstpass;
     Bloom *bloom;
     Cloud *cloud;
-    Terrain *terrain;
-    WaterGenerator *waterGenerator;
+    Chunk *chunk;
+    Font *font;
+    ParticleSystem *particle_sys;
+    ParticleSystem *particle_sys_flare;
+
+
     WaterRenderer *waterRenderer;
-    WaterTile water;
+    WaterTile *water;
     FrameBuffer *reflectionBuffer;
     FrameBuffer *refractionBuffer;
 
+    Plane *plane;
 
-    
+    bool gameover = false;
+    bool gameover_last = false;
     bool  firstMouse = true;
     float lastX      = 0.0f;
     float lastY      = 0.0f;
+    float game_fps   = 0.0f;
 
     float game_time  = 0.0f;
+    float game_delat_time = 0.0f;
     bool  sky_should_update = false;
     glm::mat4 projection_matrix;
     glm::mat4 view_matrix;

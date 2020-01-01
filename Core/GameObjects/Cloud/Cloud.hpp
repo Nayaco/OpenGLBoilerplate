@@ -22,8 +22,9 @@ class Cloud : public Renderable {
     float width, height;   
     float cloud_x, cloud_z;
     vertex_vector vertices;
-    glm::vec2  wind_dir;
+    glm::vec2 wind_dir;
     Texture cloudmap_texture[4];
+    float cloud_day_and_night;
 
     Shader cloud_shader;
 
@@ -40,6 +41,7 @@ public:
     virtual void setOctave(const int octave);
     virtual void generate();
     virtual void recycle();
+    virtual void update(float delta_time, float day_and_night);
 
     virtual void render() const override;
     virtual void bind();
