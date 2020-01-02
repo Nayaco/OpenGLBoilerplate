@@ -61,6 +61,10 @@ void GameScene::draw() const {
     
 
     font->renderText("FPS:" + std::to_string(game_fps).substr(0, 4), 25.0f, 25.0f, 1.0f, glm::vec3(0.8, 0.8f, 0.8f));
+    if (!gamestart) {
+        font->renderText("The Wings", Context::window_width / 2.0, Context::window_height / 2.0 + 100.0, 2.0f, glm::vec3(2.5, 2.5, 2.5));   
+        font->renderText("Press F To Start", Context::window_width / 2.0, Context::window_height / 2.0, 1.2f, glm::vec3(1.8, 1.8, 1.8));
+    }
 
     sun->draw(ResourceManager::getShader("entitysun"));
     skybox->draw();
