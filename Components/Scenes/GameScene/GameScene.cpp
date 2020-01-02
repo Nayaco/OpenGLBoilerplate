@@ -88,9 +88,9 @@ void GameScene::update() {
     
     glm::vec2 plane_front2d = glm::normalize(glm::vec2(plane->front.x, plane->front.z));
     cam->Position = plane->center + glm::vec3(-plane_front2d.x * 8.5, 4.0, -plane_front2d.y * 8.5);
-    
-    // cam->Yaw = plane->yaw;
+    cam->Yaw = - plane->yaw + 90;
     // cam->Pitch = plane->pitch;
+    cam->updateCameraVectors();
     
     //Camera
     projection_matrix = cam->GetProjectionMatrix();
@@ -149,12 +149,16 @@ void GameScene::update() {
         plane->center,
         glm::vec3(0.0, 0.1, 0.0), 
         2.0, 8.0, 2.5, 5.8);
-    if(gameover && !gameover_last)particle_sys_flare->update(Context::delta_time, 1000);
+    if(gameover && !gameover_last)particle_sys_flare->update(Context::delta_time, 1000, 0.27);
     else particle_sys_flare->update(Context::delta_time, 0);
     // entity sun
     float sunlight_color_factor = glm::max(glm::dot(glm::normalize(sunpos_vec), glm::vec3(0.0, 1.0, 0.0)), 0.0f);   
     sun->update(normalize(sunpos_vec - glm::vec3(0.0, 0.1, 0.0)) * 0.8f, 
-        suncolor_vec * glm::vec3(1.0, (0.6 + powf(sunlight_color_factor, 1.2) * 0.4), (0.5 + powf(sunlight_color_factor, 1.2) * 0.5) ));
+        suncolor_vec * 
+        (game_time <= DAY_DURATION ?
+        glm::vec3((0.6 + powf(sunlight_color_factor, 1.2) * 0.4), (0.3 + powf(sunlight_color_factor, 1.2) * 0.7), (0.2 + powf(sunlight_color_factor, 1.2) * 0.8) ) :
+        glm::vec3(1.0))
+        );
     auto sunshader = ResourceManager::getShader("entitysun");
     sunshader.use();
     sunshader.setMat4("projection", projection_matrix);
@@ -285,7 +289,7 @@ void GameScene::mouseMovecallback(float xpos, float ypos) {
         lastY = ypos;
         firstMouse = false;
     }
-    float xoffset = xpos - lastX;
+    float xoffset = 0.0f;//xpos - lastX;
     float yoffset = lastY - ypos;
     lastX = xpos;
     lastY = ypos;

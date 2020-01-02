@@ -84,7 +84,7 @@ void ParticleSystem::setGenerator(glm::vec3 pos, glm::vec3 accelerate,
     particle_source.position = pos;
     particle_source.acceleration = accelerate;
 }
-void ParticleSystem::update(float delta_time, int new_particles) {
+void ParticleSystem::update(float delta_time, int new_particles, float size) {
     for (auto i = 0; i < new_particles; ++i) {
         int unused = firstUnusedParticle();
         respawn(particles[unused]);
@@ -98,7 +98,7 @@ void ParticleSystem::update(float delta_time, int new_particles) {
             float factor = powf((p.lifetime / p.maxLifetime), 2.0);
                 // 1.0f / ((p.lifetime / p.maxLifetime) * (p.lifetime / p.maxLifetime) + 1.0);
             p.alpha = factor;
-            p.size = 0.17f * factor;
+            p.size = size * factor;
         }
     }
 }

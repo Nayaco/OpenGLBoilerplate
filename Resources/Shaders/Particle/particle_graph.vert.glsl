@@ -16,5 +16,5 @@ uniform float scale;
 
 void main() {
     // ColorTexCoord = TexCoord;
-    gl_Position = vec4(Position.x * scale * 0.3 + offset.x, Position.y * scale * 0.3 + offset.y, offset.z, 1.0); 
+    gl_Position = vec4(Position.x * scale + offset.x, Position.y * scale + offset.y, offset.z, 1.0); 
 }

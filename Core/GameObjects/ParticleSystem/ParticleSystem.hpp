@@ -46,7 +46,7 @@ public:
         glm::vec3 pos, glm::vec3 accelerate, 
         float minspeed, float maxspeed, 
         float minlife, float maxlife);
-    virtual void update(float delta_time, int new_particles);
+    virtual void update(float delta_time, int new_particles, float size = 0.17f);
     virtual void draw(Shader const &shader) const override;
 };
 

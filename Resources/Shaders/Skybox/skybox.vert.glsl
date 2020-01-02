@@ -21,7 +21,7 @@ uniform mat4 projection;
 
 void main() {
     vec4 pos      = 
-        projection * view * vec4(Position.x, Position.y - 0.2, Position.z, 1.0);
+        projection * view * vec4(Position.x, Position.y - 0.1, Position.z, 1.0);
     vs_out.ColorPosition = Position * 0.5 + 0.5;
     vs_out.ColorTexCoord = vs_out.ColorPosition;
     vs_out.ColorType     = Normal;
