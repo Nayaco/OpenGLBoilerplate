@@ -19,7 +19,7 @@ void WaterRenderer::render(const Shader &shader, WaterTile *water, Camera &camer
     shader.setFloat("waveTime", time);
     loadCameraVariables(shader, camera);
     // bind all the textures
-    // bindTextures(reflectionTexture, refractionTexture, depthTexture);
+    bindTextures(shader, reflectionTexture, refractionTexture, depthTexture);
     glDrawArrays(GL_TRIANGLES, 0, water->vertexCount);
     // reset to default
     // glDisable(GL_BLEND);

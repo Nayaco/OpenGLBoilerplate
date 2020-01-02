@@ -10,9 +10,9 @@
 
 class WaterGenerator {
 public:
-    static WaterTile *generate(int gridCount, float height);
+    static WaterTile *generate(int gridCount, float height, glm::vec2 position);
 
-    static ByteBuffer createMeshData(int gridCount, int totalVertexCount);
+    static ByteBuffer createMeshData(int gridCount, int totalVertexCount, glm::vec2 position);
 
     static void storeTriangle(glm::vec2 *vertices, ByteBuffer &buffer, bool left);
 

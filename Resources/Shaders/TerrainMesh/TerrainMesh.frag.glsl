@@ -30,6 +30,8 @@ uniform ParallelLight alight_0;
 uniform ParallelLight alight_1;
 uniform ParallelLight alight_2;
 
+uniform float reflection_refraction;
+
 void main() {
     vec3 lightDir = alight_0.dir;
     vec3 viewDir = normalize(viewpos - fs_in.FragPosition);
@@ -45,5 +47,5 @@ void main() {
     } else {
         FragColor = vec4(color_base * vec3(0.7, 1.0 * fs_in.FragPosition.y / 5.5, 0.5 * fs_in.FragPosition.y / 5.5), 1.0);
     }
-
+    if (fs_in.FragPosition.y < 2.5 && reflection_refraction > 0.5) discard; 
 }

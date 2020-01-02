@@ -11,9 +11,9 @@ const float vt[] = {
         1.0f, 0.0f, 0.0f
 };
 
-WaterTile* WaterGenerator::generate(int gridCount, float height) {
+WaterTile* WaterGenerator::generate(int gridCount, float height, glm::vec2 position) {
     int totalVertexCount = gridCount * gridCount * VERTICES_PER_SQUARE;
-    ByteBuffer meshData = createMeshData(gridCount, totalVertexCount);
+    ByteBuffer meshData = createMeshData(gridCount, totalVertexCount, position);
 //    auto buf = meshData.getByteArray();
 //    for (int i = 0; i < totalVertexCount / 12; i++ ) {
 //        std::cout << *((float*)(buf + i * 12)) << " " << *((float*)(buf + i * 12 + 4)) << " " << *((int*)(buf + i * 12 + 8)) << " " << std::endl;
@@ -38,17 +38,17 @@ WaterTile* WaterGenerator::generate(int gridCount, float height) {
     return new WaterTile(vao, totalVertexCount, height);
 }
 
-ByteBuffer WaterGenerator::createMeshData(int gridCount, int totalVertexCount) {
+ByteBuffer WaterGenerator::createMeshData(int gridCount, int totalVertexCount, glm::vec2 position) {
     int byteSize = VERTEX_SIZE_BYTES * totalVertexCount;
     auto buffer = ByteBuffer(byteSize);
     for (int row = 0; row < gridCount; row++) {
         for (int col = 0; col < gridCount; col++) {
             // store a grid of two triangles
             auto vertices = new glm::vec2[4];
-            vertices[0] = glm::vec2(col, row);
-            vertices[1] = glm::vec2(col, row + 1);
-            vertices[2] = glm::vec2(col + 1, row);
-            vertices[3] = glm::vec2(col + 1, row + 1);
+            vertices[0] = position + glm::vec2(col, row);
+            vertices[1] = position + glm::vec2(col, row + 1);
+            vertices[2] = position + glm::vec2(col + 1, row);
+            vertices[3] = position + glm::vec2(col + 1, row + 1);
             storeTriangle(vertices, buffer, true);
             storeTriangle(vertices, buffer, false);
         }

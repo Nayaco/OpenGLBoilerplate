@@ -19,55 +19,69 @@ float CalculateFrameRate() {
 }
 
 void GameScene::draw() const {
-    // chunk->terrain->enableReflectionRefration();
+    chunk->terrain->enableReflectionRefration();
 
     // glEnable(GL_CLIP_DISTANCE0);
-    // glDisable(GL_CULL_FACE);
-    // cam->Reflect(2.5);
-    // reflectionBuffer->bind();
-    // chunk->draw_terrain(ResourceManager::getShader("terrainmesh"));
-    // reflectionBuffer->unbind(Context::window_width, Context::window_height);
-    // cam->Reflect(2.5);
-    // glEnable(GL_CULL_FACE);
+    glDisable(GL_CULL_FACE);
+    cam->Reflect(2.5);
+    Shader terrain_shader = ResourceManager::getShader("terrainmesh");
+    terrain_shader.use();
+    // terrain_shader.setMat4("projection", projection_matrix);
+    terrain_shader.setMat4("view", cam->GetViewMatrix());
+    terrain_shader.setVec3("viewpos", cam->GetViewPosition());
+    
+    reflectionBuffer->bind();
+    chunk->draw_terrain(ResourceManager::getShader("terrainmesh"));
+    reflectionBuffer->unbind(Context::window_width, Context::window_height);
+    cam->Reflect(2.5);
+    terrain_shader.use();
+    // terrain_shader.setMat4("projection", projection_matrix);
+    terrain_shader.setMat4("view", cam->GetViewMatrix());
+    terrain_shader.setVec3("viewpos", cam->GetViewPosition());
+    
+    glEnable(GL_CULL_FACE);
     // glDisable(GL_CLIP_DISTANCE0);
+    chunk->terrain->disableReflectionRefration();
 
     // glEnable(GL_CLIP_DISTANCE1);
-    // refractionBuffer-> bind();
-    // // // rfract only terrain is needed
-    // chunk->draw_terrain(ResourceManager::getShader("terrainmesh"));
-    // refractionBuffer->unbind(Context::window_width, Context::window_height);
+    refractionBuffer-> bind();
+    // rfract only terrain is needed
+    chunk->draw_terrain(ResourceManager::getShader("terrainmesh"));
+    refractionBuffer->unbind(Context::window_width, Context::window_height);
     // glDisable(GL_CLIP_DISTANCE1);
 
-    // chunk->terrain->disableReflectionRefration();
 
     //-----------------------
 
     firstpass->bind();
 
-    plane->draw(ResourceManager::getShader("plane"));
-    tower->draw(ResourceManager::getShader("tower"));
-    // waterRenderer->render(ResourceManager::getShader("water"), water, *cam,
-    //                       reflectionBuffer->getColorBuffer(),
-    //                       refractionBuffer->getColorBuffer(),
-    //                       refractionBuffer->getDepthBuffer());
-
+    // plane->draw(ResourceManager::getShader("plane"));
+    // tower->draw(ResourceManager::getShader("tower"));
+    waterRenderer->render(ResourceManager::getShader("water"), water, *cam,
+                          reflectionBuffer->getColorBuffer(),
+                          refractionBuffer->getColorBuffer(),
+                          refractionBuffer->getDepthBuffer());
+    // // waterRenderer->render(ResourceManager::getShader("water"), water, *cam,
+    //                       0,
+    //                       0,
+    //                       0);
 
     chunk->draw_terrain(ResourceManager::getShader("terrainmesh"));
-    chunk->draw_grass();
+    // chunk->draw_grass();
 
-    particle_sys->draw(ResourceManager::getShader("particle"));
-    particle_sys_flare->draw(ResourceManager::getShader("particle_flare"));
-    particle_sys_torch->draw(ResourceManager::getShader("particle_torch"));
+    // particle_sys->draw(ResourceManager::getShader("particle"));
+    // particle_sys_flare->draw(ResourceManager::getShader("particle_flare"));
+    // particle_sys_torch->draw(ResourceManager::getShader("particle_torch"));
     
 
-    font->renderText("FPS:" + std::to_string(game_fps).substr(0, 4), 25.0f, 25.0f, 1.0f, glm::vec3(0.8, 0.8f, 0.8f));
-    if (!gamestart) {
-        font->renderText("The Wings", Context::window_width / 2.0, Context::window_height / 2.0 + 100.0, 2.0f, glm::vec3(2.5, 2.5, 2.5));   
-        font->renderText("Press F To Start", Context::window_width / 2.0, Context::window_height / 2.0, 1.2f, glm::vec3(1.8, 1.8, 1.8));
-    }
+    // font->renderText("FPS:" + std::to_string(game_fps).substr(0, 4), 25.0f, 25.0f, 1.0f, glm::vec3(0.8, 0.8f, 0.8f));
+    // if (!gamestart) {
+    //     font->renderText("The Wings", Context::window_width / 2.0, Context::window_height / 2.0 + 100.0, 2.0f, glm::vec3(2.5, 2.5, 2.5));   
+    //     font->renderText("Press F To Start", Context::window_width / 2.0, Context::window_height / 2.0, 1.2f, glm::vec3(1.8, 1.8, 1.8));
+    // }
 
-    sun->draw(ResourceManager::getShader("entitysun"));
-    skybox->draw();
+    // sun->draw(ResourceManager::getShader("entitysun"));
+    // skybox->draw();
 
     firstpass->unbind();
 
@@ -75,7 +89,9 @@ void GameScene::draw() const {
     bloom->bindTexture(firstpass->texture_buffers[FirstPass::TEX_BRIGHT_BUF]);
     bloom->draw(ResourceManager::getShader("bloom"));
     bloom->unbind();
-
+    Texture text;
+    // text._id = reflectionBuffer->getColorBuffer();
+    // firstpass->bindTexture(text, FirstPass::TEX_BRIGHT_BUF);
     firstpass->bindTexture(bloom->bloom_textures[bloom->horizon], FirstPass::TEX_BRIGHT_BUF);
     firstpass->draw(ResourceManager::getShader("firstpass"));
 }
@@ -306,7 +322,7 @@ void GameScene::initialize() {
     chunk->initialize_terrain(texture_vector{ }, TERRAIN_TESS, TERRAIN_HEIGHT_MAX, TERRAIN_OCTAVE);
     chunk->initialize_grass(ResourceManager::getShader("grassblade"));
 
-    water = WaterGenerator::generate(50, 2.5);
+    water = WaterGenerator::generate(50, 2.5, glm::vec2(-25.0f,-25.0f));
     waterRenderer = new WaterRenderer();
     reflectionBuffer = new FrameBuffer(800, 600, REFLECTION);
     refractionBuffer = new FrameBuffer(800, 600, REFRACTION);
