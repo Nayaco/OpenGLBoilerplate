@@ -21,6 +21,7 @@
 #include "Core/Graphics/Font/Font.hpp"
 
 #include "Components/Plane/Plane.hpp"
+#include "Components/Tower/Tower.hpp"
 
 #include "Core/Graphics/Framebuffer/FrameBuffer.h"
 #include "Core/GameObjects/Tile/WaterTile.h"
@@ -41,7 +42,8 @@ class GameScene : public BaseScene {
     Font *font;
     ParticleSystem *particle_sys;
     ParticleSystem *particle_sys_flare;
-
+    ParticleSystem *particle_sys_torch;
+    Tower *tower;
 
     WaterRenderer *waterRenderer;
     WaterTile *water;
@@ -56,6 +58,7 @@ class GameScene : public BaseScene {
     float lastX      = 0.0f;
     float lastY      = 0.0f;
     float game_fps   = 0.0f;
+    float plane_yaw = 0.0f;
 
     float game_time  = 0.0f;
     float game_delat_time = 0.0f;

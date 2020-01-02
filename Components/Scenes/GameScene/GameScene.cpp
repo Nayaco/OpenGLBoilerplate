@@ -45,7 +45,7 @@ void GameScene::draw() const {
     firstpass->bind();
 
     plane->draw(ResourceManager::getShader("plane"));
-
+    tower->draw(ResourceManager::getShader("tower"));
     // waterRenderer->render(ResourceManager::getShader("water"), water, *cam,
     //                       reflectionBuffer->getColorBuffer(),
     //                       refractionBuffer->getColorBuffer(),
@@ -57,6 +57,8 @@ void GameScene::draw() const {
 
     particle_sys->draw(ResourceManager::getShader("particle"));
     particle_sys_flare->draw(ResourceManager::getShader("particle_flare"));
+    particle_sys_torch->draw(ResourceManager::getShader("particle_torch"));
+    
 
     font->renderText("FPS:" + std::to_string(game_fps).substr(0, 4), 25.0f, 25.0f, 1.0f, glm::vec3(0.8, 0.8f, 0.8f));
 
@@ -83,14 +85,17 @@ void GameScene::update() {
     gameover_last = gameover;
     if(!gameover) {
         plane->update(Context::delta_time);
-        gameover = plane->aabbbox.checkCollision(chunk->terrain->terrainmap, chunk->terrain->terrain_height);
+        gameover = plane->aabbbox.checkCollision(chunk->terrain->terrainmap, chunk->terrain->terrain_height) ||
+                plane->aabbbox.checkCollision(tower->aabbbox);
+        
+        glm::vec2 plane_front2d = glm::normalize(glm::vec2(plane->front.x, plane->front.z));
+        cam->Position = plane->center + glm::vec3(-plane_front2d.x * 8.5, 4.0, -plane_front2d.y * 8.5);
+        cam->Yaw -= (plane->yaw - plane_yaw);
+        // cam->Pitch = plane->pitch;
+        cam->updateCameraVectors();
+        plane_yaw = plane->yaw;
     }
     
-    glm::vec2 plane_front2d = glm::normalize(glm::vec2(plane->front.x, plane->front.z));
-    cam->Position = plane->center + glm::vec3(-plane_front2d.x * 8.5, 4.0, -plane_front2d.y * 8.5);
-    cam->Yaw = - plane->yaw + 90;
-    // cam->Pitch = plane->pitch;
-    cam->updateCameraVectors();
     
     //Camera
     projection_matrix = cam->GetProjectionMatrix();
@@ -125,7 +130,7 @@ void GameScene::update() {
     particleshader.setMat4("projection", projection_matrix);
     particleshader.setMat4("view", view_matrix);
     particleshader.setVec3("campos", cam->GetViewPosition());
-    particleshader.setVec3("color", glm::vec3(1.0, 1.0, 1.0));
+    particleshader.setVec3("color", glm::vec3(2.1, 2.1, 2.1));
     particle_sys->setGenerator(
         plane->center + plane->right - plane->front * 0.5f,
         glm::vec3(0.0, -0.1, 0.0), 
@@ -151,6 +156,18 @@ void GameScene::update() {
         2.0, 8.0, 2.5, 5.8);
     if(gameover && !gameover_last)particle_sys_flare->update(Context::delta_time, 1000, 0.27);
     else particle_sys_flare->update(Context::delta_time, 0);
+    // particle sys torch
+    auto particleshader_torch = ResourceManager::getShader("particle_torch");
+    particleshader_torch.use();
+    particleshader_torch.setMat4("projection", projection_matrix);
+    particleshader_torch.setMat4("view", view_matrix);
+    particleshader_torch.setVec3("campos", cam->GetViewPosition());
+    particleshader_torch.setVec3("color", glm::vec3(4.0, 2.0, 0.3));
+    particle_sys_torch->setGenerator(
+        tower->center + glm::vec3(0.0, 12.0, 0.0),
+        glm::vec3(0.0, 1.0, 0.0), 
+        0.5, 1.2, 0.5, 3.2);
+    particle_sys_torch->update(Context::delta_time, 4, 0.55);
     // entity sun
     float sunlight_color_factor = glm::max(glm::dot(glm::normalize(sunpos_vec), glm::vec3(0.0, 1.0, 0.0)), 0.0f);   
     sun->update(normalize(sunpos_vec - glm::vec3(0.0, 0.1, 0.0)) * 0.8f, 
@@ -193,6 +210,13 @@ void GameScene::update() {
     plane_shader.use();
     plane_shader.setMat4("projection", projection_matrix);
     plane_shader.setMat4("view", view_matrix);
+    // tower
+    Shader tower_shader = ResourceManager::getShader("tower");
+    tower_shader.use();
+    tower_shader.setMat4("projection", projection_matrix);
+    tower_shader.setMat4("view", view_matrix);
+    tower_shader.setVec3("viewpos", cam->GetViewPosition());
+    sun_light->use(tower_shader);
 }
 
 void GameScene::initialize() {
@@ -221,13 +245,14 @@ void GameScene::initialize() {
     ResourceManager::loadVF("entitysun", "Resources/Shaders/EntitySun/sun");
     ResourceManager::loadVGF("particle", "Resources/Shaders/Particle/particle_graph");
     ResourceManager::loadVGF("particle_flare", "Resources/Shaders/Particle/particle_graph");
+    ResourceManager::loadVGF("particle_torch", "Resources/Shaders/Particle/particle_graph");
     ResourceManager::loadVF("firstpass", "Resources/Shaders/FirstPass/firstPass");
     ResourceManager::loadVF("bloom", "Resources/Shaders/Bloom/bloom");
     ResourceManager::loadVF("cloud", "Resources/Shaders/Cloud/cloud");
     ResourceManager::loadVF("font", "Resources/Shaders/Font/font");
     ResourceManager::loadVF("water", "Resources/Shaders/Water/water");
     ResourceManager::loadVF("plane", "Resources/Shaders/Plane/plane");
-    
+    ResourceManager::loadVF("tower", "Resources/Shaders/Tower/tower");
 
     ResourceManager::GenALisht("global_sun_light", 0, glm::vec3(0.0, 1.0, 0.0), glm::vec3(1.0, 1.0, 1.0));
 
@@ -261,6 +286,10 @@ void GameScene::initialize() {
     particle_sys_flare->initialize(glm::vec3(0.0), glm::vec3(0.0, -0.1, 0.0), 
         0.2, 0.5, 0.2, 1.0);
 
+    particle_sys_torch = new ParticleSystem(ResourceManager::getTexture("sprite"), 200);
+    particle_sys_torch->initialize(glm::vec3(0.0), glm::vec3(0.0, 0.1, 0.0), 
+        0.5, 1.5, 0.5, 1.2);
+
     bloom     = new Bloom(Context::window_width, Context::window_height);  
     bloom->initialize();
 
@@ -277,6 +306,9 @@ void GameScene::initialize() {
     refractionBuffer = new FrameBuffer(800, 600, REFRACTION);
 
     plane = new Plane();
+    plane_yaw = plane->yaw;
+    
+    tower = new Tower();
 }
 
 void GameScene::destory() {
@@ -289,7 +321,7 @@ void GameScene::mouseMovecallback(float xpos, float ypos) {
         lastY = ypos;
         firstMouse = false;
     }
-    float xoffset = 0.0f;//xpos - lastX;
+    float xoffset = xpos - lastX;
     float yoffset = lastY - ypos;
     lastX = xpos;
     lastY = ypos;
@@ -308,22 +340,26 @@ void GameScene::keyEsc() {
 void GameScene::keyF() { }
 
 void GameScene::keyA() {
-    plane->ProcessKeyboard(Plane::Plane_Movement::LEFT, Context::delta_time);
+    if(!gameover)
+        plane->ProcessKeyboard(Plane::Plane_Movement::LEFT, Context::delta_time);
     // cam->ProcessKeyboard(Camera::Camera_Movement::LEFT, Context::delta_time);
 }
 
 void GameScene::keyS() {
-    plane->ProcessKeyboard(Plane::Plane_Movement::BACKWARD, Context::delta_time);
+    if(!gameover)
+        plane->ProcessKeyboard(Plane::Plane_Movement::BACKWARD, Context::delta_time);
     // cam->ProcessKeyboard(Camera::Camera_Movement::BACKWARD, Context::delta_time);
     
 }
 
 void GameScene::keyW() {
-    plane->ProcessKeyboard(Plane::Plane_Movement::FORWARD, Context::delta_time);
+    if(!gameover)
+        plane->ProcessKeyboard(Plane::Plane_Movement::FORWARD, Context::delta_time);
     // cam->ProcessKeyboard(Camera::Camera_Movement::FORWARD, Context::delta_time);
 }
 
 void GameScene::keyD() {
-    plane->ProcessKeyboard(Plane::Plane_Movement::RIGHT, Context::delta_time);
+    if(!gameover)
+        plane->ProcessKeyboard(Plane::Plane_Movement::RIGHT, Context::delta_time);
     // cam->ProcessKeyboard(Camera::Camera_Movement::RIGHT, Context::delta_time);
 }

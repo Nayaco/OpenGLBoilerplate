@@ -10,10 +10,10 @@ void AABBObject::update(glm::vec3 position) {
 }
 
 bool AABBObject::checkCollision(AABBObject const &object) {
-    if (glm::length(position - object.position) >= max_len) {
-        return false;
-    }
-    else {
+    // if (glm::length(position - object.position) >= max_len && ) {
+    //     return false;
+    // }
+    // else {
         bool collisionX = position.x + size.x >= object.position.x &&
             object.position.x + object.size.x >= position.x;
         bool collisionY = position.y + size.y >= object.position.y &&
@@ -21,7 +21,7 @@ bool AABBObject::checkCollision(AABBObject const &object) {
         bool collisionZ = position.z + size.z >= object.position.z &&
             object.position.z + object.size.z >= position.z;
         return collisionX && collisionY && collisionZ;
-    }
+    // }
 }
 
 bool AABBObject::checkCollision(imap2d const& heightmap, float height) {

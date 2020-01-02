@@ -3,7 +3,7 @@ Plane::Plane()
     :aabbbox(glm::vec3(1.0f, 1.0f, 1.0f))
     , model("Resources/Models/Plane/plane.obj") {
     position = glm::vec3(-0.5, 9.5, -0.5);
-    center = glm::vec3(0.0, 8.0, 0.0);
+    center = glm::vec3(0.0, 9.0, 0.0);
     vel = 6.0;
     pitch = 0;
     yaw = 0;

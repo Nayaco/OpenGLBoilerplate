@@ -84,6 +84,7 @@ set(SOURCES
     "${CMAKE_CURRENT_SOURCE_DIR}/Core/GameObjects/Tile/WaterTile.cpp"
     
     "${CMAKE_CURRENT_SOURCE_DIR}/Components/Plane/Plane.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/Components/Tower/Tower.cpp"
     )
 # copy to build folder
 file(GLOB RESOURCE_FILES "Resources")
