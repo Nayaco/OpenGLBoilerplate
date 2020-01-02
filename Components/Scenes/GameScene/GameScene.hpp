@@ -51,7 +51,7 @@ class GameScene : public BaseScene {
     FrameBuffer *refractionBuffer;
 
     Plane *plane;
-
+    bool gamestart = false;
     bool gameover = false;
     bool gameover_last = false;
     bool  firstMouse = true;

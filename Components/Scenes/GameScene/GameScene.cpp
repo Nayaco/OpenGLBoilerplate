@@ -83,7 +83,7 @@ void GameScene::update() {
     game_fps =  CalculateFrameRate();
     // plane camera 
     gameover_last = gameover;
-    if(!gameover) {
+    if(!gameover && gamestart) {
         plane->update(Context::delta_time);
         gameover = plane->aabbbox.checkCollision(chunk->terrain->terrainmap, chunk->terrain->terrain_height) ||
                 plane->aabbbox.checkCollision(tower->aabbbox);
@@ -131,17 +131,19 @@ void GameScene::update() {
     particleshader.setMat4("view", view_matrix);
     particleshader.setVec3("campos", cam->GetViewPosition());
     particleshader.setVec3("color", glm::vec3(2.1, 2.1, 2.1));
-    particle_sys->setGenerator(
-        plane->center + plane->right - plane->front * 0.5f,
-        glm::vec3(0.0, -0.1, 0.0), 
-        0.1, 0.1, 0.5, 6.0);
-    particle_sys->update(Context::delta_time, 2);
+    if(!gameover && gamestart) {
+        particle_sys->setGenerator(
+            plane->center + plane->right - plane->front * 0.5f,
+            glm::vec3(0.0, -0.1, 0.0), 
+            0.1, 0.1, 0.5, 6.0);
+        particle_sys->update(Context::delta_time, 2);
 
-    particle_sys->setGenerator(
-        plane->center - plane->right - plane->front * 0.5f,
-        glm::vec3(0.0, -0.1, 0.0), 
-        0.1, 0.1, 0.5, 6.0);
-    particle_sys->update(Context::delta_time, 2);
+        particle_sys->setGenerator(
+            plane->center - plane->right - plane->front * 0.5f,
+            glm::vec3(0.0, -0.1, 0.0), 
+            0.1, 0.1, 0.5, 6.0);
+        particle_sys->update(Context::delta_time, 2);
+    }
 
     // particle sys flare
     auto particleshader_flare = ResourceManager::getShader("particle_flare");
@@ -260,7 +262,7 @@ void GameScene::initialize() {
 
     ResourceManager::LoadFont("Resources/Fonts/arial.ttf");
 
-    cam      = new Camera(glm::vec3(0.0f, 4.0f, 2.0f), glm::vec3(0.0, 1.0, 0.0), 90.0f);
+    cam      = new Camera(glm::vec3(0.0f, 20.0f, -40.0f), glm::vec3(0.0, 1.0, 0.0), 90.0f);
 
     font     = new Font(ResourceManager::getShader("font"));
     font->initialize(Context::window_width, Context::window_height);
@@ -337,29 +339,33 @@ void GameScene::keyEsc() {
     Context::close();
 }
 
-void GameScene::keyF() { }
+void GameScene::keyF() { gamestart = true; }
 
 void GameScene::keyA() {
-    if(!gameover)
+    if(!gameover && gamestart)
         plane->ProcessKeyboard(Plane::Plane_Movement::LEFT, Context::delta_time);
-    // cam->ProcessKeyboard(Camera::Camera_Movement::LEFT, Context::delta_time);
+    else
+        cam->ProcessKeyboard(Camera::Camera_Movement::LEFT, Context::delta_time);
 }
 
 void GameScene::keyS() {
-    if(!gameover)
+    if(!gameover && gamestart)
         plane->ProcessKeyboard(Plane::Plane_Movement::BACKWARD, Context::delta_time);
-    // cam->ProcessKeyboard(Camera::Camera_Movement::BACKWARD, Context::delta_time);
+    else
+        cam->ProcessKeyboard(Camera::Camera_Movement::BACKWARD, Context::delta_time);
     
 }
 
 void GameScene::keyW() {
-    if(!gameover)
+    if(!gameover && gamestart)
         plane->ProcessKeyboard(Plane::Plane_Movement::FORWARD, Context::delta_time);
-    // cam->ProcessKeyboard(Camera::Camera_Movement::FORWARD, Context::delta_time);
+    else
+        cam->ProcessKeyboard(Camera::Camera_Movement::FORWARD, Context::delta_time);
 }
 
 void GameScene::keyD() {
-    if(!gameover)
+    if(!gameover && gamestart)
         plane->ProcessKeyboard(Plane::Plane_Movement::RIGHT, Context::delta_time);
-    // cam->ProcessKeyboard(Camera::Camera_Movement::RIGHT, Context::delta_time);
+    else
+        cam->ProcessKeyboard(Camera::Camera_Movement::RIGHT, Context::delta_time);
 }
