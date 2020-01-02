@@ -66,7 +66,8 @@ void Chunk::initialize_grass(const Shader &grass_shader) {
         GrassBlade(glm::vec3(.1f, .6f, .1f), 
             glm::vec3(placement_x + chunk_width / 2.0, 2.5, placement_z + chunk_height / 2.0), 
             glm::vec2(chunk_width - 1.0, chunk_height - 1.0), 5.0, 
-            grass_shader)
+            grass_shader,
+            terrain->terrainmap, terrain->terrain_height)
     );
 
     // for (auto i = 0; i < 1; i++) {

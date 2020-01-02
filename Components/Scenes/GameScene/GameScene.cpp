@@ -50,6 +50,11 @@ void GameScene::draw() const {
     //                       reflectionBuffer->getColorBuffer(),
     //                       refractionBuffer->getColorBuffer(),
     //                       refractionBuffer->getDepthBuffer());
+    // waterRenderer->render(ResourceManager::getShader("water"), water, *cam,
+    //                       0,
+    //                       0,
+    //                       0);
+    
 
 
     chunk->draw_terrain(ResourceManager::getShader("terrainmesh"));
@@ -76,6 +81,8 @@ void GameScene::draw() const {
     bloom->draw(ResourceManager::getShader("bloom"));
     bloom->unbind();
 
+    // Texture testt; testt._id = reflectionBuffer->getColorBuffer();
+    // firstpass->bindTexture(testt, FirstPass::TEX_BRIGHT_BUF);
     firstpass->bindTexture(bloom->bloom_textures[bloom->horizon], FirstPass::TEX_BRIGHT_BUF);
     firstpass->draw(ResourceManager::getShader("firstpass"));
 }

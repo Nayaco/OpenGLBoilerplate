@@ -37,7 +37,7 @@ GLfloat GrassBlade::texCoord[] = {
     1.0f,  1.0f  // 6
 };
 
-GrassBlade::GrassBlade(glm::vec3 _scale, glm::vec3 center, glm::vec2 size, float density, Shader const& shader) 
+GrassBlade::GrassBlade(glm::vec3 _scale, glm::vec3 center, glm::vec2 size, float density, Shader const& shader, imap2d const &heightmap, float y_axis_offset) 
     :grassShader(shader)
     {
     srand(time(0));
@@ -65,9 +65,30 @@ GrassBlade::GrassBlade(glm::vec3 _scale, glm::vec3 center, glm::vec2 size, float
 
         pos_x += frand / 10.0f - 0.05;
         pos_y += frand / 10.0f - 0.05;
+        
+        float the_x = (float)i / density;
+        float the_y = (float)j / density;
+        float the_left = floor(the_x);
+        float the_right = ceil(the_x);
+        float the_down = floor(the_y);
+        float the_top = ceil(the_y);
+
+        if (the_left >= size.x) the_left = size.x - 1;
+        if (the_right >= size.x) the_right = size.x - 1;
+        if (the_down >= size.y) the_down = size.y - 1;
+        if (the_top >=  size.y) the_top = size.y - 1;
+        
+        float the_horizon_down = noise::lerp(heightmap[(int)the_left][(int)the_down], heightmap[(int)the_right][(int)the_down], glm::min(the_x - the_left, 1.0f));
+        float the_horizon_up = noise::lerp(heightmap[(int)the_left][(int)the_top], heightmap[(int)the_right][(int)the_top], glm::min(the_x - the_left, 1.0f));
+
+        float the_verticle = noise::lerp(the_horizon_down, the_horizon_up, glm::min(the_y - the_down, 1.0f));
 
         t.translate(center);
-        t.translate(pos_x, -3.0, pos_y);
+        if (the_verticle > 0.05) {
+            t.translate(pos_x, the_verticle * y_axis_offset - 3.8, pos_y);
+        } else {
+            t.translate(pos_x, the_verticle * y_axis_offset - 3.8 - the_verticle * 10.0, pos_y);
+        }
         t.rotate(0.0, 1.0, 0.0, pos_x * pos_y * 5.244);
         t.scale(_scale);
         t.scale(1.0, 1.0 + frand, 1.0);
@@ -75,7 +96,8 @@ GrassBlade::GrassBlade(glm::vec3 _scale, glm::vec3 center, glm::vec2 size, float
         ge->set_model_matrix(t.get_matrix());
         
         //the matrix given by ge has the transfor and the grass model transforms
-        modelMats.push_back(ge->get_transf_0());
+        if (the_verticle < 0.13)
+            modelMats.push_back(ge->get_transf_0());
         }
     }
     //texture data definition

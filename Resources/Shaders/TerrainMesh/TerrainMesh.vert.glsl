@@ -22,7 +22,7 @@ void main() {
     vs_out.FragPosition = pos.xyz / pos.w;
     vs_out.GLPosition = gl_Position = projection * view * model * vec4(Position, 1.0f);
     if (reflection_refraction > 0.5) {
-        gl_ClipDistance[0] = dot(pos, vec4(0, 1, 0,  0.2));
-        gl_ClipDistance[1] = dot(pos, vec4(0, -1, 0, 0.2));
+        gl_ClipDistance[0] = dot(pos, vec4(0, 1, 0,  2.5));
+        gl_ClipDistance[1] = dot(pos, vec4(0, -1, 0, 2.5));
     }
 }

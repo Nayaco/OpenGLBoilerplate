@@ -10,9 +10,12 @@
 // #include "../Utils/NoiseGen.hpp"
 #include "GrassElement.hpp"
 
+#include "Core/Utility/Noise/Noise.hpp"
+
+
 class GrassBlade {
 public:
-    GrassBlade(glm::vec3 _scale, glm::vec3 center, glm::vec2 size, float density, Shader const& shader);
+    GrassBlade(glm::vec3 _scale, glm::vec3 center, glm::vec2 size, float density, Shader const& shader, imap2d const& heightmap, float y_axis_offset);
 
     void render();
     void setLightPos(glm::vec3 position);
