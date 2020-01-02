@@ -28,6 +28,8 @@ uniform ParallelLight alight_2;
 
 uniform sampler2D texture_diffuse1;
 
+uniform float reflection_refraction = 0.0;
+
 void main() {
     vec3 lightDir = alight_0.dir;
     vec3 viewDir = normalize(viewpos - TexPosition);
@@ -39,4 +41,6 @@ void main() {
     vec3 color_base = 0.8 * diffuse * alight_0.color + 0.2 * alight_0.color;
 
     FragColor = vec4(color_base, 1.0);
+
+    if (TexPosition.y < 2.5 && reflection_refraction > 0.5) discard;
 }

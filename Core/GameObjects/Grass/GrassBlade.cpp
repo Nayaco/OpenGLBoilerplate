@@ -96,7 +96,7 @@ GrassBlade::GrassBlade(glm::vec3 _scale, glm::vec3 center, glm::vec2 size, float
         ge->set_model_matrix(t.get_matrix());
         
         //the matrix given by ge has the transfor and the grass model transforms
-        if (the_verticle < 0.13)
+        if (the_verticle < 0.13 && the_verticle > 0.082)
             modelMats.push_back(ge->get_transf_0());
         }
     }
